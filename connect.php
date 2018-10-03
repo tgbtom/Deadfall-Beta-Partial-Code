@@ -6,7 +6,7 @@ $username="root";
 
 $password="";
 
-$database=""; 
+$database="deadfall"; 
 
 $con=mysqli_connect($hostname,$username,$password, $database);
 
@@ -22,7 +22,7 @@ print('Couldnt Connect');
 
 //Set the root path for the website here
 
-$root = "127.0.0.1/";
+$root = "http://127.0.0.1/deadfall";
 
 
 

@@ -2,14 +2,15 @@ body
 {
 	/*background-image: url("images/Back.png");*/
 	background-image:url('../images/back.png');
-    background-repeat:no-repeat;
+    background-repeat:repeat;
     background-size:100% 100%
 	/*background-color:#2B2017;*/
 }
 .container 
 {
 	width: 1200px;
-	height: 100%;
+	min-height: 100%;
+        display: table;
 	margin: auto;
 	text-align: left;
 	color: black;
