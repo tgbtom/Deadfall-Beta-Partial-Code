@@ -19,15 +19,14 @@ $location = filter_input(INPUT_POST, 'location');
 //if trying to drop an item in warehouse while out of town, dont allow
 //otherwise, proceed with item dropping protocol
 if (strpos($location, 'outside') !== false && ($x == 0 && $y == 0))
-{header ('Location: ../inTown/?locat=outside&e=You%20may%20not%20drop%20items%20here!');}
+{echo '<script>window.location = "' . $root . '/inTown/?locat=outside&e=You%20may%20not%20drop%20items%20here!";</script>';}
 else if (strpos($location, 'warehouse') !== false && ($x != 0 || $y != 0))
-{header ('Location: ../inTown/?locat=warehouse&e=You%20may%20not%20drop%20items%20here!');}
+{echo '<script>window.location = "' . $root . '/inTown/?locat=warehouse&e=You%20may%20not%20drop%20items%20here!";</script>';}
 else if (strpos($location, 'outside') == false && ($x != 0 || $y != 0))
 {
 $location2 = str_replace('/deadfall/', '', $location);
 $location3 = str_replace('.php', '', $location2);
-header ('Location: ../inTown/?locat=' . 'inTown' . '&e=You%20may%20not%20drop%20items%20here!');
-//remove'/deadfall/'
+echo '<script>window.location = "' . $root . '/inTown/?locat=inTown&e=You%20may%20not%20drop%20items%20here!";</script>';
 }
 else
 {
@@ -94,7 +93,7 @@ else
 		$statement3->bindValue(':y', $y);
 		$statement3->execute();
 		$result3 = $statement3->fetch();
-		$statement3->closeCursor;
+		$statement3->closeCursor();
 		$groundItems = $result3['groundItems'];
 	
 		//Determine the new string of items to go on the ground ***STRING IS DIFFERENT IF COORDS ARE 0,0
@@ -173,11 +172,11 @@ else
 	
 		if (strpos($location, 'outside') !== false)
 		{
-			header ('Location: ../inTown/?locat=outside&e=You%20successfully%20dropped%20the%20item!');
+			echo '<script>window.location = "' . $root . '/inTown/?locat=outside";</script>';
 		}
 		else
 		{
-			header ('Location: ../inTown/?locat=warehouse&e=You%20successfully%20dropped%20the%20item!');
+			echo '<script>window.location = "' . $root . '/inTown/?locat=warehouse";</script>';
 		}
 	
 	}
@@ -185,11 +184,11 @@ else
 	{
 		if (strpos($location, 'outside') !== false)
 		{
-			header ('Location: ../inTown/?locat=outside&e=Attempting%20to%20drop%20an%20item%20that%20no%20longer%20exists!' . $itemName);
+			echo '<script>window.location = "' . $root . '/inTown/?locat=outside&e=Attempting%20to%20drop%20an%20item%20that%20no%20longer%20exists!";</script>';
 		}
 		else
 		{
-			header ('Location: ../inTown/?locat=warehouse&e=Attempting%20to%20drop%20an%20item%20that%20no%20longer%20exists!');
+			echo '<script>window.location = "' . $root . '/inTown/?locat=warehouse&e=Attempting%20to%20drop%20an%20item%20that%20no%20longer%20exists!";</script>';
 		}
 	}
 }

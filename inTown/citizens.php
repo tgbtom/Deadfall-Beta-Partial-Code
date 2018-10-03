@@ -53,6 +53,14 @@ $query2 = mysqli_query($con, $query1);
 	{float: left; vertical-align: text-top; height: 1%;}
 	.head
 	{border: 1px solid black;}
+	.itemDiv {
+    position: relative;
+    display: inline-block;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+	}
 	</style>
 	
 			<script>
@@ -97,14 +105,30 @@ $query2 = mysqli_query($con, $query1);
 		$Query4 = mysqli_query($con, $Query3);
 		
 		
-		echo "<table><tr style='font-size:20;'><td class='head'>Username</td><td class='head'>Character</td><td class='head'>Class</td><td class='head'>Items</td></tr>";
+		echo "<table><tr style='font-size:20;'><td class='head'>Username</td><td class='head'>Character</td><td class='head'>Class</td><td class='head'>Items</td><td class='head'>Status</td></tr>";
 		while ($row = mysqli_fetch_assoc($Query4))
 		{
-			$classImg = "../images/icons/" . $row['class'] . ".png";
+			$charRow = $row['character'];
+			$userRow = $row['username'];
+			
+			//Query loads the row in the characters DB that corresponds to the character being checked
+			$query1 = 'SELECT * FROM `characters` WHERE `character` = :character AND `username` = :username';
+			$statement1 = $dbCon->prepare($query1);
+			$statement1->bindValue(':username', $userRow);
+			$statement1->bindValue(':character', $charRow);
+			$statement1->execute();
+			$charDetails = $statement1->fetch();
+			$statement1->closeCursor();
+
+			$itemsHeld = $charDetails['items'];
+			$itemsHeldArray = explode(',', $itemsHeld);
+			$status = $charDetails['status'];
+			$statusArray = explode('.', $status);
+			
+			$classImg = "../images/icons/" . lcfirst($row['class']) . ".png";
 			if ($row['username'] == $playerName)
 			{
 				echo "<tr>";
-				$charRow = $row['character'];
 				echo "<td><p>" . $row['username'] . "</p></td>" . "<td class='samePlayer'><p class='samePlayer2' onclick='changeChar(`" . $charRow . "`)'>" . $row['character'] . "</p>";
 				if (doesStatusContainExt(12, $charRow)) //character is dead
 				{
@@ -114,51 +138,54 @@ $query2 = mysqli_query($con, $query1);
 				{
 					echo "<img src='../images/status/Day Ended.png' title='Finished Current Day' style='float: right;'>";
 				}
-				echo "</td>" . "<td><img src='$classImg'> " . $row['class'] . "</td>" . "<td style='border: 1px solid #120B06;'></td>";
+				echo "</td>" . "<td><img src='$classImg'> " . $row['class'] . "</td>" . "<td style='border: 1px solid #120B06;'>";
+				
+				if ($itemsHeld != NULL)
+				{
+					for ($i = 0; $i < sizeOf($itemsHeldArray); $i++)
+					{
+						$itemName = $itemsMaster[$itemsHeldArray[$i]][0];
+						echo '<div class="itemDiv"><img src="../images/items/' . $itemName . '.png" class="item"><img src="../images/rarity/' . getRarityString($itemsHeldArray[$i]) . '.png" title="' . $itemName . '" class="rarityBanner"></div>';
+					}
+				}
+				
+				echo "</td><td style='border: 1px solid #120B06;'></td>";
 				echo "</tr>";
 			}
 			
 			else
 			{
 				echo "<tr>";
-				echo "<td><p>" . $row['username'] . "</p></td>" . "<td style='border: 1px solid #120B06;'>" . $row['character'] . "</td>" . "<td><img src='$classImg'> " . $row['class'] . "</td>" . "<td style='border: 1px solid #120B06;'></td>";
+				echo "<td><p>" . $row['username'] . "</p></td>" . "<td style='border: 1px solid #120B06;'>" . $row['character'];
+				if (doesStatusContainExt(12, $charRow, $row['username'])) //character is dead
+				{
+					echo "<img src='../images/status/Dead.png' title='DEAD' style='float: right;'>";
+				}
+				elseif (doesStatusContainExt(10, $charRow, $row['username'])) //character has ended the day
+				{
+					echo "<img src='../images/status/Day Ended.png' title='Finished Current Day' style='float: right;'>";
+				}
+				
+				echo "</td><td><img src='$classImg'> " . $row['class'] . "</td>" . "<td style='border: 1px solid #120B06;'>";
+				
+				if ($itemsHeld != NULL)
+				{
+					for ($i = 0; $i < sizeOf($itemsHeldArray); $i++)
+					{
+						$itemName = $itemsMaster[$itemsHeldArray[$i]][0];
+						echo '<div class="itemDiv"><img src="../images/items/' . $itemName . '.png" class="item"><img src="../images/rarity/' . getRarityString($itemsHeldArray[$i]) . '.png" title="' . $itemName . '" class="rarityBanner"></div>';
+					}
+				}
+				
+				echo "</td><td style='border: 1px solid #120B06;'></td>";
+				
 				echo "</tr>";
 			}
 			
 		}
 		echo "</table>";
-		
 		?>
-			
-			<!--<table>
-			<tr style="font-size:1.5em;">
-				<td colspan="4">Defences</td>
-			</tr>
-			<tr>
-				<td><p style="font-size:1.25em; font-family:'impact', charcoal, sans-serif;">Outer Wall</p></td>
-				<td class="data"><img src="images/wood.png"><style1>7/15 </style1><img src="images/iron.png"><style1>9/15 </style1></td>
-				<td><input type="number" class="number" value="0" min="0" max="12"></td>
-				<td><img src="images/construct.png" style="float:right;"></td>
-			</tr>
-	 
-			//if the town doesnt have the building reqs than it should hide the particular row 
-			//code could be used to display the entire table which would make it easier to implement php in
-	
-			<tr>
-				<td><p style="font-size:1.25em; font-family:'impact', charcoal, sans-serif;">Inner Wall</p></td>
-				<td class="data"><img src="images/wood.png">x25 <img src="images/iron.png">x15 </td>
-				<td><input type="number" class="number" value="0" min="0" max="12"></td>
-				<td><img src="images/construct.png" style="float:right;"></td>
-			</tr>
-		
-			</table>-->
-	
 		</div>
-		
-		<!--<div class="spoiler"><p>Well</p></div>
-		<div class="spoiler"><p>Garden</p></div>
-		<div class="spoiler"><p>Armoury</p></div>
-		-->
 	</div>
 	
 

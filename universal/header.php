@@ -59,6 +59,18 @@
     from {opacity: 0;}
     to {opacity:1 ;}
 }
+
+.rarityBanner  
+{
+	position: absolute;
+	top: -2px;
+	left: -2px;
+}
+
+.item
+{
+	margin-right: 4px;
+}
 </style>
 </head>
 <body style="text-align:center">
@@ -66,13 +78,13 @@
 
 <script>
 
-$(document).click(function(){
+/*$(document).click(function(){
   	var popuptext = document.getElementsByClassName('popuptext');
 	for (var i = 0; i < popuptext.length; i++)
 	{
 		popuptext[i].style.visibility = 'hidden';
 	}
-  });
+  });*/
 
 // When the user clicks on div, open the popup and close all other pop-ups
 function popUpMenu(x)
@@ -184,7 +196,7 @@ $aliveRes = $maxRes - $deadRes;
 		<div class="infoSet1"><p><?php echo '<img src="../images/icons/zombie.png" title="Horde Size"> ' . $hordeSize?></p></div>
 		<div class="infoSet1"><p><?php echo '<img src="../images/icons/shield.png" title="Defence Amount"> ' . $defenceSize?></p></div>
 		<div class="infoset2"><p><?php echo "logged in as: " . htmlspecialchars($playerName)?></p></div>
-		<div class="infoset2"><p><?php echo '<img src="' . $root . '..//images/icons/' . htmlspecialchars($charClass) .  '.png" title="' . htmlspecialchars($charClass) . '"> ' . htmlspecialchars($charClass); ?></p></div>
+		<div class="infoset2"><p><?php echo '<img src="' . $root . '/images/icons/' . lcfirst(htmlspecialchars($charClass)) .  '.png" title="' . htmlspecialchars($charClass) . '"> ' . htmlspecialchars($charClass); ?></p></div>
 		<div class="infoset2"><p><?php echo htmlspecialchars($charName)?></p></div>
 		<div class="infoset2"><p><?php echo 'Lvl ' . htmlspecialchars($charLevel)?></p></div>
 		<div class="infoSet2"><p><?php echo $_SESSION['x'] . ", " . $_SESSION['y']?></p></div>
@@ -202,7 +214,7 @@ $aliveRes = $maxRes - $deadRes;
 				
 				echo '<input type="hidden" name="location" value="'. $loc . '">';
 				echo '<input type="hidden" name="itemName' . $i . '" value="'. $itemName . '">';				
-				echo '<div class="popup" onclick="popUpMenu(`popUp' . $i . '`)"><img title="' . $itemName . '" src="../images/items/' . $itemName . '.png">';
+				echo '<div class="popup" onclick="popUpMenu(`popUp' . $i . '`)"><img src="../images/items/' . $itemName . '.png" class="item"><img src="../images/rarity/' . getRarityString($itemsHeldArray[$i]) . '.png" title="' . $itemName . '" class="rarityBanner">';
 				echo '<span class="popuptext" id="popUp' . $i . '">';
 				echo '<p><u>' . $itemName . '</u></p><p class="rarity">' . getRarityString($itemsHeldArray[$i]) . '</p>';
 				echo '<input onclick="newAction(`drop`, ' . $i .')" type="submit" value="Drop">';
@@ -232,7 +244,7 @@ $aliveRes = $maxRes - $deadRes;
 				$statusName = $statusMaster[$statusArray[$i]];
 				echo '<img src="../images/status/' . $statusName . '.png" title="' . $statusName . '">';
 			}
-			echo '</form>';
+			echo '</form></p>';
 		}
 		?>
 		</div>

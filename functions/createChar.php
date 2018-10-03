@@ -14,21 +14,11 @@ $user = $_SESSION['login'];
 $nameQuer = "SELECT * FROM `characters` WHERE `username`='$user' AND `character`='$selected_name'";
 $check = mysqli_query($con, $nameQuer);
 
-if (mysqli_num_rows($check) > 0)
-{
-	echo "Character name is taken";
+if (mysqli_num_rows($check) <= 0)
+{	$sql = mysqli_query($con, "INSERT INTO `characters` VALUES(NULL, '$user', '$selected_name', '$selected_class', '$selected_gender', '0', '0', 'none', NULL, '0', '20', 'none', '0', '16', '16', '3.7.11')");	if ($sql)	{	echo '<script>window.location = "' . $root . '/inTown/?locat=browseChars";</script>';	}	else	{		echo "There was a problem while trying to create the character";	}
 }
 else
-{
-	$sql = mysqli_query($con, "INSERT INTO `characters` VALUES(NULL, '$user', '$selected_name', '$selected_class', '$selected_gender', '0', '0', 'none', NULL, '0', '10', 'none', '0', '16', '16', '3.7')");
-	if ($sql)
-	{
-	header ("Location: ../inTown/?locat=browseChars");
-	}
-	else
-	{
-		echo "There was a problem while trying to create the character";
-	}
+{	echo "Character name is taken";
 }
 
 ?>

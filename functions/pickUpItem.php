@@ -142,23 +142,23 @@ if ($itemWeight <= $remainingCapacity)
 
 	
 			if (strpos($location, 'outside') !== false)
-			{
-				header ('Location: ../inTown/?locat=outside&e=You%20successfully%20picked%20up%20the%20item!');
+			{				
+				echo '<script>window.location = "' . $root . '/inTown/?locat=outside";</script>';
 			}
 			else
 			{
-				header ('Location: ../inTown/?locat=warehouse&e=You%20successfully%20picked%20up%20the%20item!');
+				echo '<script>window.location = "' . $root . '/inTown/?locat=warehouse";</script>';
 			}
 	}
 	else
 	{
 		if (strpos($location, 'outside') !== false)
 		{
-			header ('Location: ../inTown/?locat=outside&e=Item%20could%20not%20be%20found%20in%20this%20location');
+			echo '<script>window.location = "' . $root . '/inTown/?locat=outside&e=Item%20could%20not%20be%20found%20in%20this%20location";</script>';
 		}
 		else
 		{
-			header ('Location: ../inTown/?locat=warehouse&e=Item%20could%20not%20be%20found%20in%20this%20location');
+			echo '<script>window.location = "' . $root . '/inTown/?locat=warehouse&e=Item%20could%20not%20be%20found%20in%20this%20location";</script>';
 		}
 		
 	}
@@ -168,11 +168,11 @@ else
 	//Error: You are already carrying too much.
 		if (strpos($location, 'outside') !== false)
 		{
-			header ('Location: ../inTown/?locat=outside&e=You%20are%20already%20carrying%20too%20much!');
+			echo '<script>window.location = "' . $root . '/inTown/?locat=outside&e=You%20are%20already%20carrying%20too%20much!";</script>';
 		}
 		else
 		{
-			header ('Location: ../inTown/?locat=warehouse&e=You%20are%20already%20carrying%20too%20much!');
+			echo '<script>window.location = "' . $root . '/inTown/?locat=warehouse&e=You%20are%20already%20carrying%20too%20much!";</script>';
 		}
 	
 }

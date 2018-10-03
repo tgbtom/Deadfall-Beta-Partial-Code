@@ -1,13 +1,4 @@
-<html>
-<head>
-
 <?php
 session_start();
-session_destroy();
-header ("Location: login.php");
+session_destroy();require_once('../connect.php');echo '<script>window.location = "' . $root . '";</script>';
 ?>
-
-</head>
-<body>
-</body>
-</html>

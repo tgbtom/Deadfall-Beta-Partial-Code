@@ -40,6 +40,7 @@
 		<h3 align="center">News and Updates</h3>
 		<hr style="width:103%; border-color: black;">
 		<ul>	
+			<li><p><img src="images/items/Bow.png" align="center"><img src="images/items/Arrow.png" align="center"><img src="images/items/Pistol.png" align="center"> <b>July 22nd, 2018:</b> Art has been updated for the following items: Pistol, Bow, and Arrow. </i></p></li>
 			<li><p><img src="images/items/fillerItem.png" align="center"> <b>April 26th, 2018:</b> The following items have been added: Bow, Arrow, Slingshot, Rock, Cloth, Pistol, Small Bullet</i></p></li>
 			<li><p><img src="images/items/Grenade.png" align="center"> <b>November 14th, 2017:</b> <i>The <q>Grenade</q> has been added!</i></p></li>
 			<li><p><img src="images/icons/zombie.png" align="center"> <b>November 7th, 2017:</b> <i>The <q>zombie</q> prototype image has been added!</i></p></li>
@@ -70,8 +71,8 @@
 			
 				<form action="<?php echo "./functions/validate.php"; ?>" name="log" method="post" onsubmit="return validateform2()">
 				<?php $errorMessage = filter_input(INPUT_GET, "error"); if (!empty($errorMessage)) { ?> <p> <?php echo htmlspecialchars($errorMessage); ?> </p> <?php } ?>
-					<input type="text" name="user" value="Username" onfocus="if (this.value == 'Username') {this.value='';}" onblur="if (this.value == '') {this.value = 'Username';}"></br>
-					<input type="password" name="pass" value="" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = '';}"></br>
+					<input type="text" placeholder="Username" name="user" value=""></br>
+					<input type="password" placeholder="Password" name="pass" value=""></br>
 					<a href="<?php echo htmlspecialchars($root); ?>" class="forgot">Forgot your password?</a></br>
 					<input type="submit" value="Login Now!">
 				</form>

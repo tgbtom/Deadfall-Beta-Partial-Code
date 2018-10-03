@@ -4,7 +4,6 @@ require_once ('./verifyLogin.php');
 require_once ('../data/buildings.php');
 require_once ('../functions/queryFunctions.php');
 require_once ('../data/items.php');
-
 //gets the user and current character, and stores them in local variables
 $user = $_SESSION['login'];
 $char = $_SESSION['char'];
@@ -38,35 +37,26 @@ function isFirstBuild()
 	$statement->execute();
 	$result = $statement->fetch();
 	$statement->closeCursor();
-	print 'result:' . $result['buildings'];
-	print 'buildName' . $buildingName;
 	//$result is the buildings string from the current town
 	//Defence.1:Outer Wall.180:Inner Wall.100:Wall Upgrade 1.0:Wooden Support.0:Supply.1:Water Reserve.29
 	if (strpos($result['buildings'], $buildingName) == false)
 	{
-		//building name can't be found
-		print 'its TRUE';
 		return true;
 	}
 	else 
 	{
 		$stringIndex = strpos($result['buildings'], $buildingName);
 		$lengthBeforeCount = strlen($buildingName) + 1 + $stringIndex;
-		$firstDigit = substr ($result['buildings'], $lengthBeforeCount, 1); //first digit of the invested AP for current building (works because it's always 1-9 if number is > 0)
+		$firstDigit = substr($result['buildings'], $lengthBeforeCount, 1); //first digit of the invested AP for current building (works because it's always 1-9 if number is > 0)
 		if ($firstDigit == 0)
 		{
-			print 'its true';
 			return true;
 		}
 		else
 		{
-			print 'its falsere';
 			return false;
 		}
 	}
-	
-	
-	
 }
 
 function doesNewStringContain($arg1)
@@ -134,21 +124,6 @@ function warehouseContains($arg1)
 			return true;
 		}
 	}
-	
-	//0.5,5.31,6.13,3.24
-	//0.5  5.31   6.13   3.24
-	/*$functionItemsArray = explode(',', $result['groundItems']);
-	for ($i = 0; $i < sizeOf($functionItemsArray); $i++)
-	{
-		$functionItemSplit = explode('.', $functionItemsArray[$i]);
-		$functionItemId = $functionItemSplit[0];
-		$functionItemAmount = $functionItemSplit[1];
-		
-		if ($functionItemId == $arg1)
-		{
-			return true;
-		}		
-	}*/
 }
 
 function buildingRequires($itemId)
@@ -171,12 +146,12 @@ function buildingRequires($itemId)
 //following for loop increases the AP built on the corresponding buildingName
 //if apToBuild > AP the Char has, dont follow through, instead set header with error_get_last
 if ($apToAdd > $currentAp || $apToAdd == 0)
-{
-	header ('location: ../inTown/?locat=construction&e=You%20do%20not%20have%20enough%20AP!');
+{	
+	echo '<script>window.location = "' . $root . '/inTown/?locat=construction&e=You%20do%20not%20have%20enough%20AP!";</script>';
 }
 else if ($apToAdd > $apRequired)
-{
-	header ('location: ../inTown/?locat=construction&e=This%20Structure%20does%20not%20require%20so%20much%20AP!!');
+{	
+	echo '<script>window.location = "' . $root . '/inTown/?locat=construction&e=This%20Structure%20does%20not%20require%20so%20much%20AP!";</script>';
 }
 else 
 {
@@ -205,8 +180,8 @@ else
 			//check if item has a stack in the warehouse
 			if (warehouseContains($currentRequiredItemId) == false)
 			{
+				echo '<script>window.location = "' . $root . '/inTown/?locat=construction&e=Sufficient%20items%20no%20longer%20exist! NOSTACK";</script>';
 				$itemsFound = false;
-				header ('location: ../inTown/?locat=construction&e=Sufficient%20items%20no%20longer%20exist! NOSTACK');
 				exit();
 			}
 			/*else
@@ -238,8 +213,8 @@ else
 				{
 					if ($potentialItemAmount < 0)
 					{
+						echo '<script>window.location = "' . $root . '/inTown/?locat=construction&e=Sufficient%20items%20no%20longer%20exist! ABCD";</script>';
 						$itemsFound = false;
-						header ('location: ../inTown/?locat=construction&e=Sufficient%20items%20no%20longer%20exist! ABCD');
 						exit();
 					}
 					else if ($potentialItemAmount == 0)
@@ -248,7 +223,6 @@ else
 					}
 					else
 					{
-						echo $currentItemId . '.' . $potentialItemAmount;
 						if (!isset($newItemsString) || $newItemsString == NULL)
 						{
 							$newItemsString = $currentItemId . '.' . $potentialItemAmount;
@@ -278,19 +252,6 @@ else
 						
 					}
 				}
-				
-				/*if ($i2 == (sizeOf($warehouseItemsArray) - 1) && ($itemsFound == false)) //if item isn't found by the last warehouse item, item is not in bank.
-				{
-					$itemsFound = false;
-					header ('location: ../inTown/?locat=construction&e=Sufficient%20items%20no%20longer%20exist! EFGH');
-					exit();
-				}
-				else if ($i2 == (sizeOf($warehouseItemsArray) - 1) && !($i == (sizeOf($itemRequirementsArray) - 1)))
-				{
-					$itemsFound = false;
-					header ('location: ../inTown/?locat=construction&e=Sufficient%20items%20no%20longer%20exist! EFGHIJKL');
-					exit();
-				}*/
 			}			
 		}
 			
@@ -356,12 +317,9 @@ else
 		$statement2->bindValue(':user', $user);
 		$statement2->execute();
 		$statement2->closeCursor();
-		
-		
-		
-		//Return to the construction page
-		header('location: ../inTown/?locat=construction');
 	}
-}
+}				
 
+//Return to the construction page
+echo '<script>window.location = "/inTown/?locat=construction";</script>';
 ?>

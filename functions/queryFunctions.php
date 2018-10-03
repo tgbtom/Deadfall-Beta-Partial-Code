@@ -15,7 +15,7 @@ else
 }
 if (!isset($_SESSION['x']))
 {
-	$_SESSION['x'] = '';
+	$_SESSION['x'] = NULL;
 }
 else
 {
@@ -23,7 +23,7 @@ else
 }
 if (!isset($_SESSION['y']))
 {
-	$_SESSION['y'] = '';
+	$_SESSION['y'] = NULL;
 }
 else
 {
@@ -95,10 +95,13 @@ function doesStatusContain($statusId)
 	}
 }
 
-function doesStatusContainExt($statusId, $charName)
+function doesStatusContainExt($statusId, $charName, $user = null)
 {
 	global $dbCon;
-	global $user;
+	if ($user === NULL)
+	{
+		global $user;
+	}
 	
 	$query = 'SELECT * FROM `characters` WHERE `username` = :user AND `character` = :char';
 	$statement = $dbCon->prepare($query);
@@ -524,9 +527,7 @@ function lootItem()
 	}
 	
 	//random # between 0 and size of rarity array - 1
-	$randomItem = $rarityArray[array_rand($rarityArray)];
-	//echo 'ITEM: ' . $randomItem . ' rar: ' . $rarity;
-	
+	$randomItem = $rarityArray[array_rand($rarityArray)];	
 	//Update the depletion value
 	if ($depletion > 0)
 	{
@@ -816,7 +817,7 @@ function getCharCoordsExt($character) //Return example => 0 => 5, 1=> -5  (Botto
 		$CharsArray = explode('.', $current['charactersHere']);
 		if (!empty($charsArray))
 		{
-			if (!(array_search($character, $charsArray) === FALSE))
+			if (in_array($character, $charsArray))
 			{
 				return array($current['x'], $current['y']);
 			}	
@@ -966,7 +967,7 @@ function charsAlive($townName)
 {
 	global $dbCon;
 	
-	$query = 'SELECT status, character FROM `characters` WHERE `townName` = :townName';
+	$query = 'SELECT * FROM `characters` WHERE `townName` = :townName';
 	$statement = $dbCon->prepare($query);
 	$statement->bindValue(':townName', $townName);
 	$statement->execute();
@@ -1020,10 +1021,129 @@ function closeTheTown($townName) //Officially ends the town, database table is l
 	$statement->closeCursor();
 	
 	//clear char session, x, AND y
-	$_SESSION['x'] = '';
-	$_SESSION['y'] = '';
+	$_SESSION['x'] = NULL;
+	$_SESSION['y'] = NULL;
 	$_SESSION['char'] = '';
 	
 	header("location: ../inTown/?locat=browseChars");
+}
+
+function isStructureBuilt($structure, $townName)
+{
+	global $dbCon;
+	global $buildingsInfo;
+	
+	$query = 'SELECT buildings FROM `towns` WHERE `townName` = :townName';
+	$statement = $dbCon->prepare($query);
+	$statement->bindValue(':townName', $townName);
+	$statement->execute();
+	$result = $statement->fetch();
+	$statement->closeCursor();
+	
+	$buildingsString = $result['buildings'];
+	
+	//Get information on the required ap for structure
+	foreach ($buildingsInfo as $build)
+	{
+		if ($build[0] == $structure)
+		{
+			$apRequired = $build[3];
+		}
+	}
+	
+	//Determine how much AP has already been assigned to the structure
+	$buildingsArray = explode(':', $buildingsString);
+	foreach ($buildingsArray as $build)
+	{
+		$buildingsSplit = explode('.', $build);
+		$buildingName = $buildingsSplit[0];
+		$buildingAp = $buildingsSplit[1];
+		
+		if ($buildingName == $structure)
+		{
+			if ($buildingAp >= $apRequired)
+			{
+				return true;
+			}
+		}
+	
+	}
+}
+
+function addToBank($itemId, $townName)
+{
+	global $dbCon;
+	
+	$query = 'SELECT * FROM `' . $townName . '` WHERE `x` = :x AND `y` = :y';
+	$statement = $dbCon->prepare($query);
+	$statement->bindValue(':x', 0);
+	$statement->bindValue(':y', 0);
+	$statement->execute();
+	$result = $statement->fetch();
+	$statement->closeCursor();
+	$groundItems = $result['groundItems'];
+	
+	$newGroundItems = NULL;
+	
+	//Determine the new string of items to go on the ground ***STRING IS DIFFERENT IF COORDS ARE 0,0
+
+	
+	//if coords are 0,0, apply the item to an existing stack or create a new one
+	//IF outside, just drop the item as usual
+		
+	//Determine if there is already a stack for this ID
+	$groundItemsArray = explode(',', $groundItems);
+	$itemFound = false;
+	for ($i = 0; $i < sizeOf($groundItemsArray); $i++)
+	{
+		$currentItemSplit = explode('.', $groundItemsArray[$i]);
+		$currentItemId = $currentItemSplit[0];
+		$currentItemAmount = $currentItemSplit[1];
+		$potentialNewAmount = $currentItemAmount + 1;
+		if($currentItemId == $itemId && $itemFound == false)
+		{
+			$itemFound = true;
+			if ($newGroundItems == NULL)
+			{
+				$newGroundItems = $currentItemId . '.' . $potentialNewAmount;
+			}
+			else
+			{
+				$newGroundItems = $newGroundItems . ',' . $currentItemId . '.' . $potentialNewAmount;
+			}
+		}
+		else
+		{
+			if ($newGroundItems == NULL)
+			{
+				$newGroundItems = $currentItemId . '.' . $currentItemAmount;
+			}
+			else
+			{
+				$newGroundItems = $newGroundItems . ',' . $currentItemId . '.' . $currentItemAmount;
+			}
+		}
+	}
+	//create a 
+	if ($itemFound == false)
+	{
+		if ($newGroundItems == NULL)
+		{
+			$newGroundItems = $itemId . '.1';
+		}
+		else
+		{
+			$newGroundItems = $newGroundItems . ',' . $itemId . '.1';
+		}
+	}
+	
+	//Update the ground in the current zone with the item being dropped
+	$query4 = 'UPDATE `' . $townName . '` SET `groundItems` = :newGroundItems WHERE `x` = :x AND `y` = :y';
+	$statement4 = $dbCon->prepare($query4);
+	$statement4->bindValue(':newGroundItems', $newGroundItems);
+	$statement4->bindValue(':x', 0);
+	$statement4->bindValue(':y', 0);
+	$statement4->execute();
+	$statement4->closeCursor();
 }
 ?>

@@ -9,7 +9,7 @@ body
 }
 .container 
 {
-	width: 800px;
+	width: 1200px;
 	overflow: auto;
 	margin: auto;
 	text-align: left;
@@ -176,6 +176,17 @@ body
 	background-color: #CEA37E;
 	overflow: auto;
 	border: 2px solid #000000;
+}.browseBlock3
+{
+	padding-top:20px;
+	width:75%;
+	height: 360px;		max-height: 800px;
+	margin: 25px auto;
+	float: left;
+	color: black;
+	background-color: #CEA37E;
+	overflow: auto;
+	border: 2px solid #000000;
 }
 
 .infoBlock
@@ -322,3 +333,4 @@ td.build
 	color: #000000;
 	cursor: default;
 }
+

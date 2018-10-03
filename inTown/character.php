@@ -39,7 +39,7 @@ function endDay()
 		global $deadRes;
 		
 		$newReady = $previousReady + 1;
-		$newDead = 0;
+		$newDead = $deadRes;
 		
 		if ($newReady >= ($maxReady - $deadRes))
 		{
@@ -62,8 +62,6 @@ function endDay()
 					replaceStatusExt(0, NULL, $character);
 					replaceStatusExt(1, NULL, $character);
 				}
-				
-				echo 'nameeeee:   ' . $character;
 				if ($dayNumber % 2 == 0) //If day is an even number, change hunger 
 				{
 					if (doesStatusContainExt(2, $character)) //character WAS FULL
@@ -83,8 +81,7 @@ function endDay()
 						//***************************CHARACTER DIES HERE*****************************************
 						if (!doesStatusContainExt(12, $character))
 						{
-							$newDead = $newDead + $deadRes + 1;
-							$newDead++;
+							$newDead = $newDead + 1;
 						
 							$query = 'UPDATE `towns` SET `deadResidents` = :newDead WHERE `townName` = :townName';
 							$statement = $dbCon->prepare($query);
@@ -169,28 +166,32 @@ function endDay()
 			$statement2->execute();
 			$statement2->closeCursor();
 			
-			//Increase hunger and thirst levels for all chars in town (if already worst level, char dies) (if new day number is even, increase hunger)... Need to eat every other day and drink every day
-			$query3 = 'SELECT status, character, username FROM `characters` WHERE `townName` = :townName';
-			$statement3 = $dbCon->prepare($query3);
-			$statement3->bindValue(':townName', $townName);
-			$statement3->execute();
-			$result3 = $statement3->fetchAll();
-			$statement3->closeCursor();
-			
-			foreach ($result3 as $current) //($i = 0; $i < sizeOf($result); $i++)
+			//Check for any structures that perform an action over night
+			if (isStructureBuilt('Water Reserve', $townName))
 			{
-
+				for ($i = 0; $i < 2; $i++)
+				{
+					addToBank(0, $townName);
+				}
+			}			
+			
+			if (isStructureBuilt('Vegetable Garden', $townName))
+			{
+				for ($i = 0; $i < 2; $i++)
+				{
+					addToBank(1, $townName);
+				}
 			}
 			
 		}
 		else
 		{
-		$query2 = 'UPDATE `towns` SET `readyResidents` = :newReady WHERE `townName` = :townName';
-		$statement2 = $dbCon->prepare($query2);
-		$statement2->bindValue(':newReady', $newReady);
-		$statement2->bindValue(':townName', $townName);
-		$statement2->execute();
-		$statement2->closeCursor();
+			$query2 = 'UPDATE `towns` SET `readyResidents` = :newReady WHERE `townName` = :townName';
+			$statement2 = $dbCon->prepare($query2);
+			$statement2->bindValue(':newReady', $newReady);
+			$statement2->bindValue(':townName', $townName);
+			$statement2->execute();
+			$statement2->closeCursor();
 		}
 	
 }

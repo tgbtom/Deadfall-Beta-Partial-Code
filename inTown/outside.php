@@ -124,11 +124,18 @@ $query2 = mysqli_query($con, $query1);
 				while ($row = mysqli_fetch_assoc($findChar2))
 				{
 					$listedChar = explode(".", $row['charactersHere']);
-					for ($i = 1; $i < count($listedChar); $i++)
+					for ($i = 0; $i < count($listedChar); $i++)
 					{
 						if ($listedChar[$i] != $charName)
 						{
-							$updatedOldZone = $updatedOldZone . '.' . $listedChar[$i];
+							if ($updatedOldZone != NULL && $updatedOldZone != '')
+							{
+								$updatedOldZone = $updatedOldZone . '.' . $listedChar[$i];
+							}
+							else
+							{
+								$updatedOldZone = $listedChar[$i];
+							}
 						}
 					}
 					$updateOld = "UPDATE `" . $townName . "` SET `charactersHere`='" . $updatedOldZone ."' WHERE `x`='" . $oldX . "' AND `y`='" . $oldY . "'";
@@ -142,7 +149,14 @@ $query2 = mysqli_query($con, $query1);
 				$findLoc2 = mysqli_query($con, $findLoc);
 				while ($row = mysqli_fetch_assoc($findLoc2))
 				{
-				$updatedNewZone = $row["charactersHere"] . "." . $charName;
+					if ($row["charactersHere"] != NULL && $row["charactersHere"] != '')
+					{
+						$updatedNewZone = $row["charactersHere"] . "." . $charName;
+					}
+					else
+					{
+						$updatedNewZone = $charName;
+					}
 				}
 				$updateNew = "UPDATE `" . $townName . "` SET `charactersHere`='" . $updatedNewZone ."' WHERE `x`='" . $newX . "' AND `y`='" . $newY . "'";
 				mysqli_query($con, $updateNew);
@@ -161,11 +175,18 @@ $query2 = mysqli_query($con, $query1);
 				while ($row = mysqli_fetch_assoc($findChar2))
 				{
 					$listedChar = explode(".", $row['charactersHere']);
-					for ($i = 1; $i < count($listedChar); $i++)
+					for ($i = 0; $i < count($listedChar); $i++)
 					{
 						if ($listedChar[$i] != $charName)
 						{
-							$updatedOldZone = $updatedOldZone . '.' . $listedChar[$i];
+							if ($updatedOldZone != NULL && $updatedOldZone != '')
+							{
+								$updatedOldZone = $updatedOldZone . '.' . $listedChar[$i];
+							}
+							else
+							{
+								$updatedOldZone = $listedChar[$i];
+							}
 						}
 					}
 					$updateOld = "UPDATE `" . $townName . "` SET `charactersHere`='" . $updatedOldZone ."' WHERE `x`='" . $oldX . "' AND `y`='" . $oldY . "'";
@@ -179,7 +200,14 @@ $query2 = mysqli_query($con, $query1);
 				$findLoc2 = mysqli_query($con, $findLoc);
 				while ($row = mysqli_fetch_assoc($findLoc2))
 				{
-				$updatedNewZone = $row["charactersHere"] . "." . $charName;
+					if ($row["charactersHere"] != NULL && $row["charactersHere"] != '')
+					{
+						$updatedNewZone = $row["charactersHere"] . "." . $charName;
+					}
+					else
+					{
+						$updatedNewZone = $charName;
+					}
 				}
 				$updateNew = "UPDATE `" . $townName . "` SET `charactersHere`='" . $updatedNewZone ."' WHERE `x`='" . $newX . "' AND `y`='" . $newY . "'";
 				mysqli_query($con, $updateNew);
@@ -198,11 +226,18 @@ $query2 = mysqli_query($con, $query1);
 				while ($row = mysqli_fetch_assoc($findChar2))
 				{
 					$listedChar = explode(".", $row['charactersHere']);
-					for ($i = 1; $i < count($listedChar); $i++)
+					for ($i = 0; $i < count($listedChar); $i++)
 					{
 						if ($listedChar[$i] != $charName)
 						{
-							$updatedOldZone = $updatedOldZone . '.' . $listedChar[$i];
+							if ($updatedOldZone != NULL && $updatedOldZone != '')
+							{
+								$updatedOldZone = $updatedOldZone . '.' . $listedChar[$i];
+							}
+							else
+							{
+								$updatedOldZone = $listedChar[$i];
+							}
 						}
 					}
 					$updateOld = "UPDATE `" . $townName . "` SET `charactersHere`='" . $updatedOldZone ."' WHERE `x`='" . $oldX . "' AND `y`='" . $oldY . "'";
@@ -216,7 +251,14 @@ $query2 = mysqli_query($con, $query1);
 				$findLoc2 = mysqli_query($con, $findLoc);
 				while ($row = mysqli_fetch_assoc($findLoc2))
 				{
-				$updatedNewZone = $row["charactersHere"] . "." . $charName;
+					if ($row["charactersHere"] != NULL && $row["charactersHere"] != '')
+					{
+						$updatedNewZone = $row["charactersHere"] . "." . $charName;
+					}
+					else
+					{
+						$updatedNewZone = $charName;
+					}
 				}
 				$updateNew = "UPDATE `" . $townName . "` SET `charactersHere`='" . $updatedNewZone ."' WHERE `x`='" . $newX . "' AND `y`='" . $newY . "'";
 				mysqli_query($con, $updateNew);
@@ -235,11 +277,18 @@ $query2 = mysqli_query($con, $query1);
 				while ($row = mysqli_fetch_assoc($findChar2))
 				{
 					$listedChar = explode(".", $row['charactersHere']);
-					for ($i = 1; $i < count($listedChar); $i++)
+					for ($i = 0; $i < count($listedChar); $i++)
 					{
 						if ($listedChar[$i] != $charName)
 						{
-							$updatedOldZone = $updatedOldZone . '.' . $listedChar[$i];
+							if ($updatedOldZone != NULL && $updatedOldZone != '')
+							{
+								$updatedOldZone = $updatedOldZone . '.' . $listedChar[$i];
+							}
+							else
+							{
+								$updatedOldZone = $listedChar[$i];
+							}
 						}
 					}
 					$updateOld = "UPDATE `" . $townName . "` SET `charactersHere`='" . $updatedOldZone ."' WHERE `x`='" . $oldX . "' AND `y`='" . $oldY . "'";
@@ -253,7 +302,14 @@ $query2 = mysqli_query($con, $query1);
 				$findLoc2 = mysqli_query($con, $findLoc);
 				while ($row = mysqli_fetch_assoc($findLoc2))
 				{
-				$updatedNewZone = $row["charactersHere"] . "." . $charName;
+					if ($row["charactersHere"] != NULL && $row["charactersHere"] != '')
+					{
+						$updatedNewZone = $row["charactersHere"] . "." . $charName;
+					}
+					else
+					{
+						$updatedNewZone = $charName;
+					}
 				}
 				$updateNew = "UPDATE `" . $townName . "` SET `charactersHere`='" . $updatedNewZone ."' WHERE `x`='" . $newX . "' AND `y`='" . $newY . "'";
 				mysqli_query($con, $updateNew);
@@ -478,7 +534,12 @@ $query2 = mysqli_query($con, $query1);
 			}
 			$y = floor($row["id"] / 11) * 16;
 			
-			if ($zeds == 0)
+			if ($realX == 0 && $realY == 0)
+			{
+				$drawHere = '<rect onclick="top.display(' . $zeds . ',' . $realX . ',' . $realY . ',' . $lootability . ',' . $groundSplit . ')" width="16" height="16" x="' . $x . '" y="' . $y . '" style="fill:rgb(140,89,32);stroke-width:1;stroke:rgb(0,0,0)" />';
+			}
+			
+			else if ($zeds == 0)
 			{
 				$drawHere = '<rect onclick="top.display(' . $zeds . ',' . $realX . ',' . $realY . ',' . $lootability . ',' . $groundSplit . ')" width="16" height="16" x="' . $x . '" y="' . $y . '" style="fill:rgb(2,148,23);stroke-width:1;stroke:rgb(0,0,0)" />';
 			}
@@ -524,20 +585,22 @@ $query2 = mysqli_query($con, $query1);
 			echo $drawHere;
 			
 			//If current character is in the zone, draw a small white square, otherwise if there are other characters it will draw a blue square
-			for($i = 1; $i < count($charactersList); $i++)
+			for($i = 0; $i < count($charactersList); $i++)
 			{
-				if(in_array($charName, $charactersList)) 
+				if ($charactersList[0] != NULL && $charactersList[0] != '')
 				{
-					$drawHere2 = '<rect onclick="top.display(' . $zeds . ',' . $realX . ',' . $realY . ',' . $lootability . ',' . $groundSplit . ')" width="4" height="4" x="' . ($x + 6) . '" y="' . ($y + 6) . '" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(155,155,155)"><title>' . $chars2 . '</title></rect>';
-					echo $drawHere2;
-				}
+					if(in_array($charName, $charactersList)) 
+					{
+						$drawHere2 = '<rect onclick="top.display(' . $zeds . ',' . $realX . ',' . $realY . ',' . $lootability . ',' . $groundSplit . ')" width="4" height="4" x="' . ($x + 6) . '" y="' . ($y + 6) . '" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(155,155,155)"><title>' . $chars2 . '</title></rect>';
+						echo $drawHere2;
+					}
 				
-				else
-				{
-					$drawHere2 = '<rect onclick="top.display(' . $zeds . ',' . $realX . ',' . $realY . ',' . $lootability . ',' . $groundSplit . ')" width="4" height="4" x="' . ($x + 6) . '" y="' . ($y + 6) . '" style="fill:rgb(0,204,255);stroke-width:1;stroke:rgb(0,122,153)"><title>' . $chars2 . '</title></rect>';
-					echo $drawHere2;
+					else
+					{
+						$drawHere2 = '<rect onclick="top.display(' . $zeds . ',' . $realX . ',' . $realY . ',' . $lootability . ',' . $groundSplit . ')" width="4" height="4" x="' . ($x + 6) . '" y="' . ($y + 6) . '" style="fill:rgb(0,204,255);stroke-width:1;stroke:rgb(0,122,153)"><title>' . $chars2 . '</title></rect>';
+						echo $drawHere2;
+					}
 				}
-
 			}
 			
 			
@@ -597,8 +660,8 @@ $query2 = mysqli_query($con, $query1);
 		//determine zone details
 		$query1 = 'SELECT * from `' . $townName . '` WHERE `x` = :x AND `y` = :y';
 		$statement1 = $dbCon->prepare($query1);
-		$statement1->bindValue(':x', $_SESSION['x']);
-		$statement1->bindValue(':y', $_SESSION['y']);
+		$statement1->bindValue(':x', $curX);
+		$statement1->bindValue(':y', $curY);
 		$statement1->execute();
 		$result1 = $statement1->fetch();
 		$statement1->closeCursor();

@@ -9,6 +9,7 @@ if (isset($newTown) && $newTown != NULL && $newTown != '')
 {
 	createSettlement($newTown, 11);
 }
+$cName = filter_input(INPUT_POST, 'cName');
 
 //CREATE A TABLE FOR THE TOWN
 
@@ -17,20 +18,7 @@ if (isset($newTown) && $newTown != NULL && $newTown != '')
 function createSettlement($settlementName, $mapSize)
 {
 	global $newTown;
-	global $dbCon;
-	
-	$hostname="127.0.0.1"; 
-	$username="root";
-	$password=""; 
-	$database2="deadfalldb";  //load database for towns
-	$con2=mysqli_connect($hostname,$username,$password, $database2);
-
-	if(! $con2)
-	{
-		die('Connection Failed'.mysql_error());
-		print('Couldnt Connect');
-	}
-	
+	global $dbCon;	global $con;		global $root;	
 	$sql = "CREATE TABLE `" . $newTown . "` (
 	`id` int(11) NOT NULL,
 	`x` int(11) NOT NULL,
@@ -45,16 +33,16 @@ function createSettlement($settlementName, $mapSize)
 	PRIMARY KEY (`id`)
 	)";
 
-	if (mysqli_query($con2, $sql)) 
+	if (mysqli_query($con, $sql)) 
 	{
-		echo "Table: " . $newTown . " created successfully";
+		//Table created successfully
 	} 
 	else 
 	{
-		echo "Error creating table: " . mysqli_error($con2);
+		//error creating the table
 	}
 
-	$defaultBuildingsString = "Defence.1:Outer Wall.0:Inner Wall.0:Wall Upgrade 1.0:Wooden Support.0:Supply.1:Water Reserve.0";
+	$defaultBuildingsString = "Defence.1:Perimeter Fence.0:Wooden Wall.0:Inner Wall.0:Wooden Support.0:Metal Patching.0:Supply.1:Water Reserve.0:Vegetable Garden.0";
 	
 	//add details of town to `towns` table
 	$query = 'INSERT INTO `towns` 
@@ -132,10 +120,9 @@ function createSettlement($settlementName, $mapSize)
 		}
 	
 	}
-	if ($con2->query($compilation) === TRUE) 
+	if ($con->query($compilation) === TRUE) 
 	{
-    echo "New record created successfully";
-	header ("location: ../inTown/?locat=join&tempChar=" . $_SESSION['char']);
+	$location = '/inTown/?locat=join&tempChar=' . $_SESSION['char'];	echo '<script>window.location = "' . $root . $location .'";</script>';
 	}
 	//mysql_query($con2, $compilation);
 	

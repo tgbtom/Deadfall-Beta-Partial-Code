@@ -43,6 +43,7 @@ $query2 = mysqli_query($con, $query1);
 	
 	<div class="centralBox">
 		<div class="centralBoxTop">
+		<a href="../inTown/?locat=browseChars"> Return to Character Selection</a>
 			<h3 style="text-align:center;">Bulletin Board</h3>
 		</div>
 		<div>

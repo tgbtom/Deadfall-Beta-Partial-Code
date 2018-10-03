@@ -3,18 +3,15 @@ require_once ("../connect.php");
 require_once ("../functions/verifyLogin.php");
 
 //Check amount of Residents to display later
-	$temp = filter_input(INPUT_POST, 'tempChar');
+
+	$temp = filter_input(INPUT_GET, 'tempChar');
 	if (!isset($temp))
 	{
-		$temp = filter_input(INPUT_GET, 'tempChar');
-		if (!isset($temp))
-		{
-			$temp = '';
-		}
+		$temp = filter_input(INPUT_POST, 'tempChar');
 	}
 	//$temp = $_POST["tempChar"]
 	$_SESSION['char'] = $temp;
-	$cName = $_SESSION['char'];
+	$cName = $temp;
 	$pName = $_SESSION['login'];
 	//if the character is already in a town, forward the player to inTown.php
 	$query1 = "SELECT * FROM `characters` WHERE `username` = '$pName' AND `character` = '$cName'";
@@ -39,9 +36,9 @@ require_once ("../functions/verifyLogin.php");
 					}
 				}
 			}
-			header ("Location: ../inTown/?locat=inTown");
+			$_SESSION['char'] = $cName;
+			echo '<script>window.location = "' . $root . '/inTown/?locat=inTown";</script>';
 			exit();
-			//header ("Location: inTown.php");
 		}
 	}
 ?>
@@ -56,11 +53,11 @@ require_once ("../functions/verifyLogin.php");
 <body bgcolor="#1A0000">
 	<div class="Container">
 		<div class="header">
-		<img src="images/DeadFallLogo2.png">
+		<img src="../images/DeadFallLogo2.png">
 		</div>
 
-		<div class="browseBlock2">
-		<h3>***Note: Do NOT use any spaces in town-name***</h3>
+		<div class="browseBlock3">
+		
 		<?php
 		$check = "SELECT * FROM `towns` WHERE `townFull`=0";
 		$query = mysqli_query($con, $check);
@@ -70,16 +67,22 @@ require_once ("../functions/verifyLogin.php");
 		{
 			$x += 1;
 			$t = $row["townName"];
-			$emptyTown = "<li>" . $x . ": " . $row["townName"] . "[" . $row["amountResidents"] . "/" . $row["maxResidents"] . "]  <form method='post' action='../functions/addToTown.php'><input type='hidden' name='newTown' value=$t><input type='submit' value='Join'></form></li>";
+			$c = $cName;
+			$emptyTown = "<li>" . $x . ": " . $row["townName"] . "[" . $row["amountResidents"] . "/" . $row["maxResidents"] . "]  <form method='post' action='../functions/addToTown.php'><input type='hidden' name='newTown' value=$t><input type='hidden' name='char' value=$c><input type='submit' value='Join'></form></li>";
 			echo $emptyTown;
 		}
 		?>
-		</div>
 		
+		<br><hr><br>
+		<h3>***Note: Do NOT use any spaces in town-name***</h3>
 		<form method='post' action='../functions/createTown.php'>
-		<input type='text' name='newTown'>
+		<input type='text' name='newTown' style="margin: 5px;">
+		<input type='hidden' name='cName' value='<?php echo $cName;?>'>
+		<input type='hidden' name='char' value=$c>
 		<input type='submit' value='Create Town'>
 		</form>
+		</div>
+
 		
 </body>
 </html>

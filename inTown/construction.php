@@ -50,9 +50,16 @@ $townBank = explode(',', $result['groundItems']);
 	.data {width:150px; border: 1px solid black;}
 	.newBuild {color:#111111; border: 1px solid #120B06; border-collapse:collapse; padding:2px; background-color:#6d5846;}
 	.alreadyBuilt {color:#111111; border: 1px solid #120B06; border-collapse:collapse; padding:2px; background-color:#6d5846;}
-	.buildingHelp {cursor:help;}
+	.buildingHelp {cursor:help; overflow:auto;}
 	style1 {font-size:0.8em;}
 	.head {border: 1px solid black;}
+	.shield {float: right; display: block;}
+	.buildingName
+	{
+		float: left;
+		display: block;
+	}
+
 	</style>
 </head>
 
@@ -79,6 +86,12 @@ $townBank = explode(',', $result['groundItems']);
 					$buildName = $buildingsInfo[$i][0]; //innerwall
 					$buildReq = $buildingsInfo[$i][2]; // outerwall
 					$buildApReq = $buildingsInfo[$i][3]; //200
+					$buildingDef = $buildingsInfo[$i][5]; //50 defence
+					$defString = '';
+					if ($buildingDef > 0)
+					{
+						$defString = '  <style1><img src="../images/icons/shield.png">' . $buildingDef . '</style1>';
+					}
 					
 					//for loop to determine the required ap for the required building (so we can make sure the previoius building is complete)
 					for ($i6 = 0; $i6 < count($buildingsInfo); $i6++)
@@ -139,7 +152,7 @@ $townBank = explode(',', $result['groundItems']);
 										{
 											$bankFull = true;
 											$buildCost = explode (":",$buildingsInfo[$i][4]);
-											echo '<tr class="newBuild"><td class ="buildingHelp" id="" title="' . $buildingsInfo[$i][6] . '"><p style="font-size:1.1em; font-family:`impact`, charcoal, sans-serif;">' . $buildName . '</p></td>
+											echo '<tr class="newBuild"><td class ="buildingHelp" id="" title="' . $buildingsInfo[$i][6] . '"><p class="buildingName">' . $buildingsInfo[$i][7] . $buildName . $defString . '</p></td>
 											<td class="data"><style1>';
 											
 											for ($i2 = 0; $i2 < count($buildCost); $i2++)
@@ -159,7 +172,7 @@ $townBank = explode(',', $result['groundItems']);
 													}
 												}
 
-												$itemImg = '<img title="' . $itemsMaster[$itemId][0] . '" src="../images/' . $itemsMaster[$itemId][0] . '.png">';
+												$itemImg = '<img title="' . $itemsMaster[$itemId][0] . '" src="../images/items/' . $itemsMaster[$itemId][0] . '.png">';
 												echo $itemImg . $itemAmt . '/' . $itemSpec[1] . ' ';
 												if ($itemAmt < $itemSpec[1])
 												{$bankFull = false;}
@@ -180,7 +193,7 @@ $townBank = explode(',', $result['groundItems']);
 										if ($reqMet)
 										{
 											$buildCost = explode (":",$buildingsInfo[$i][4]);
-											echo '<tr class="newBuild"><td class ="buildingHelp" title="' . $buildingsInfo[$i][6] . '"><p style="font-size:1.1em; font-family:`impact`, charcoal, sans-serif;">' . $buildName . '</p></td>
+											echo '<tr class="newBuild"><td class ="buildingHelp" title="' . $buildingsInfo[$i][6] . '">' . $buildingsInfo[$i][7] . $buildName . $defString . '</td>
 											<td class="data"><style1>';
 											$bankFull = true;
 											for ($i2 = 0; $i2 < count($buildCost); $i2++)
@@ -202,7 +215,7 @@ $townBank = explode(',', $result['groundItems']);
 
 												}
 
-												$itemImg = '<img title="' . $itemsMaster[$itemId][0] . '" src="../images/' . $itemsMaster[$itemId][0] . '.png">';
+												$itemImg = '<img title="' . $itemsMaster[$itemId][0] . '" src="../images/items/' . $itemsMaster[$itemId][0] . '.png">';
 												echo $itemImg . $itemAmt . '/' . $itemSpec[1] . ' ';
 												if ($itemAmt < $itemSpec[1])
 												{$bankFull = false;}
@@ -212,7 +225,7 @@ $townBank = explode(',', $result['groundItems']);
 											if ($bankFull)
 											{
 											echo '<form action="../functions/build.php" method="post"><td>
-											<input type="number" class="number" name="apToAdd" value="0" min="0" max="16"></td><td><p style="font-size:0.85em;">0/' . $buildApReq . ' AP</p></td>
+											<input type="number" class="number" name="apToAdd" value="0" min="0" max="16"></td><td><style1><p style="font-size:0.85em;">0/' . $buildApReq . ' AP</p></style1></td>
 											<td><input type="hidden" name="firstBuild" value="true">
 											<input type="hidden" name="buildingName" value="' . $buildName . '">
 											<input type="hidden" name="apRequired" value="' . $buildApReq . '">
@@ -227,7 +240,7 @@ $townBank = explode(',', $result['groundItems']);
 										if ($reqMet)
 										{
 											$buildCost = explode (":",$buildingsInfo[$i][4]);
-											echo '<tr class="newBuild"><td class ="buildingHelp" title="' . $buildingsInfo[$i][6] . '"><p style="font-size:1.1em; font-family:`impact`, charcoal, sans-serif;">' . $buildName . '</p></td>
+											echo '<tr class="newBuild"><td class ="buildingHelp" title="' . $buildingsInfo[$i][6] . '"><p class="buildingName">' . $buildingsInfo[$i][7] . $buildName . '</p></td>
 											<td class="data"><style1>';
 											$bankFull = true;
 											for ($i2 = 0; $i2 < count($buildCost); $i2++)
@@ -252,7 +265,7 @@ $townBank = explode(',', $result['groundItems']);
 											
 											echo 'Construction has Begun!</style1></td>';
 											echo '<form action="../functions/build.php" method="post"><td>
-											<input type="number" class="number" name="apToAdd" value="0" min="0" max="16"></td><td><p style="font-size:0.85em;">' . $currentBuiltAp . '/' . $buildApReq . ' AP</p></td>
+											<input type="number" class="number" name="apToAdd" value="0" min="0" max="16"></td><td><style1><p style="font-size:0.85em;">' . $currentBuiltAp . '/' . $buildApReq . ' AP</p></style1></td>
 											<td>
 											<input type="hidden" name="buildingName" value="' . $buildName . '">
 											<input type="hidden" name="apRequired" value="' . ($buildApReq - $currentBuiltAp) . '">
@@ -264,13 +277,22 @@ $townBank = explode(',', $result['groundItems']);
 									{
 										if ($reqMet)
 										{
-											$buildCost = explode (":",$buildingsInfo[$i][4]);
-											echo '<tr class="alreadyBuilt"><td class ="buildingHelp" title="' . $buildingsInfo[$i][6] . '"><p style="font-size:1.1em; font-family:`impact`, charcoal, sans-serif;">' . $buildingsInfo[$i][0] . '</p></td>
-											<td class="data-done data" colspan="4"><style1>';
+											//if required AP is 1, it is a default structure! Display it as a heading!
+											if (!($buildApReq == 1))
+											{
+												$buildCost = explode (":",$buildingsInfo[$i][4]);
+												echo '<tr class="alreadyBuilt"><td class ="buildingHelp" title="' . $buildingsInfo[$i][6] . '"><p style="font-size:1.1em; font-family:`impact`, charcoal, sans-serif;">' . $buildingsInfo[$i][0] . '</p></td>
+												<td class="data-done data" colspan="4"><style1>';
 											
-											echo 'Already Completed!';
+												echo 'Already Completed!';
 											
-											echo '</style1></td></tr>';
+												echo '</style1></td></tr>';
+											}
+											else
+											{
+												$buildCost = explode (":",$buildingsInfo[$i][4]);
+												echo '<tr class="alreadyBuilt"><td class ="buildingHelp" colspan="5" title="' . $buildingsInfo[$i][6] . '"><u><b><p style="font-size:1.1em; font-family:`impact`, charcoal, sans-serif; text-align: center;">' . $buildingsInfo[$i][0] . '</p></b></u></td></tr>';												
+											}
 										}
 									}
 									

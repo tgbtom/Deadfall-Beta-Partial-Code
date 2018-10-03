@@ -1,8 +1,8 @@
 <?php 
 require_once ("../connect.php");
 require_once ("./verifyLogin.php");
-include ("../data/items.php");
-include ("../functions/queryFunctions.php");
+require_once ("../data/items.php");
+require_once ("../functions/queryFunctions.php");
 
 //gets the user and current character, and stores them in local variables
 $user = $_SESSION['login'];

@@ -1,8 +1,9 @@
 <?php
-require_once ('../functions/verifyLogin.php');
 require_once ('../connect.php');
+require_once ('../functions/verifyLogin.php');
 
 $newTown = filter_input(INPUT_POST, 'newTown');
+$_SESSION['char'] = filter_input(INPUT_POST, 'char');
 $charName = $_SESSION['char'];
 $playerName = $_SESSION['login'];
 $defaultItems = NULL;
@@ -85,8 +86,9 @@ if ($newAmount >= $maxAmount)
 		$charactersUpdated = $characters . '.' . $charName;
 	}
 	
-	$query = "UPDATE " . $newTown . " SET `charactersHere` = '" . $charactersUpdated . "' WHERE `x` = '0' AND `y` = '0'";
+	$query = "UPDATE " . $newTown . " SET `charactersHere` = :newChars WHERE `x` = '0' AND `y` = '0'";
 	$statement = $dbCon->prepare($query);
+	$statement->bindValue(':newChars', $charactersUpdated);
 	$statement->execute();
 	$statement->closeCursor();
 	
@@ -96,7 +98,5 @@ if ($newAmount >= $maxAmount)
 	$statement->bindValue(':newTown', $newTown);
 	$statement->execute();
 	$statement->closeCursor();
-	
-	header ("Location: ../inTown/?locat=inTown");
-
+	echo '<script>window.location = "' . $root . '/inTown/?locat=inTown";</script>';
 ?>

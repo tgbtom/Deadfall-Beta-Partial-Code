@@ -130,8 +130,8 @@ $_SESSION['y'] = '';
 			{
 				$tips = $result["character"];
 				$tips2 = $result["townName"];
-				$tips3 = $result["class"];
-				$classImg = $root . "/images/icons/" . $tips3 . ".png"; 
+				$tips3 = lcfirst($result["class"]); //returns class name with first character as lowercase
+				$classImg = $root . "/images/icons/" . lcfirst($tips3) . ".png"; 
 				echo "<tr>" . "<td>Lvl: " . $result["level"] . "</td><td onclick=displayInfo('$tips','$tips2','$tips3') class='hand' style='border: 1px solid black; background-color: #c7966b;'>" . $result["character"] . "</td><td><img src='$classImg'> " . $result["class"] . "</td></tr>";
 			}
 		}
@@ -169,14 +169,14 @@ $_SESSION['y'] = '';
 					<input type="text" name="charName" value="Character Name" onfocus="if (this.value == 'Character Name') {this.value='';}" onblur="if (this.value == '') {this.value = 'Character Name';}">
 					<br>
 					<input type="radio" name="gender" value="Male" checked> MALE
-					<input type="radio" name="gender" value="Female"> FEMALE
+					<input type="radio" name="gender" value="Female" disabled> FEMALE
 					<br><br>
-					<div class="spacer"><input type="radio" name="charClass" value="Survivor" checked><img src='images/icons/survivor.png'> Survivor</div>
-					<div class="spacer2"><input type="radio" name="charClass" value="Builder"><img src='images/icons/builder.png'> Builder</div>
+					<div class="spacer"><input type="radio" name="charClass" value="Survivor" checked><img src='../images/icons/survivor.png'> Survivor</div>
+					<div class="spacer2"><input type="radio" name="charClass" value="Builder"><img src='../images/icons/builder.png'> Builder</div>
 					<div class="spacer data3"><p class="caption">The Survivor class is an all around class. Survivors begin with 16 AP rather than 12 but have no special abilities.</p></div>
 					<div class="spacer2 data3"><p class="caption">The Builder class is for characters who want to focus on construction and building, AP is twice effective when constructing.</p></div>
-					<div class="spacer"><input type="radio" name="charClass" value="Runner"><img src='images/icons/runner.png'> Runner</div>
-					<div class="spacer2"><input type="radio" name="charClass" value="Looter"><img src='images/icons/looter.png'> Looter</div>
+					<div class="spacer"><input type="radio" name="charClass" value="Runner"><img src='../images/icons/runner.png'> Runner</div>
+					<div class="spacer2"><input type="radio" name="charClass" value="Looter"><img src='../images/icons/looter.png'> Looter</div>
 					<div class="spacer data3"><p class="caption">The Runner class is for characters who want to focus on exploration and travelling distances from town. Runners consume less AP when moving around.</p></div>
 					<div class="spacer2 data3"><p class="caption">The Looter class is for characters who want to focus on looting and bringing helpful resources into town for constructions and whatnot.</p></div>
 					<input type="submit" value="Create!">
