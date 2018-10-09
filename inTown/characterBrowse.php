@@ -166,7 +166,7 @@ $_SESSION['y'] = '';
 			<b><div class="login-top"></b>
 			
 				<form name="creation" action="<?php echo $root . "/functions/createChar.php";?>" method="post" onsubmit="return validateinfo()">
-					<input type="text" name="charName" value="Character Name" onfocus="if (this.value == 'Character Name') {this.value='';}" onblur="if (this.value == '') {this.value = 'Character Name';}">
+                                    <input type="text" name="charName" value="" placeholder="Character Name">
 					<br>
 					<input type="radio" name="gender" value="Male" checked> MALE
 					<input type="radio" name="gender" value="Female" disabled> FEMALE

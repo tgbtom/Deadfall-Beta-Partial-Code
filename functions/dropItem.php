@@ -105,6 +105,7 @@ else
 		if ($x == 0 && $y == 0)
 		{
 			//Determine if there is already a stack for this ID
+                        $newGroundItems = NULL;
 			$groundItemsArray = explode(',', $groundItems);
 			$itemFound = false;
 			for ($i = 0; $i < sizeOf($groundItemsArray); $i++)

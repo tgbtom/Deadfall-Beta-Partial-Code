@@ -7,13 +7,23 @@
 .centralBoxHelp
 {
 	float: right;
-	width: 88.5%;
+	width: 83%;
 	background-color:#CEA37E;
 	border: 2px solid #000000;
 	padding: 15px;
-	margin-top: 25px;
-	margin-right: 30px;
+        margin: 25px auto;
 	color: black;
+}
+aside
+{
+    background-color:#CEA37E;
+    padding: 7px 5px 10px;
+    float: left;
+    border: 2px solid black;
+    min-width: 7%; 
+    max-width: 8%;
+    margin: 25px auto;
+    position: fixed;
 }
 .info
 {
@@ -27,6 +37,18 @@ li
 {
 	font-style: italic;
 }
+a
+{
+	color: #FFFFFF;
+	text-decoration: none;
+}
+
+a:hover
+{
+	color: #333333;
+}
+
+
 </style>
 
 </head>
@@ -37,10 +59,10 @@ li
 		<div class="header">
 		<img src="images/DeadFallLogo2.png">
 		</div>
-		
+            
 		<div class="centralBoxHelp">
 
-		<u><h2>Concept of Deadfall - Browser Game</h2></u>
+		<u><h2 id="topOfPage">Concept of Deadfall - Browser Game</h2></u>
 		<p class="info">Deadfall is a zombie survival, day/turn-based game. You play the role of a leader of a group of survivors. You are responsible for ensuring that your survivors have a supply of food and water to keep them alive,
 			and to build structures that will allow them to survive as long as possible in a world of ever-growing hordes. To be clear: <b>**YOU WILL FAIL - It is just a matter of how long it will take**</b>.</p>
 			<h5><u>Important Notes for Early Access Testing:</u></h5>
@@ -64,7 +86,7 @@ li
 		<details class="imageDetails"><summary>Image 3 & 4</summary><img src="help/help3.png"><img src="help/help4.png"></details>
 		<details class="imageDetails"><summary>Image 5</summary><img src="help/help5.png"></details>
 		
-                <h3><u>Understanding the Pages in Town</u></h3>
+                <h3 id="townPages"><u>Understanding the Pages in Town</u></h3>
                 <h4>Homepage/Bulletin Board</h4>
                 <p class="info">The homepage is the page that contains a log of the important events that have occurred in the town. (Currently only logs when new characters join the town).
                     This page can be accessed by clicking on the <em>Deadfall Banner</em> at the top of the page.</p>
@@ -91,6 +113,13 @@ li
                 <p class="info">The outside tab is arguably the place that you will spend most of your time in the game. This tab is where you will navigate your survivors to scavenge the map outside of the town, and fight off the horde before it attacks each night.
                  Each zed that you kill outside of the town will reduce the horde size by 1, and reduce the spread of zombies accordingly (based on proximity). Killing zombies in the early days of a town is going to be essential in the long run, as it delays the inevitable, making it take longer for the horde to grow to an uncontrollable size. 
                 Each particular zone can only be properly looted from 10 times, then the zone will become depleted, significantly reducing your chances of obtaining any worthwhile loot. </p>
+        
+                <hr>
+                <?php include('universal/hyperlinks.php');?>
                 </div>
+            <aside>
+                <a href="#topOfPage">Return to Top of Page</a><br><br>
+                <a href="#townPages">Understanding Town Pages</a><br>
+            </aside>
 </body>
 </html>

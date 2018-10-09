@@ -9,7 +9,7 @@ echo "<pre><p class='bottomBar' align='center'><a href='../functions/logout.php'
 }
 
 else {
-	echo "<pre><p class='bottomBar' align='center'><a href='help.php' class='bottomBar'>HELP</a>          <a href='help.php' class='bottomBar'>Register</a>          <a href='index.php' class='bottomBar'>DeadFall Blog</a></p></pre>
+	echo "<pre><p class='bottomBar' align='center'><a href='./' class='bottomBar'>Homepage</a>          <a href='help.php' class='bottomBar'>HELP</a>          <a href='help.php' class='bottomBar'>Register</a>          <a href='index.php' class='bottomBar'>DeadFall Blog</a></p></pre>
 </html>";
 }
 

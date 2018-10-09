@@ -159,16 +159,17 @@ $query2 = mysqli_query($con, $query1);
 	<?php
 	if (isset($resources))
 	{
-		echo '<form action="../functions/pickUpItem.php" method="post">';
 		foreach ($resources as $res)
 		{
-			$resArray = explode ('.', $res);
-			$itemId = $resArray[0];
-			$itemAmount = $resArray[1];
-			echo '<input type="hidden" name="location "value="/deadfall/warehouse.php">';
-			echo '<input type="image" name="itemName2" value="' . $itemsMaster[$itemId][0] . '" title="' . $itemsMaster[$itemId][0] . '" src="../images/items/' . $itemsMaster[$itemId][0] . '.png" alt="submit">x' . $itemAmount . ' ';
-		}
-		echo '</form>';
+                    echo '<form action="../functions/pickUpItem.php" method="post">';
+                    $resArray = explode ('.', $res);
+                    $itemId = $resArray[0];
+                    $itemAmount = $resArray[1];
+                    echo '<input type="hidden" name="location "value="/deadfall/warehouse.php">';
+                    echo '<input type="hidden" name="itemName2" value="' . $itemsMaster[$itemId][0] . '">';
+                    echo '<input type="image" title="' . $itemsMaster[$itemId][0] . '" src="../images/items/' . $itemsMaster[$itemId][0] . '.png" alt="submit">x' . $itemAmount . ' ';
+                    echo '</form>'; 
+                }
 	}
 	?>
 	<hr style='border: 1px solid black;'>
@@ -176,16 +177,19 @@ $query2 = mysqli_query($con, $query1);
 	<?php
 	if (isset($consumables))
 	{
-		echo '<form action="../functions/pickUpItem.php" method="post">';
+		
 		foreach ($consumables as $con)
-		{			
-			$conArray = explode ('.', $con);
-			$itemId = $conArray[0];
-			$itemAmount = $conArray[1];
-			echo '<input type="hidden" name="location "value="/deadfall/warehouse.php">';
-			echo '<input type="image" name="itemName2" value="' . $itemsMaster[$itemId][0] . '" title="' . $itemsMaster[$itemId][0] . '" src="../images/items/' . $itemsMaster[$itemId][0] . '.png" alt="submit">x' . $itemAmount . ' ';
-		}
-		echo '</form>';
+		{	
+                    echo '<form action="../functions/pickUpItem.php" method="post">';
+                    $conArray = explode ('.', $con);
+                    $itemId = $conArray[0];
+                    $itemAmount = $conArray[1];
+                    echo '<input type="hidden" name="location "value="/deadfall/warehouse.php">';
+                    echo '<input type="hidden" name="itemName2" value="' . $itemsMaster[$itemId][0] . '">';
+                    echo '<input type="image" title="' . $itemsMaster[$itemId][0] . '" src="../images/items/' . $itemsMaster[$itemId][0] . '.png" alt="submit">x' . $itemAmount . ' ';
+                    echo '</form>';
+                }
+		
 	}
 	?>
 	<hr style='border: 1px solid black;'>
@@ -193,16 +197,17 @@ $query2 = mysqli_query($con, $query1);
 	<?php
 	if (isset($fight))
 	{
-		echo '<form action="../functions/pickUpItem.php" method="post">';
 		foreach ($fight as $fig)
 		{
-			$figArray = explode ('.', $fig);
-			$itemId = $figArray[0];
-			$itemAmount = $figArray[1];
-			echo '<input type="hidden" name="location "value="/deadfall/warehouse.php">';
-			echo '<input type="image" name="itemName2" value="' . $itemsMaster[$itemId][0] . '" title="' . $itemsMaster[$itemId][0] . '" src="../images/items/' . $itemsMaster[$itemId][0] . '.png" alt="submit">x' . $itemAmount . ' ';
+                    echo '<form action="../functions/pickUpItem.php" method="post">';
+                    $figArray = explode ('.', $fig);
+                    $itemId = $figArray[0];
+                    $itemAmount = $figArray[1];
+                    echo '<input type="hidden" name="location "value="/deadfall/warehouse.php">';
+                    echo '<input type="hidden" name="itemName2" value="' . $itemsMaster[$itemId][0] . '">';
+                    echo '<input type="image" title="' . $itemsMaster[$itemId][0] . '" src="../images/items/' . $itemsMaster[$itemId][0] . '.png" alt="submit">x' . $itemAmount . ' ';
+                    echo '</form>';
 		}
-		echo '</form>';
 	}
 	?>
 	<hr style='border: 1px solid black;'>

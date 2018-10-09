@@ -51,6 +51,10 @@ $query2 = mysqli_query($con, $query1);
 	{cursor: hand; background-color: #c7966b; height: 1px; border: 1px solid #120B06;}
 	.samePlayer2
 	{float: left; vertical-align: text-top; height: 1%;}
+	.sameChar
+	{cursor: hand; background-color: #F2C59D; height: 1px; border: 1px solid #120B06;}
+	.sameChar2
+	{float: left; vertical-align: text-top; height: 1%;}
 	.head
 	{border: 1px solid black;}
 	.itemDiv {
@@ -128,8 +132,17 @@ $query2 = mysqli_query($con, $query1);
 			$classImg = "../images/icons/" . lcfirst($row['class']) . ".png";
 			if ($row['username'] == $playerName)
 			{
-				echo "<tr>";
-				echo "<td><p>" . $row['username'] . "</p></td>" . "<td class='samePlayer'><p class='samePlayer2' onclick='changeChar(`" . $charRow . "`)'>" . $row['character'] . "</p>";
+                                if ($charName == $charRow)
+                                {
+                                    echo "<tr class='sameChar'>";
+                                    echo "<td><p>" . $row['username'] . "</p></td>" . "<td class='sameChar'><p class='sameChar2' onclick='changeChar(`" . $charRow . "`)'>" . $row['character'] . "</p>";
+                                }
+                                else 
+                                {
+                                    echo "<tr>";
+                                    echo "<td><p>" . $row['username'] . "</p></td>" . "<td class='samePlayer'><p class='samePlayer2' onclick='changeChar(`" . $charRow . "`)'>" . $row['character'] . "</p>";
+                                }
+		
 				if (doesStatusContainExt(12, $charRow)) //character is dead
 				{
 					echo "<img src='../images/status/Dead.png' title='DEAD' style='float: right;'>";
@@ -186,11 +199,7 @@ $query2 = mysqli_query($con, $query1);
 		echo "</table>";
 		?>
 		</div>
-	</div>
-	
-
-		
-	
+	</div>	
 </div>
 	<?php
 	Include ("../universal/hyperlinks.php");

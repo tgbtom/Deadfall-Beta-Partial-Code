@@ -65,17 +65,19 @@ body
 .taskBox
 {
 	float: left;
-	width: 13%;
+        min-width: 13%;
+        max-width: 13%;
 	background-color:#CEA37E;
 	border: 2px solid #000000;
-	padding: 15px;
-	margin-top: 25px;
-	margin-left: 30px;
+	padding: 4px;
+	margin: auto;
 }
 
 .taskBox img
 {
-	padding: 5px;
+    display: block;
+    padding: auto;
+    margin: 10px auto;
 }
 
 .centralBox
