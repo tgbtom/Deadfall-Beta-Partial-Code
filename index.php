@@ -71,8 +71,8 @@
 			
 				<form action="<?php echo "./functions/validate.php"; ?>" name="log" method="post" onsubmit="return validateform2()">
 				<?php $errorMessage = filter_input(INPUT_GET, "error"); if (!empty($errorMessage)) { ?> <p> <?php echo htmlspecialchars($errorMessage); ?> </p> <?php } ?>
-					<input type="text" placeholder="Username" name="user" value=""></br>
-					<input type="password" placeholder="Password" name="pass" value=""></br>
+					<input type="text" placeholder="Username" name="user" value="" required></br>
+					<input type="password" placeholder="Password" name="pass" value="" required></br>
 					<a href="<?php echo htmlspecialchars($root); ?>" class="forgot">Forgot your password?</a></br>
 					<input type="submit" value="Login Now!">
 				</form>

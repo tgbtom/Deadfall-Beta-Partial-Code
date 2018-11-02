@@ -11,11 +11,22 @@ $_SESSION['y'] = '';
 
 <style>
 .data1
-{border: 1px solid black;}
+{
+	border: 1px solid black;
+	background-color: #A5907E;
+}
 .data2
-{border: 1px solid black; background-color:#c7966b;}
+{
+	border: 1px solid black; background-color:#c7966b;
+	background-color: #A5907E;
+}
 .data3
-{border: 1px solid black; border-radius: 25px; padding: 1%; margin-bottom: 4%; background-color:#c7966b;}
+{
+	border: 1px solid black; 
+	border-radius: 25px; 
+	padding: 1%; 
+	margin-bottom: 4%; 
+	background-color: #A5907E;;}
 
 </style>
 
@@ -110,7 +121,7 @@ $_SESSION['y'] = '';
 		<hr style="border-color: black;">
 		
 		<ul>
-		<table style="width:90%;" cellspacing="1">
+		<table style="" class="browseCharsTable" cellspacing="0">
 		<tr><td style='border: 1px solid black;'>Level</td><td style='border: 1px solid black;'>Name</td><td style='border: 1px solid black;'>Class</td></tr>
 		
 		<?php 
@@ -132,7 +143,7 @@ $_SESSION['y'] = '';
 				$tips2 = $result["townName"];
 				$tips3 = lcfirst($result["class"]); //returns class name with first character as lowercase
 				$classImg = $root . "/images/icons/" . lcfirst($tips3) . ".png"; 
-				echo "<tr>" . "<td>Lvl: " . $result["level"] . "</td><td onclick=displayInfo('$tips','$tips2','$tips3') class='hand' style='border: 1px solid black; background-color: #c7966b;'>" . $result["character"] . "</td><td><img src='$classImg'> " . $result["class"] . "</td></tr>";
+				echo "<tr>" . "<td>Lvl: " . $result["level"] . "</td><td onclick=displayInfo('$tips','$tips2','$tips3') class='hand'>" . $result["character"] . "</td><td><img src='$classImg'> " . $result["class"] . "</td></tr>";
 			}
 		}
 	

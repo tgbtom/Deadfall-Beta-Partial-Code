@@ -45,11 +45,11 @@ $townBank = explode(',', $result['groundItems']);
 
 	<link rel="stylesheet" type="text/css" href="mainDesignTown.css">
 	<style>
-	table {width:100%; color:#000000; border: 1px solid #120B06; padding:2px; background-color:#6d5846;}
+	table {width:100%; color:#000000; border: 1px solid #120B06; padding:2px; background-color:#6D5A4A;box-shadow: 7px 7px #333333;}
 	input.number {width:40px;}
 	.data {width:150px; border: 1px solid black;}
-	.newBuild {color:#111111; border: 1px solid #120B06; border-collapse:collapse; padding:2px; background-color:#6d5846;}
-	.alreadyBuilt {color:#111111; border: 1px solid #120B06; border-collapse:collapse; padding:2px; background-color:#6d5846;}
+	.newBuild {color:#111111; border: 1px solid #120B06; border-collapse:collapse; padding:2px; background-color:#6D5A4A;}
+	.alreadyBuilt {color:#111111; border: 1px solid #120B06; border-collapse:collapse; padding:2px; background-color:#6D5A4A;}
 	.buildingHelp {cursor:help; overflow:auto;}
 	style1 {font-size:0.8em;}
 	.head {border: 1px solid black;}

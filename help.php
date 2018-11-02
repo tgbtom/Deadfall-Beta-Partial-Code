@@ -8,19 +8,19 @@
 {
 	float: right;
 	width: 83%;
-	background-color:#CEA37E;
+	background-color:#A5907E;
 	border: 2px solid #000000;
 	padding: 15px;
-        margin: 25px auto;
+    margin: 25px auto;
 	color: black;
 }
 aside
 {
-    background-color:#CEA37E;
+    background-color:#A5907E;
     padding: 7px 5px 10px;
     float: left;
     border: 2px solid black;
-    min-width: 7%; 
+    min-width: 150px; 
     max-width: 8%;
     margin: 25px auto;
     position: fixed;
@@ -39,13 +39,13 @@ li
 }
 a
 {
-	color: #FFFFFF;
+	color: #3D3D3D;
 	text-decoration: none;
 }
 
 a:hover
 {
-	color: #333333;
+	color: #111111;
 }
 
 
@@ -114,12 +114,13 @@ a:hover
                  Each zed that you kill outside of the town will reduce the horde size by 1, and reduce the spread of zombies accordingly (based on proximity). Killing zombies in the early days of a town is going to be essential in the long run, as it delays the inevitable, making it take longer for the horde to grow to an uncontrollable size. 
                 Each particular zone can only be properly looted from 10 times, then the zone will become depleted, significantly reducing your chances of obtaining any worthwhile loot. </p>
         
-                <hr>
-                <?php include('universal/hyperlinks.php');?>
                 </div>
             <aside>
                 <a href="#topOfPage">Return to Top of Page</a><br><br>
                 <a href="#townPages">Understanding Town Pages</a><br>
             </aside>
+	</div>
+			<br><br><hr>
+            <?php include('universal/hyperlinks.php');?>
 </body>
 </html>

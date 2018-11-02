@@ -472,7 +472,7 @@ $query2 = mysqli_query($con, $query1);
 		
 
 		
-		echo '<svg width="176" height="176">';
+		echo '<svg width="176" height="176" style="box-shadow: 7px 7px #333333;">';
 		$x = 0;
 	
 		while ($row = mysqli_fetch_assoc($completeQuery))
@@ -643,7 +643,7 @@ $query2 = mysqli_query($con, $query1);
 	echo '</td></tr>';
 	echo '</table>';
 	
-	echo getHordeSize($townName);
+	echo "<br>" . getHordeSize($townName);
 	
 	echo '<table class="itemInfo">';
 	echo '<form action="' . $root . '../functions/pickUpItem.php" method="post">';

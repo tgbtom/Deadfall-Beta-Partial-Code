@@ -1,8 +1,7 @@
 body
 {
-	background-image:url('images/back.png');
-    background-repeat:no-repeat;
-    background-size:100% 100%;
+	background:-webkit-linear-gradient(#3D3D3D, #293C3A);
+	background:-moz-linear-gradient(#626C66, #293C3A);
 	min-height: 880px;
 	font-family: 'Arimo', sans-serif;
 	font-size: 100%;
@@ -15,7 +14,7 @@ body
 	margin: auto;
 	text-align: left;
 	border: 1px solid #888999;
-	background-color: #4E3F32;
+	background-color: #786452;
 	padding: 20px;
 	font-family:Verdana, Geneva, sans-serif;
 }
@@ -28,7 +27,7 @@ body
 	border: 2px solid #000000;
 	background-color: #443525;
 	color: #000000;
-	
+	box-shadow: 7px 7px #333333;
 }
 
 .bottomBar
@@ -39,7 +38,7 @@ body
 
 .bottomBar a:hover
 {
-	color: #333333;
+	color: #888888;
 }
 
 body
@@ -69,10 +68,11 @@ body
 	margin: 80px auto;
 	float: left;
 	color: black;
-	background-color: #CEA37E;
+	background-color: #A5907E;
 	overflow: auto;
 	border: 2px solid black;
 	padding-right: 2%;
+	box-shadow: 7px 7px #333333;
 }
 
 /*
@@ -88,12 +88,13 @@ body
 	padding-top: 20px;
 	width: 30%;
 	margin: 80px auto;
-	background-color: #CEA37E;
+	background-color: #A5907E;
 	font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
 	color: black;
 	text-align: center;
 	float: right;
 	border:2px solid black;
+	box-shadow: 7px 7px #333333;
 }
 
 .login-top
@@ -140,11 +141,12 @@ body
 	width: 90%;
 	float: left;
 	margin-left: 30px;
-	background-color: #CEA37E;
+	background-color: #A5907E;
 	font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
 	color: black;
 	text-align: center;
 	border:2px solid black;
+	box-shadow: 7px 7px #333333;
 }
 
 .browseBlock
@@ -156,9 +158,10 @@ body
 	margin-left: 30px;
 	float: left;
 	color: black;
-	background-color: #CEA37E;
+	background-color: #A5907E;
 	overflow: auto;
 	border: 2px solid #000000;
+	box-shadow: 7px 7px #333333;
 }
 
 .browseBlock2
@@ -169,10 +172,12 @@ body
 	margin: 25px auto;
 	float: left;
 	color: black;
-	background-color: #CEA37E;
+	background-color: #A5907E;
 	overflow: auto;
 	border: 2px solid #000000;
-}.browseBlock3
+}
+
+.browseBlock3
 {
 	padding-top:20px;
 	width:75%;
@@ -180,7 +185,7 @@ body
 	margin: 25px auto;
 	float: left;
 	color: black;
-	background-color: #CEA37E;
+	background-color: #A5907E;
 	overflow: auto;
 	border: 2px solid #000000;
 }
@@ -198,8 +203,9 @@ body
 	height: 200px;
 	color: black;
 	float:right;
-	background-color: #CEA37E;
+	background-color: #A5907E;
 	border: 2px solid #000000;
+	box-shadow: 7px 7px #333333;
 }
 
 .infoBlock table
@@ -210,6 +216,9 @@ body
 .hand
 {
 	cursor: pointer;
+	border-left:1px solid black; 
+	border-right:1px solid black; 
+	background-color: #A08C7A;
 }
 
 .forgot,.forgot a:visited
@@ -330,3 +339,23 @@ td.build
 	cursor: default;
 }
 
+.browseCharsTable
+{
+	width:90%; 
+	border-collapse:collapse;
+}
+
+.browseCharsTable tr:last-child
+{
+	border-bottom: 1px solid black;
+}
+
+.browseCharsTable td:last-child
+{
+	border-right: 1px solid black;
+}
+
+.browseCharsTable td:first-child
+{
+	border-left: 1px solid black;
+}

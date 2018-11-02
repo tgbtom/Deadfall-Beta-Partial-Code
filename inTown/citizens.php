@@ -48,11 +48,11 @@ $query2 = mysqli_query($con, $query1);
 	tr {}
 	style1 {font-size:0.8em;}
 	.samePlayer
-	{cursor: hand; background-color: #c7966b; height: 1px; border: 1px solid #120B06;}
+	{cursor: hand; background-color: #998574; height: 1px; border: 1px solid #120B06;}
 	.samePlayer2
 	{float: left; vertical-align: text-top; height: 1%;}
 	.sameChar
-	{cursor: hand; background-color: #F2C59D; height: 1px; border: 1px solid #120B06;}
+	{cursor: hand; background-color: #BAA28D; height: 1px; border: 1px solid #120B06;}
 	.sameChar2
 	{float: left; vertical-align: text-top; height: 1%;}
 	.head
