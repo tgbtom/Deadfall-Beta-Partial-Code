@@ -1058,10 +1058,11 @@ function isStructureBuilt($structure, $townName)
 		$buildingsSplit = explode('.', $build);
 		$buildingName = $buildingsSplit[0];
 		$buildingAp = $buildingsSplit[1];
+                $buildingLevel =$buildingsSplit[2];
 		
 		if ($buildingName == $structure)
 		{
-			if ($buildingAp >= $apRequired)
+			if ($buildingAp >= $apRequired || $buildingLevel >= 1)
 			{
 				return true;
 			}

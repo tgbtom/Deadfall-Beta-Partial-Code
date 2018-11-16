@@ -128,8 +128,7 @@ if ($foundItem)
 			$statement5->closeCursor();
 		
 		}
-	
-		header ("Location: ../inTown/?locat=inTown&e=You have Eaten Food");
+		echo "<script>window.location.href='../inTown/?locat=inTown&e=You have Eaten Food.'</script>";
 	}
 	elseif ($itemFunction == 'Drink')
 	{
@@ -181,8 +180,7 @@ if ($foundItem)
 			$statement5->closeCursor();
 		
 		}
-	
-		header ("Location: ../inTown/?locat=inTown&e=You have consumed a drink");	
+		echo "<script>window.location.href='../inTown/?locat=inTown&e=You have consumed a drink.'</script>";
 	}
 	elseif ($itemFunction == 'Attack')
 	{
@@ -257,12 +255,12 @@ if ($foundItem)
 					$statement->execute();
 					$statement->closeCursor();
 					
-					header ("Location: ../inTown/?locat=outside");
+					echo "<script>window.location.href='../inTown/?locat=outside'</script>";
 				}	
 			}
 			else
 			{
-				header ("Location: ../inTown/?locat=outside&e=There are no zeds here to kill!");
+				echo "<script>window.location.href='../inTown/?locat=outside&e=There are no zeds here to kill!'</script>";
 			}
 			
 		
@@ -270,7 +268,7 @@ if ($foundItem)
 		}
 		else
 		{
-			header ("Location: ../inTown/?locat=outside&e=You do not have enough AP to Attack with this weapon");
+			echo "<script>window.location.href='../inTown/?locat=outside&e=You do not have enough AP to Attack with this weapon.'</script>";
 		}
 	}
 	

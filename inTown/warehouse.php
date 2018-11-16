@@ -7,7 +7,7 @@ $errorMessage = FILTER_INPUT(INPUT_GET, 'e');
 if ($_SESSION['x'] != 0 || $_SESSION['y'] != 0)
 {
 	$errorMessage .= 'Character is out of town!';
-	header('location:./?locat=outside');
+	echo "<script>window.location.href='.?locat=outside'</script>";
 }
 if (isset($errorMessage))
 {
@@ -116,41 +116,6 @@ $query2 = mysqli_query($con, $query1);
 			}
 		}
 	}
-	
-	
-	
-	/*$Query3 = "SELECT * FROM `towns` WHERE `townName` = '$townName'";
-	$Query4 = mysqli_query($con, $Query3);
-	
-	while ($row = mysqli_fetch_assoc($Query4))
-	{
-		$fd = $row['itemBank'];
-		$fd2 = explode (':', $fd);
-		foreach ($fd2 as $i)
-		{
-			if ($i != '')
-			{
-			$fd3 = explode ('.', $i);
-			foreach ($itemsInfo as $i2)
-			{
-					if ($i2[0] == $fd3[0])
-					{
-						$category = $i2[1];
-						
-						if ($category == 'Resource')
-						{
-							array_push($resources, $i2[0] . "." . $fd3[1]);
-						}
-						
-						else if ($category == 'Consume')
-						{
-							array_push($consumables, $i2[0] . "." . $fd3[1]);
-						}
-					}
-			}
-			}
-		}
-	}*/
 	?>
 	
 	
@@ -161,13 +126,13 @@ $query2 = mysqli_query($con, $query1);
 	{
 		foreach ($resources as $res)
 		{
-                    echo '<form action="../functions/pickUpItem.php" method="post">';
+                    echo '<form action="../functions/pickUpItem.php" method="post" class="warehouseItemsForm">';
                     $resArray = explode ('.', $res);
                     $itemId = $resArray[0];
                     $itemAmount = $resArray[1];
                     echo '<input type="hidden" name="location "value="/deadfall/warehouse.php">';
                     echo '<input type="hidden" name="itemName2" value="' . $itemsMaster[$itemId][0] . '">';
-                    echo '<input type="image" title="' . $itemsMaster[$itemId][0] . '" src="../images/items/' . $itemsMaster[$itemId][0] . '.png" alt="submit">x' . $itemAmount . ' ';
+                    echo '<input type="image" title="' . $itemsMaster[$itemId][0] . '" src="../images/items/' . $itemsMaster[$itemId][0] . '.png" alt="submit">x' . $itemAmount;
                     echo '</form>'; 
                 }
 	}
@@ -180,7 +145,7 @@ $query2 = mysqli_query($con, $query1);
 		
 		foreach ($consumables as $con)
 		{	
-                    echo '<form action="../functions/pickUpItem.php" method="post">';
+                    echo '<form action="../functions/pickUpItem.php" method="post" class="warehouseItemsForm">';
                     $conArray = explode ('.', $con);
                     $itemId = $conArray[0];
                     $itemAmount = $conArray[1];
@@ -199,7 +164,7 @@ $query2 = mysqli_query($con, $query1);
 	{
 		foreach ($fight as $fig)
 		{
-                    echo '<form action="../functions/pickUpItem.php" method="post">';
+                    echo '<form action="../functions/pickUpItem.php" method="post" class="warehouseItemsForm">';
                     $figArray = explode ('.', $fig);
                     $itemId = $figArray[0];
                     $itemAmount = $figArray[1];

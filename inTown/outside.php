@@ -5,11 +5,7 @@ require_once ("../connect.php");
 Include("../data/buildings.php");
 Include("../data/items.php");
 
-$errorMessage = FILTER_INPUT(INPUT_GET, 'e');
-if (isset($errorMessage))
-{
-	echo "<script type='text/javascript'>alert('$errorMessage');</script>";
-}
+
 $dir = filter_input(INPUT_GET, 'dir');
 
 	
@@ -93,13 +89,13 @@ $query2 = mysqli_query($con, $query1);
 				else
 				{
 					//not enough AP to loot
-					header ("location: .?locat=outside&e=Not Enough AP to loot.");
+					echo "<script>window.location.href='.?locat=outside&e=Not Enough AP to loot.'</script>";
 				}
 			}
 			else
 			{
 				//Cannot loot while in Town
-				header ("location: .?locat=outside&e=Must leave the town to loot.");
+				echo "<script>window.location.href='.?locat=outside&e=Must leave the town to loot.'</script>";
 			}
 		}
 	}
@@ -160,7 +156,7 @@ $query2 = mysqli_query($con, $query1);
 				}
 				$updateNew = "UPDATE `" . $townName . "` SET `charactersHere`='" . $updatedNewZone ."' WHERE `x`='" . $newX . "' AND `y`='" . $newY . "'";
 				mysqli_query($con, $updateNew);
-				header ("location: .?locat=outside");
+				echo "<script>window.location.href='.?locat=outside'</script>";
 			}
 		}
 		
@@ -211,7 +207,7 @@ $query2 = mysqli_query($con, $query1);
 				}
 				$updateNew = "UPDATE `" . $townName . "` SET `charactersHere`='" . $updatedNewZone ."' WHERE `x`='" . $newX . "' AND `y`='" . $newY . "'";
 				mysqli_query($con, $updateNew);
-				header ("location: .?locat=outside");
+				echo "<script>window.location.href='.?locat=outside'</script>";
 			}
 		}
 		
@@ -262,7 +258,7 @@ $query2 = mysqli_query($con, $query1);
 				}
 				$updateNew = "UPDATE `" . $townName . "` SET `charactersHere`='" . $updatedNewZone ."' WHERE `x`='" . $newX . "' AND `y`='" . $newY . "'";
 				mysqli_query($con, $updateNew);
-				header ("location: .?locat=outside");
+				echo "<script>window.location.href='.?locat=outside'</script>";
 			}
 		}
 		
@@ -313,12 +309,12 @@ $query2 = mysqli_query($con, $query1);
 				}
 				$updateNew = "UPDATE `" . $townName . "` SET `charactersHere`='" . $updatedNewZone ."' WHERE `x`='" . $newX . "' AND `y`='" . $newY . "'";
 				mysqli_query($con, $updateNew);
-				header ("location: .?locat=outside");
+				echo "<script>window.location.href='.?locat=outside'</script>";
 			}
 		}
 		else
 		{
-			header ("location: .?locat=outside&e=Not enough AP to move.");
+			echo "<script>window.location.href='.?locat=outside&e=Not enough AP to move.'</script>";
 		}
 	}
 	
@@ -671,6 +667,7 @@ $query2 = mysqli_query($con, $query1);
 		$bulletin = $result1['bulletin'];
 		$lootability = $result1['lootability'];
 		$bulletinArray = explode('.', $bulletin);
+		krsort($bulletinArray);
 		
 		if ($curX != 0 || $curY != 0)
 		{		
@@ -683,9 +680,11 @@ $query2 = mysqli_query($con, $query1);
 		<h5 class='topBulletin'>Bulletin Board (<?php echo $curX . ',' . $curY;?>)</h5>
 		</div>
 		<div class='bulletin'>
+		<ul>
 		<?php $i = 0; foreach ($bulletinArray as $bul) : $i++?>
-		<li><?php echo $i . '. ' . $bul;?></li>
+		<li><?php echo $bul;?></li>
 		<?php endforeach;?>
+		</ul>
 		</div>
 		</div>
 		

@@ -200,3 +200,9 @@ body
 	height: 125px;
 	margin: 10px;
 }
+
+.warehouseItemsForm
+{
+	display: inline-block;
+	margin-right: 7px;
+}

@@ -152,7 +152,7 @@ $townBank = explode(',', $result['groundItems']);
 										{
 											$bankFull = true;
 											$buildCost = explode (":",$buildingsInfo[$i][4]);
-											echo '<tr class="newBuild"><td class ="buildingHelp" id="" title="' . $buildingsInfo[$i][6] . '"><p class="buildingName">' . $buildingsInfo[$i][7] . $buildName . $defString . '</p></td>
+											echo '<tr class="newBuild"><td class ="buildingHelp" id="" title="' . $buildingsInfo[$i][7] . '"><p class="buildingName">' . $buildingsInfo[$i][7] . $buildName . $defString . '</p></td>
 											<td class="data"><style1>';
 											
 											for ($i2 = 0; $i2 < count($buildCost); $i2++)
@@ -193,7 +193,7 @@ $townBank = explode(',', $result['groundItems']);
 										if ($reqMet)
 										{
 											$buildCost = explode (":",$buildingsInfo[$i][4]);
-											echo '<tr class="newBuild"><td class ="buildingHelp" title="' . $buildingsInfo[$i][6] . '">' . $buildingsInfo[$i][7] . $buildName . $defString . '</td>
+											echo '<tr class="newBuild"><td class ="buildingHelp" title="' . $buildingsInfo[$i][7] . '">' . $buildingsInfo[$i][7] . $buildName . $defString . '</td>
 											<td class="data"><style1>';
 											$bankFull = true;
 											for ($i2 = 0; $i2 < count($buildCost); $i2++)
@@ -240,7 +240,7 @@ $townBank = explode(',', $result['groundItems']);
 										if ($reqMet)
 										{
 											$buildCost = explode (":",$buildingsInfo[$i][4]);
-											echo '<tr class="newBuild"><td class ="buildingHelp" title="' . $buildingsInfo[$i][6] . '"><p class="buildingName">' . $buildingsInfo[$i][7] . $buildName . '</p></td>
+											echo '<tr class="newBuild"><td class ="buildingHelp" title="' . $buildingsInfo[$i][7] . '"><p class="buildingName">' . $buildingsInfo[$i][7] . $buildName . '</p></td>
 											<td class="data"><style1>';
 											$bankFull = true;
 											for ($i2 = 0; $i2 < count($buildCost); $i2++)
@@ -281,7 +281,7 @@ $townBank = explode(',', $result['groundItems']);
 											if (!($buildApReq == 1))
 											{
 												$buildCost = explode (":",$buildingsInfo[$i][4]);
-												echo '<tr class="alreadyBuilt"><td class ="buildingHelp" title="' . $buildingsInfo[$i][6] . '"><p style="font-size:1.1em; font-family:`impact`, charcoal, sans-serif;">' . $buildingsInfo[$i][0] . '</p></td>
+												echo '<tr class="alreadyBuilt"><td class ="buildingHelp" title="' . $buildingsInfo[$i][7] . '"><p style="font-size:1.1em; font-family:`impact`, charcoal, sans-serif;">' . $buildingsInfo[$i][0] . '</p></td>
 												<td class="data-done data" colspan="4"><style1>';
 											
 												echo 'Already Completed!';
@@ -291,7 +291,7 @@ $townBank = explode(',', $result['groundItems']);
 											else
 											{
 												$buildCost = explode (":",$buildingsInfo[$i][4]);
-												echo '<tr class="alreadyBuilt"><td class ="buildingHelp" colspan="5" title="' . $buildingsInfo[$i][6] . '"><u><b><p style="font-size:1.1em; font-family:`impact`, charcoal, sans-serif; text-align: center;">' . $buildingsInfo[$i][0] . '</p></b></u></td></tr>';												
+												echo '<tr class="alreadyBuilt"><td class ="buildingHelp" colspan="5" title="' . $buildingsInfo[$i][7] . '"><u><b><p style="font-size:1.1em; font-family:`impact`, charcoal, sans-serif; text-align: center;">' . $buildingsInfo[$i][0] . '</p></b></u></td></tr>';												
 											}
 										}
 									}
