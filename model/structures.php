@@ -41,23 +41,15 @@ class Structure {
         return $this->s_ap_cost;
     }
     
-    public function getItemCosts()
+    public function getItemCosts_string()
     {
         return $this->s_item_costs;
     }
     
-    //returns a multidimensional array of item costs
-    public function getItemCosts_array()
+    public function getItemCosts_objects()
     {
-        //2.10:8.2
-        $breakdown = explode(':', $this->s_item_costs);
-        for ($i = 0; $i < count($breakdown); $i++)
-        {
-            $break = explode('.', $breakdown[$i]);
-            $requirements[] = array($break[0], $break[1]); //0 => itemId, itemcount  1=> item id, item count
-        }
-        
-        return $requirements;
+        $itemCostObjects = new StructureItemCosts($this->s_item_costs);
+        return $itemCostObjects;
     }
     
     public function getDefence()
@@ -67,17 +59,64 @@ class Structure {
     
     public function getMaxLevel()
     {
-        $this->s_max_level;
+        return $this->s_max_level;
     }
     
     public function getDescription()
     {
-        $this->s_description;
+        return $this->s_description;
     }
     
     public function getIndentation()
     {
-        $this->s_indentation;
+        return $this->s_indentation;
+    }
+}
+
+class StructureItemCosts //Array of Item Cost Objects for a particular structure
+{
+    private $itemCosts = array();
+    
+    public function __construct($itemCostsString)
+    {
+        $itemCostsArray = explode(":", $itemCostsString);
+        foreach ($itemCostsArray as $value)
+        {
+            if ($value != "")
+            {
+            $currentCost = explode(".", $value);
+            $currentId = $currentCost[0];
+            $currentAmount = $currentCost[1];
+            $this->itemCosts[] = new ItemCost($currentId, $currentAmount);
+            }
+        }
+    }
+    
+    public function getItemCosts()
+    {
+        return $this->itemCosts;
+    }
+}
+
+class ItemCost
+{
+    private $itemId;
+    private $itemAmount;
+    
+    public function __construct($itemId, $itemAmount)
+    {
+        $this->itemId = $itemId;
+        $this->itemAmount = $itemAmount;
+    }
+    
+    public function getItemId()
+    {
+        return $this->itemId;
+    }
+    
+    public function getItemAmount()
+    {
+        return $this->itemAmount;
     }
 }
 
@@ -87,13 +126,82 @@ class StructuresDB
     {
         $dbCon = Database::getDB();
         
-        $query = "SELECT 'buildings' from `towns` WHERE `townName` = :townName";
+        $query = "SELECT buildings from `towns` WHERE `townName` = :townName";
         $statement = $dbCon->prepare($query);
         $statement->bindValue(':townName', $townName);
         $statement->execute();
         $result = $statement->fetch();
         $statement->closeCursor();
         
-        return $statement;
+        return $result['buildings'];
+    }
+    
+    public static function getBuiltDetails($structure, $townName)
+    {
+                
+        $builtStructures = self::getTownStructures($townName);
+        $builtArray = explode(':', $builtStructures); //Defence.0.1  Perimeter Fence.0.0
+        
+        foreach ($builtArray as $value)
+        {
+            $currentArray = explode('.', $value);
+            $building["Name"] = $currentArray[0];
+            $building["Ap"] = $currentArray[1];
+            $building["Level"] = $currentArray[2];
+            if ($building["Name"] == $structure)
+            {
+                //Found Building
+                return $building;
+            }
+        }
+    }
+    
+    public static function isStructureAffordable($structure_object, $townName)
+    {   
+        //Build an array of item cost objects        
+        $itemCosts = $structure_object->getItemCosts_objects();
+        foreach ($itemCosts->getItemCosts() as $itemCost)
+        {
+            $costId = $itemCost->getItemId();
+            $costAmount = $itemCost->getItemAmount();
+            
+            if (TownBankDB::getItemAmount($costId, $townName) < $costAmount)
+            {
+                 //You do not have enough resources
+                return false;
+            }
+        }
+        //If all items are found to be sufficient
+        return true;
+    }
+}
+
+class TownBankDB
+{
+    public static function getItemAmount($itemId, $townName)
+    {
+        $dbCon = Database::getDB();
+        
+        //Get list of all items in bank
+        $query = "SELECT groundItems FROM `" . $townName . "` WHERE `x` = 0 AND `y` = 0";
+        $statement = $dbCon->prepare($query);
+        $statement->execute();
+        $result = $statement->fetch(); //0.41,1.41,2.3,.4,10.1,3.1,4.1,13.1,6.2,7.1,5.1
+        $statement->closeCursor();
+        
+        $bank = explode(",", $result["groundItems"]);
+        foreach ($bank as $value)
+        {
+            $currentItem = explode(".", $value);
+            $currentId = $currentItem[0];
+            $currentAmount = $currentItem[1];
+            
+            if ($currentId == $itemId)
+            {
+                return $currentAmount;
+            }
+        }
+        
+        return 0;
     }
 }

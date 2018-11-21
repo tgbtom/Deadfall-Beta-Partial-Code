@@ -1,51 +1,29 @@
 <?php
-require_once ("../connect.php");
-require_once ("../functions/verifyLogin.php");
-Include ("../data/buildings.php");
-Include ("../data/items.php");
+
+/* 
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+require_once("../connect.php");
+require_once("../functions/verifyLogin.php");
+include ("../data/buildings.php");
+include ("../data/items.php");
 require_once ('../functions/queryFunctions.php');
+require_once("../model/structures.php");
+require_once("../model/database.php");
 
-$errorMessage = FILTER_INPUT(INPUT_GET, 'e');
-if (isset($errorMessage))
-{
-	echo "<script type='text/javascript'>alert('$errorMessage');</script>";
-}
 ?>
 
+<!DOCTYPE HTML>
 <html>
-<head>
-
-<link rel="stylesheet" type="text/css" href="mainDesignTown.css">
-
-<?php
-$playerName = $_SESSION['login'];
-$charName = $_SESSION['char'];
-$xCo = $_SESSION['x'];
-$yCo = $_SESSION['y'];
-$reqMet = false;
-$itemAmt = 0;
-
-//Set Variables which correspond with the character that is in session (town name, level, class, etc.)
-$charDetails = getCharDetails();
-$townName = $charDetails['townName'];
-$charLevel = $charDetails['level'];
-$charClass = $charDetails['class'];
-
-//Determine Items in the town bank (coords 0,0)
-$query = 'SELECT * FROM `' . $townName . '` WHERE `x` = 0 AND `y` = 0';
-$statement = $dbCon->prepare($query);
-$statement->execute();
-$result = $statement->fetch();
-$statement->closeCursor();
-
-$townBank = explode(',', $result['groundItems']);
-
-?>
-
-
-	<link rel="stylesheet" type="text/css" href="mainDesignTown.css">
-	<style>
-	table {width:100%; color:#000000; border: 1px solid #120B06; padding:2px; background-color:#6D5A4A;box-shadow: 7px 7px #333333;}
+    <head>
+        <link rel="stylesheet" href="mainDesignTown.css" type="text/css">
+        <style>
+       	table {width:100%; color:#000000; border: 1px solid #120B06; padding:2px; background-color:#6D5A4A;box-shadow: 7px 7px #333333; border-collapse: collapse;}
+        td:first-child {padding-left:7px;}
+        th{border-bottom: 1px solid black;}
 	input.number {width:40px;}
 	.data {width:150px; border: 1px solid black;}
 	.newBuild {color:#111111; border: 1px solid #120B06; border-collapse:collapse; padding:2px; background-color:#6D5A4A;}
@@ -54,263 +32,255 @@ $townBank = explode(',', $result['groundItems']);
 	style1 {font-size:0.8em;}
 	.head {border: 1px solid black;}
 	.shield {float: right; display: block;}
+        .buttonCell {text-align: right; padding-right: 5px;}
+        small {color: #181818;}
 	.buildingName
 	{
 		float: left;
 		display: block;
 	}
+        .apInput
+        {
+            width: 50px;
+            border-radius: 7px;
+            margin-right: 8px;
+            float: right;
+        }
+        .buildButton {
+        display: inline-block;
+        float: right;
+        border-radius: 4px;
+        background-color: #54483E;
+        border: none;
+        color: #A39D8D;
+        text-align: center;
+        font-size: 16px;
+        padding: 5px;
+        width: 150px;
+        transition: all 0.5s;
+        cursor: pointer;
+        margin: 5px;
+        box-shadow: 3px 2px black;
+        }
 
-	</style>
-</head>
+        .buildButton span {
+        cursor: pointer;
+        display: inline-block;
+        position: relative;
+        transition: 0.5s;
+        }
 
-<body>
+        .buildButton span:after {
+        content: '\00bb';
+        position: absolute;
+        opacity: 0;
+        top: 0;
+        right: -20px;
+        transition: 0.5s;
+        }
+        
+        .buildButton:hover
+        {
+        background-color: #47372A;
+        transition: 0s;
+        }
 
-<div class="Container">
+        .buildButton:hover span {
+        padding-right: 25px; 
+        }
 
-	<?php include("../universal/header.php"); ?>
-	
-	<div class="centralBox">
-
-		<h3>Construction Sites</h3>
-		
-		<div class="spoiler">
-	
-			<table>
-			<tr><td class='head'>Building</td><td class='head'>Resources</td><td class='head' colspan='2'>AP</td><td class='head'>Build</td>
-			<?php
-	
-			for ($i = 0; $i < count($buildingsInfo); $i++)
-				{
-					//  ***Needs to Not Display buldings that are constructed (7/16/2016)
-					//If town has req building, draw, otherwise dont
-					$buildName = $buildingsInfo[$i][0]; //innerwall
-					$buildReq = $buildingsInfo[$i][2]; // outerwall
-					$buildApReq = $buildingsInfo[$i][3]; //200
-					$buildingDef = $buildingsInfo[$i][5]; //50 defence
-					$defString = '';
-					if ($buildingDef > 0)
-					{
-						$defString = '  <style1><img src="../images/icons/shield.png">' . $buildingDef . '</style1>';
-					}
-					
-					//for loop to determine the required ap for the required building (so we can make sure the previoius building is complete)
-					for ($i6 = 0; $i6 < count($buildingsInfo); $i6++)
-					{
-						if ($buildingsInfo[$i6][0] == $buildReq)
-						{
-							$preReqNeededAp = $buildingsInfo[$i6][3];
-						}
-					}
-					
-					//check database and retrieve the built buildings for this townName
-					
-					//$query1 = 'SELECT * FROM `towns` WHERE `townName` = :townName';
-					//$statement1 = $dbCon->prepare();
-					
-					$query3 = "SELECT * FROM `towns` WHERE `townName` = '$townName'";
-					$query4 = mysqli_query($con, $query3);
-					
-					while ($row = mysqli_fetch_assoc($query4))
-						{
-							$currentBuilt = explode (":", $row['buildings']);
-							$allBuilt = array();
-							$allBuiltAp = array();
-							//Loops to create arrays which individually state all partially/fully constructed buildings and the AP which has been spent  on them
-								for ($i4 = 0; $i4 < count($currentBuilt); $i4++)
-								{
-									$nameOfBuilt = explode(".", $currentBuilt[$i4]);
-									array_push($allBuilt, $nameOfBuilt[0]);
-									array_push($allBuiltAp, $nameOfBuilt[1]);
-								}
-							
-								//check if building requirements are met
-								if (in_array($buildReq, $allBuilt))
-								{
-									$z = array_search($buildReq, $allBuilt);
-									$reqBuiltAp = $allBuiltAp[$z];
-									//$preReqNeededAp = array_search ();
-									
-									if ($reqBuiltAp >= $preReqNeededAp)
-									{
-										$reqMet = true;
-									}
-									else 
-									{
-										$reqMet = false;
-									}
-								}
-								
-								
-									$x = array_search($buildName, $allBuilt);
-									$currentBuiltName = $allBuilt[$x];
-									$currentBuiltAp = $allBuiltAp[$x];
-									
-									//if the building is not started already, then continue with the for statement, which adds the building to the construction list.
-									if (!(in_array($buildName, $allBuilt)))
-									{
-										if ($reqMet)
-										{
-											$bankFull = true;
-											$buildCost = explode (":",$buildingsInfo[$i][4]);
-											echo '<tr class="newBuild"><td class ="buildingHelp" id="" title="' . $buildingsInfo[$i][7] . '"><p class="buildingName">' . $buildingsInfo[$i][7] . $buildName . $defString . '</p></td>
-											<td class="data"><style1>';
-											
-											for ($i2 = 0; $i2 < count($buildCost); $i2++)
-											{
-											
-												$itemSpec = explode (".", $buildCost[$i2]);
-												$itemId = $itemSpec[0];
-												
-												//check town BANK for how many of the item is stored
-												//$townBank = explode(":", $row['itemBank']);
-												for ($i5 = 1; $i5 < count($townBank); $i5++)
-												{
-													$townBank2 = explode(".", $townBank[$i5]);
-													if ($townBank2[0] == $itemsMaster[$itemId][0])
-													{
-														$itemAmt = $townBank2[1];
-													}
-												}
-
-												$itemImg = '<img title="' . $itemsMaster[$itemId][0] . '" src="../images/items/' . $itemsMaster[$itemId][0] . '.png">';
-												echo $itemImg . $itemAmt . '/' . $itemSpec[1] . ' ';
-												if ($itemAmt < $itemSpec[1])
-												{$bankFull = false;}
-											}
-											
-											echo '</style1></td>';
-											if ($bankFull)
-											{
-											echo '<td><form action="../functions/build.php" method="post"><input type="number" class="number" value="0" min="0" max="12"></td><td><p style="font-size:0.85em;">' . $currentBuiltAp . '/' . $buildApReq . ' AP</p></td>
-											<td><input type="hidden" name="buildingName" value="' . $buildName . '"><input type="image" src="../images/construct.png" style="float:right;" alt="submit"></td></tr>';
-											}
-										}	
-									}
-									
-									//if the building is there but Has NOT been started yet
-									else if ($currentBuiltAp == 0) //If current built AP is 0
-									{
-										if ($reqMet)
-										{
-											$buildCost = explode (":",$buildingsInfo[$i][4]);
-											echo '<tr class="newBuild"><td class ="buildingHelp" title="' . $buildingsInfo[$i][7] . '">' . $buildingsInfo[$i][7] . $buildName . $defString . '</td>
-											<td class="data"><style1>';
-											$bankFull = true;
-											for ($i2 = 0; $i2 < count($buildCost); $i2++)
-											{
-											
-												$itemSpec = explode (".", $buildCost[$i2]);
-												$itemId = $itemSpec[0];
-												$itemAmt = 0;
-												
-												//check town BANK for how many of the item is stored
-												//$townBank = explode(":", $row['itemBank']);
-												for ($i5 = 0; $i5 < sizeOf($townBank); $i5++)
-												{
-													$townBank2 = explode(".", $townBank[$i5]);
-													if ($townBank2[0] == $itemId/*$itemsMaster[$itemId][0]*/)
-													{
-														$itemAmt = $townBank2[1];
-													}
-
-												}
-
-												$itemImg = '<img title="' . $itemsMaster[$itemId][0] . '" src="../images/items/' . $itemsMaster[$itemId][0] . '.png">';
-												echo $itemImg . $itemAmt . '/' . $itemSpec[1] . ' ';
-												if ($itemAmt < $itemSpec[1])
-												{$bankFull = false;}
-											}
-											
-											echo '</style1></td>';
-											if ($bankFull)
-											{
-											echo '<form action="../functions/build.php" method="post"><td>
-											<input type="number" class="number" name="apToAdd" value="0" min="0" max="16"></td><td><style1><p style="font-size:0.85em;">0/' . $buildApReq . ' AP</p></style1></td>
-											<td><input type="hidden" name="firstBuild" value="true">
-											<input type="hidden" name="buildingName" value="' . $buildName . '">
-											<input type="hidden" name="apRequired" value="' . $buildApReq . '">
-											<input type="image" src="../images/construct.png" style="float:right;"></td></tr></form>';
-											}
-										}
-									}
-									
-									//If the building name is there, check if the AP is incomplete. If it is incomplete: do the following
-									else if ($currentBuiltAp < $buildApReq) //If current built AP is less than required
-									{
-										if ($reqMet)
-										{
-											$buildCost = explode (":",$buildingsInfo[$i][4]);
-											echo '<tr class="newBuild"><td class ="buildingHelp" title="' . $buildingsInfo[$i][7] . '"><p class="buildingName">' . $buildingsInfo[$i][7] . $buildName . '</p></td>
-											<td class="data"><style1>';
-											$bankFull = true;
-											for ($i2 = 0; $i2 < count($buildCost); $i2++)
-											{
-											
-												$itemSpec = explode (".", $buildCost[$i2]);
-												$itemId = $itemSpec[0];
-												$itemAmt = 0;
-												
-												//check town BANK for how many of the item is stored
-												//$townBank = explode(":", $row['itemBank']);
-												for ($i5 = 1; $i5 < sizeOf($townBank); $i5++)
-												{
-													$townBank2 = explode(".", $townBank[$i5]);
-													if ($townBank2[0] == $itemId/*$itemsMaster[$itemId][0]*/)
-													{
-														$itemAmt = $townBank2[1];
-													}
-
-												}
-											}
-											
-											echo 'Construction has Begun!</style1></td>';
-											echo '<form action="../functions/build.php" method="post"><td>
-											<input type="number" class="number" name="apToAdd" value="0" min="0" max="16"></td><td><style1><p style="font-size:0.85em;">' . $currentBuiltAp . '/' . $buildApReq . ' AP</p></style1></td>
-											<td>
-											<input type="hidden" name="buildingName" value="' . $buildName . '">
-											<input type="hidden" name="apRequired" value="' . ($buildApReq - $currentBuiltAp) . '">
-											<input type="image" src="../images/construct.png" style="float:right;"></td></tr></form>';
-										}
-									}
-									
-									else
-									{
-										if ($reqMet)
-										{
-											//if required AP is 1, it is a default structure! Display it as a heading!
-											if (!($buildApReq == 1))
-											{
-												$buildCost = explode (":",$buildingsInfo[$i][4]);
-												echo '<tr class="alreadyBuilt"><td class ="buildingHelp" title="' . $buildingsInfo[$i][7] . '"><p style="font-size:1.1em; font-family:`impact`, charcoal, sans-serif;">' . $buildingsInfo[$i][0] . '</p></td>
-												<td class="data-done data" colspan="4"><style1>';
-											
-												echo 'Already Completed!';
-											
-												echo '</style1></td></tr>';
-											}
-											else
-											{
-												$buildCost = explode (":",$buildingsInfo[$i][4]);
-												echo '<tr class="alreadyBuilt"><td class ="buildingHelp" colspan="5" title="' . $buildingsInfo[$i][7] . '"><u><b><p style="font-size:1.1em; font-family:`impact`, charcoal, sans-serif; text-align: center;">' . $buildingsInfo[$i][0] . '</p></b></u></td></tr>';												
-											}
-										}
-									}
-									
-								
-						}
-				}
-			echo "</table>";
-			?>
-		</div>
-	</div>
-	
-
-		
-	
-</div>
-<?php
-	Include ("../universal/hyperlinks.php");
-	?>
-</body>
-
+        .buildButton:hover span:after {
+        opacity: 1;
+        right: 0;
+        }
+        
+        .buildButton:active
+        {
+        box-shadow: none;
+        }
+        </style>
+        
+        <?php 
+        //Get important session details
+        $playerName = $_SESSION['login'];
+        $charName = $_SESSION['char'];
+        $xCo = $_SESSION['x'];
+        $yCo = $_SESSION['y'];
+        $reqMet = false;
+        $itemAmt =0;
+        
+        $charDetails = getCharDetails();
+        $townName = $charDetails['townName'];
+        $charLevel = $charDetails['level'];
+        $charClass = $charDetails['class'];
+        $charAp = $charDetails['currentAP'];
+        
+        $bank = getWarehouseItems($townName);
+        $townBank = explode(',', $bank);
+        ?>
+        
+    </head>
+    <body>
+        <div class="container">
+            
+            <?php include("../universal/header.php");?>
+            
+            <div class="centralBox">
+                
+                <table>
+                    <caption>Construction Sites</caption>
+                    <thead>
+                        <tr>
+                            <th>Level</th>
+                            <th>Building</th>
+                            <th>Resources</th>
+                            <th>AP</th>
+                            <th>Build</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php 
+                        for ($i = 0; $i < count($buildingsInfo); $i++)
+                        {
+                             $tableRow = "<tr></tr>";
+                             
+                            //Get Details for the current Building we are checking      
+                            $currentBuilding = new Structure($buildingsInfo[$i][0], $buildingsInfo[$i][1], $buildingsInfo[$i][2], $buildingsInfo[$i][3], $buildingsInfo[$i][4], $buildingsInfo[$i][5], $buildingsInfo[$i][6], $buildingsInfo[$i][7], $buildingsInfo[$i][8]);
+                            $builtDetails = StructuresDB::getBuiltDetails($currentBuilding->getName(), $townName);
+                            $builtDetailsRequired = StructuresDB::getBuiltDetails($currentBuilding->getRequirement(), $townName);
+                            $defString = '';
+                            $resourceCostsString = '';
+                            $indent = ($buildingsInfo[$i][8] == '0') ? '' : $buildingsInfo[$i][8];
+                            $buildingCosts = $currentBuilding->getItemCosts_objects();
+                            
+                            //Create a string to display the required items for the building
+                            foreach ($buildingCosts->getItemCosts() as $value)
+                            {
+                                $itemIdNeeded = $value->getItemId();
+                                $itemName = $itemsMaster[$itemIdNeeded][0];
+                                $itemAmountNeeded = $value->getItemAmount();
+                                $resourceCostsString .= "  <img src='../images/items/" . $itemName . ".png'>" . TownBankDB::getItemAmount($itemIdNeeded, $townName) . "/" . $itemAmountNeeded;
+                            }
+                            //This code repeats for every building that exists in the configuration
+                            
+                            //Check if the building adds defence, if it does, add a shield icon to the row
+                            if ($currentBuilding->getDefence() > 0)
+                            {
+                                $defString = "<style1> <img src='../images/icons/shield.png'>" . $currentBuilding->getDefence() . "</style1>";
+                            }
+     
+                            
+                            //Does the Building have atleast 1 complete level?
+                            if ($builtDetails["Level"] >= 1) //Yes
+                            {
+                                if ($builtDetails["Level"] >= $currentBuilding->getMaxLevel())
+                                {
+                                    if ($currentBuilding->getApCost() == 1) //Check if it is a category Structure
+                                    {
+                                        $tableRow = "<tr><td colspan='5' style='height:10px;'></td></tr><tr class='category'>"
+                                                . "<th colspan='5'>" . $currentBuilding->getName() . "</th>"
+                                                . "</tr>";
+                                    }
+                                    
+                                    else //Building is maximum level
+                                    {
+                                        $tableRow = "<tr>"
+                                                . "<td>" . $builtDetails['Level'] . "/"  . $currentBuilding->getMaxLevel() . "</td>"
+                                                . "<td>" . $indent . $currentBuilding->getName() . $defString . "</td>"
+                                                . "<td><small><b>Structure is Complete</b><small></td>"
+                                                . "<td class='apCell'></td>"
+                                                . "<td class='buttonCell'></td>"
+                                                . "</tr>";
+                                    }
+                                }
+                                elseif ($builtDetails["Ap"] >= 1)
+                                {
+                                    //Upgrade has already begun
+                                    $formName = "form" . $currentBuilding->getName();
+                                        $tableRow = "<form action='../functions/build.php' method='post' id='" . $formName . "'><tr>"
+                                                . "<td>" . $builtDetails['Level'] . "/"  . $currentBuilding->getMaxLevel() . "</td>"
+                                                . "<td>" . $indent . $currentBuilding->getName() . $defString . "</td>"
+                                                . "<td><small>Contribute to Upgrade</small></td><input hidden type='text' name='buildName' value='" . $currentBuilding->getName() . "'>"
+                                                . "<td class='apCell'><input type='number' placeholder='Ap' class='apInput' name='apToAssign' max='$charAp'>" . $builtDetails["Ap"] . "/" . $currentBuilding->getApCost() . " <img src='../images/icons/ap.png'></td>"
+                                                . "<td class='buttonCell'><button type='submit' form='" . $formName . "' value='Submit' class='buildButton'><span>Upgrade</span></button></td>"
+                                                . "</tr></form>";
+                                }
+                                else
+                                {
+                                    //Check if structure upgrade is affordable
+                                    if (StructuresDB::isStructureAffordable($currentBuilding, $townName))
+                                    {
+                                        $tableRow = "<tr>"
+                                                . "<td>" . $builtDetails['Level'] . "/"  . $currentBuilding->getMaxLevel() . "</td>"
+                                                . "<td>" . $indent . $currentBuilding->getName() . $defString . "</td>"
+                                                . "<td>" . $resourceCostsString . "</td>"
+                                                . "<td class='apCell'><input type='number' placeholder='Ap' class='apInput' name='apToAssign' max='$charAp'>" . $builtDetails["Ap"] . "/" . $currentBuilding->getApCost() . " <img src='../images/icons/ap.png'></td>"
+                                                . "<td class='buttonCell'><button type='submit' form='' value='Submit' class='buildButton'><span>Upgrade</span></button></td>"
+                                                . "</tr>";
+                                    }
+                                    else
+                                    {
+                                        //Structure has been upgraded, but there are not enough resources to begin the next level
+                                        $tableRow = "<tr>"
+                                                . "<td>" . $builtDetails['Level'] . "/"  . $currentBuilding->getMaxLevel() . "</td>"
+                                                . "<td>" . $indent . $currentBuilding->getName() . $defString . "</td>"
+                                                . "<td>" . $resourceCostsString . "</td>"
+                                                . "<td class='apCell'><input type='number' placeholder='Ap' class='apInput' name='apToAssign' max='$charAp'>" . $builtDetails["Ap"] . "/" . $currentBuilding->getApCost() . " <img src='../images/icons/ap.png'></td>"
+                                                . "<td class='buttonCell'>Not Enough Resources</td>"
+                                                . "</tr>";
+                                    }
+                                }
+                                
+                            }
+                            elseif ($builtDetails["Ap"] >= 1) //No --> But There is AP assigned
+                            {
+                                //Allow AP contributions
+                                        $tableRow = "<tr>"
+                                                . "<td>" . $builtDetails['Level'] . "/"  . $currentBuilding->getMaxLevel() . "</td>"
+                                                . "<td>" . $indent . $currentBuilding->getName() . $defString . "</td>"
+                                                . "<td><small>Contribute to Structure</small></td>"
+                                                . "<td class='apCell'><input type='number' placeholder='Ap' class='apInput' name='apToAssign' max='$charAp'>" . $builtDetails["Ap"] . "/" . $currentBuilding->getApCost() . " <img src='../images/icons/ap.png'></td>"
+                                                . "<td class='buttonCell'><button type='submit' form='' value='Submit' class='buildButton'><span>Build</span></button></td>"
+                                                . "</tr>";
+                            }
+                            else
+                            {
+                                //Do you have the required building at atleast level 1?
+                                if ($builtDetailsRequired["Level"] >= 1)
+                                {
+                                    //Required Building is atleast level 1
+                                    if (StructuresDB::isStructureAffordable($currentBuilding, $townName))
+                                    {
+                                        //Structure is affordable, and construction has not begun
+                                        $tableRow = "<tr>"
+                                                . "<td>" . $builtDetails['Level'] . "/"  . $currentBuilding->getMaxLevel() . "</td>"
+                                                . "<td>" . $indent . $currentBuilding->getName() . $defString . "</td>"
+                                                . "<td>" . $resourceCostsString . "</td>"
+                                                . "<td class='apCell'><input type='number' placeholder='Ap' class='apInput' name='apToAssign' max='$charAp'>" . $builtDetails["Ap"] . "/" . $currentBuilding->getApCost() . " <img src='../images/icons/ap.png'></td>"
+                                                . "<td class='buttonCell'><button type='submit' form='' value='Submit' class='buildButton'><span>Build Now</span></button></td>"
+                                                . "</tr>";
+                                    }
+                                    else
+                                    {
+                                        //Structure is unlocked, but not affordable
+                                        $tableRow = "<tr>"
+                                                . "<td>" . $builtDetails['Level'] . "/"  . $currentBuilding->getMaxLevel() . "</td>"
+                                                . "<td>" . $indent . $currentBuilding->getName() . $defString . "</td>"
+                                                . "<td>" . $resourceCostsString . "</td>"
+                                                . "<td class='apCell'><input type='number' placeholder='Ap' class='apInput' name='apToAssign' max='$charAp'>" . $builtDetails["Ap"] . "/" . $currentBuilding->getApCost() . " <img src='../images/icons/ap.png'></td>"
+                                                . "<td class='buttonCell'>Not Enough Resources</td>"
+                                                . "</tr>";
+                                    }
+                                }
+                            }
+                            echo $tableRow;
+                        }
+                        ?>
+                    </tbody>
+                </table>
+                
+            </div>
+        </div>
+    </body>
 </html>
+

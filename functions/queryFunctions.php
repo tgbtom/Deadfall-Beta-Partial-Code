@@ -73,8 +73,6 @@ function getTownDetails($townName)
 function getWarehouseItems($townName)
 {
 	global $dbCon;
-	global $x;
-	global $y;
 	
 	$query = 'SELECT * FROM`' . $townName . '` WHERE `x` = 0 AND `y` = 0';
 	$statement = $dbCon->prepare($query);

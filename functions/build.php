@@ -1,325 +1,37 @@
 <?php
-require_once ('../connect.php');
-require_once ('./verifyLogin.php');
-require_once ('../data/buildings.php');
-require_once ('../functions/queryFunctions.php');
-require_once ('../data/items.php');
-//gets the user and current character, and stores them in local variables
-$user = $_SESSION['login'];
-$char = $_SESSION['char'];
-$x = $_SESSION['x'];
-$y = $_SESSION['y'];
 
-//find which town the character is in
+require_once("../model/database.php");
+require_once("../model/structures.php");
+require_once("../data/buildings.php");
+require_once("../functions/queryFunctions.php");
+
 $charDetails = getCharDetails();
-$townName = $charDetails['townName'];
-$currentAp = $charDetails['currentAP'];
+$townName = $charDetails["townName"];
 
-//query the DB to determine the current buildings array (string format)
-$townDetails = getTownDetails($townName);
-$buildingsString = $townDetails['buildings'];
-$buildingsArray = explode(':', $buildingsString);
+$buildName = filter_input(INPUT_POST, "buildName");
+$apToAssign = filter_input(INPUT_POST, "apToAssign");
 
-$apToAdd = filter_input(INPUT_POST, 'apToAdd');
-$buildingName = filter_input(INPUT_POST, 'buildingName');
-$firstBuild = filter_input(INPUT_POST, 'firstBuild');
-$apRequired = filter_input(INPUT_POST, 'apRequired');
-
-function isFirstBuild()
+if (isset($buildName) && isset($apToAssign))
 {
-	global $townName;
-	global $buildingName;
-	global $dbCon;
-	
-	$query = 'SELECT `buildings` FROM `towns` WHERE `townName` = :townName';
-	$statement = $dbCon->prepare($query);
-	$statement->bindValue(':townName', $townName);
-	$statement->execute();
-	$result = $statement->fetch();
-	$statement->closeCursor();
-	//$result is the buildings string from the current town
-	//Defence.1:Outer Wall.180:Inner Wall.100:Wall Upgrade 1.0:Wooden Support.0:Supply.1:Water Reserve.29
-	if (strpos($result['buildings'], $buildingName) == false)
-	{
-		return true;
-	}
-	else 
-	{
-		$stringIndex = strpos($result['buildings'], $buildingName);
-		$lengthBeforeCount = strlen($buildingName) + 1 + $stringIndex;
-		$firstDigit = substr($result['buildings'], $lengthBeforeCount, 1); //first digit of the invested AP for current building (works because it's always 1-9 if number is > 0)
-		if ($firstDigit == 0)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
+    //Create an object of the Structure that we are trying to upgrade, and an object of its town-specific stats
+    for ($i=0; $i < count($buildingsInfo); $i++)
+    {
+        if ($buildingsInfo[$i][0] == $buildName)
+        {
+           $currentBuilding = new Structure($buildingsInfo[$i][0], $buildingsInfo[$i][1], $buildingsInfo[$i][2], $buildingsInfo[$i][3], $buildingsInfo[$i][4], $buildingsInfo[$i][5], $buildingsInfo[$i][6], $buildingsInfo[$i][7], $buildingsInfo[$i][8]);
+           $builtDetails = StructuresDB::getBuiltDetails($buildName, $townName);
+           //Ensure the building is not maxxed out Level
+           //Check to see if it is a partial level (Resources already assigned)
+           //Ensure AP to assign is <= what the character has for AP, and if the apToAssign exceeds the remaining ap left for the level, reduce apToAssign to the remaining AP needed
+           //If apToAssign exceeds characters current AP, return to construction page with error ("Character no longer has 'x' AP")
+            //If a new level is just being started, check again for sufficient resources, then remove them from bank and Add AP to structure.
+        }
+    }
 }
-
-function doesNewStringContain($arg1)
+else
 {
-	global $newItemsString;
-	
-	if (!isset($newItemsString) || $newItemsString == NULL)
-	{return false;}
-	
-	$searchingFor = $arg1 . '.';
-	$searchingFor2 = ',' . $arg1 . '.';
-	$search1 = strpos($newItemsString, $searchingFor);
-	$search2 = strpos($newItemsString, $searchingFor2);
-	
-	//if the item is the first item in the string ... USES === operator so this statement doesn't continue if the item isn't found
-	if ($search1 === 0)
-	{
-		return true;
-	}
-	//else; set the searching string to make sure it only finds full index, so 10 doesn't return true for item #0
-	else
-	{
-		if ($search2 == false || $search2 == NULL)
-		{
-			return false;
-		}
-		else
-		{
-			return true;
-		}
-	}
-}
-
-function warehouseContains($arg1)
-{
-	global $dbCon;
-	global $townName;
-	
-	$query = 'SELECT * FROM `' . $townName . '` WHERE `x` = 0 AND `y` = 0';
-	$statement = $dbCon->prepare($query);
-	$statement->execute();
-	$result = $statement->fetch();
-	$statement->closeCursor();
-	
-	$functionItems = $result['groundItems'];
-	$searchingFor = $arg1 . '.';
-	$searchingFor2 = ',' . $arg1 . '.';
-	$search1 = strpos($functionItems, $searchingFor);
-	$search2 = strpos($functionItems, $searchingFor2);
-	
-	//if the item is the first item in the string ... USES === operator so this statement doesn't continue if the item isn't found
-	if ($search1 === 0)
-	{
-		return true;
-	}
-	//else; set the searching string to make sure it only finds full index, so 10 doesn't return true for item #0
-	else
-	{
-		if ($search2 == false || $search2 == NULL)
-		{
-			return false;
-		}
-		else
-		{
-			return true;
-		}
-	}
-}
-
-function buildingRequires($itemId)
-{
-	global $itemRequirementsArray;
-	for ($i = 0; $i < sizeOf($itemRequirementsArray); $i++)
-	{
-		$currentSplit = explode('.', $itemRequirementsArray[$i]);
-		$currentId = $currentSplit[0];
-		$currentAmount = $currentSplit[1];
-		if ($currentId == $itemId)
-		{
-			return true;
-		}
-	}
-	return false;
+    //If the page is being visisted without the correct data being transmitted, redirect to construction page
+    echo "<script>window.location.href = '../inTown/?locat=construction'</script>";
 }
 
 
-//following for loop increases the AP built on the corresponding buildingName
-//if apToBuild > AP the Char has, dont follow through, instead set header with error_get_last
-if ($apToAdd > $currentAp || $apToAdd == 0)
-{	
-	echo '<script>window.location = "' . $root . '/inTown/?locat=construction&e=You%20do%20not%20have%20enough%20AP!";</script>';
-}
-else if ($apToAdd > $apRequired)
-{	
-	echo '<script>window.location = "' . $root . '/inTown/?locat=construction&e=This%20Structure%20does%20not%20require%20so%20much%20AP!";</script>';
-}
-else 
-{
-	if (isFirstBuild())
-	{
-		$newItemsString = NULL;
-		$warehouseItems = getWarehouseItems($townName);
-		$warehouseItemsArray = explode(',', $warehouseItems);
-		//Determine the required Items by ID and amount, store them in an array called itemRequirementsArray
-		for ($i = 0; $i < sizeOf($buildingsInfo); $i++)
-		{
-			if ($buildingsInfo[$i][0] == $buildingName)
-			{
-				$itemRequirements = $buildingsInfo[$i][4];
-			}
-		}
-		$itemRequirementsArray = explode(':', $itemRequirements);
-		$requiredItems = sizeOf($itemRequirementsArray);
-		
-		for ($i = 0; $i < sizeOf($itemRequirementsArray); $i++)
-		{
-			$currentRequirementSplit = explode('.', $itemRequirementsArray[$i]);
-			$currentRequiredItemId = $currentRequirementSplit[0];
-			$currentRequiredItemAmount = $currentRequirementSplit[1];
-			
-			//check if item has a stack in the warehouse
-			if (warehouseContains($currentRequiredItemId) == false)
-			{
-				echo '<script>window.location = "' . $root . '/inTown/?locat=construction&e=Sufficient%20items%20no%20longer%20exist! NOSTACK";</script>';
-				$itemsFound = false;
-				exit();
-			}
-			/*else
-			{
-				if (!isset($itemsFound))
-				{
-					$itemsFound = true;
-				}
-			}*/
-		}
-		
-		$itemRequirementsArray = explode(':', $itemRequirements);
-		$requiredItems = sizeOf($itemRequirementsArray);
-		for ($i1 = 0; $i1 < sizeOf($itemRequirementsArray); $i1++)
-		{
-			$currentRequirementSplit = explode('.', $itemRequirementsArray[$i1]);
-			$currentRequiredItemId = $currentRequirementSplit[0];
-			$currentRequiredItemAmount = $currentRequirementSplit[1];
-			
-			//remove items from warehouse. If quantities no longer suffice, return with an error message
-			for ($i2 = 0; $i2 < sizeOf($warehouseItemsArray); $i2++)
-			{
-				$currentWarehouseSplit = explode('.', $warehouseItemsArray[$i2]);
-				$currentItemId = $currentWarehouseSplit[0];
-				$currentItemAmount = $currentWarehouseSplit[1];
-				$potentialItemAmount = $currentItemAmount - $currentRequiredItemAmount;
-
-				if ($currentItemId == $currentRequiredItemId)
-				{
-					if ($potentialItemAmount < 0)
-					{
-						echo '<script>window.location = "' . $root . '/inTown/?locat=construction&e=Sufficient%20items%20no%20longer%20exist! ABCD";</script>';
-						$itemsFound = false;
-						exit();
-					}
-					else if ($potentialItemAmount == 0)
-					{
-						
-					}
-					else
-					{
-						if (!isset($newItemsString) || $newItemsString == NULL)
-						{
-							$newItemsString = $currentItemId . '.' . $potentialItemAmount;
-							
-						}
-						else
-						{
-							$newItemsString = $newItemsString . ',' . $currentItemId . '.' . $potentialItemAmount;
-							
-						}
-					}
-				}
-				else if (buildingRequires($currentItemId))
-				{
-					//do nothing, item will be added to the string when it is time to search for it
-				}
-				else if (doesNewStringContain($currentItemId) == false)//PREVENT STRING-TYPE ARRAY FROM DUPLICATING ALL ITEMS
-				{
-					if (!isset($newItemsString) || $newItemsString == NULL)
-					{
-						$newItemsString = $currentItemId . '.' . $currentItemAmount;
-						
-					}
-					else
-					{
-						$newItemsString = $newItemsString . ',' . $currentItemId . '.' . $currentItemAmount;
-						
-					}
-				}
-			}			
-		}
-			
-			if (isset($itemsFound) && $itemsFound != false || !isset($itemsFound))
-			{
-			//Update the grounditems in the DB
-			$query4 = 'UPDATE `' . $townName . '` SET `groundItems` = :newItemsString WHERE `x` = 0 AND `y` = 0';
-			$statement4 = $dbCon->prepare($query4);
-			$statement4->bindValue(':newItemsString', $newItemsString);
-			$statement4->execute();
-			$statement4->closeCursor();
-			}
-	}
-	
-	if (isset($itemsFound) && $itemsFound != false || !isset($itemsFound))
-	{
-		//Increase the invested AP
-		for ($i = 0; $i < sizeOf($buildingsArray); $i++)
-		{
-			$currentBuildingSplit = explode('.', $buildingsArray[$i]);
-			$currentBuildingName = $currentBuildingSplit[0];
-			$currentBuildingAp = $currentBuildingSplit[1];
-			$potentialBuildingAp = $currentBuildingAp + $apToAdd;
-	
-			if ($currentBuildingName == $buildingName)
-			{
-				if (!isset($newBuildingsString))
-				{
-					$newBuildingsString = $currentBuildingName . '.' . $potentialBuildingAp;
-				}
-				else
-				{
-					$newBuildingsString = $newBuildingsString . ':' . $currentBuildingName . '.' . $potentialBuildingAp;	
-				}
-			}
-			else
-			{
-				if (!isset($newBuildingsString))
-				{
-					$newBuildingsString = $currentBuildingName . '.' . $currentBuildingAp;
-				}
-				else
-				{
-					$newBuildingsString = $newBuildingsString . ':' . $currentBuildingName . '.' . $currentBuildingAp;	
-				}
-			}
-		}
-
-		$query = 'UPDATE `towns` SET `buildings` = :newBuildingsString WHERE `townName` = :townName';
-		$statement = $dbCon->prepare($query);
-		$statement->bindValue(':newBuildingsString', $newBuildingsString);
-		$statement->bindValue(':townName', $townName);
-		$statement->execute();
-		$statement->closeCursor();
-
-		//decrease the AP the character has
-		$remainingCharAp = $currentAp - $apToAdd;
-		
-		$query2 = 'UPDATE `characters` SET `currentAP` = :newCharAp WHERE `character` = :char AND `username` = :user';
-		$statement2 = $dbCon->prepare($query2);
-		$statement2->bindValue(':newCharAp', $remainingCharAp);
-		$statement2->bindValue(':char', $char);
-		$statement2->bindValue(':user', $user);
-		$statement2->execute();
-		$statement2->closeCursor();
-	}
-}				
-
-//Return to the construction page
-echo '<script>window.location = "/inTown/?locat=construction";</script>';
-?>

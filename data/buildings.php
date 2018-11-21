@@ -5,7 +5,7 @@
 $buildingsInfo = array(
 array("Defence", "Defence", "Defence", "1", "", "0", "1", "Defensive constructions that help to defend from the horde.", "0"),
 array("Perimeter Fence", "Defence", "Defence", "30", "2.10:8.2", "40", "1", "Build a fence establishing a perimeter for the settlement. Will Keep some zeds out.", ""),
-array("Wooden Wall", "Defence", "Perimeter Fence", "70", "2.18:8.5", "60", "5", "Improve the perimeter around the settlement with large wooden boards.", "&nbsp&nbsp→"),
+array("Wooden Wall", "Defence", "Perimeter Fence", "70", "2.18:8.5", "60", "5", "Improve the perimeter around the settlement with large wooden boards.", "&nbsp→"),
 array("Inner Wall", "Defence", "Wooden Wall", "50", "2.10:10.15", "15", "5", "Create a secondary wall, just in case there is a breach in the main wall.", "&nbsp&nbsp→"),
 array("Wooden Support", "Defence", "Wooden Wall", "40", "2.15", "30", "1", "Add structural support the walls.", "&nbsp&nbsp→"),
 array("Metal Patching", "Defence", "Wooden Wall", "80", "3.10", "150", "1", "Reinforce the outer wall.", "&nbsp&nbsp→"),
