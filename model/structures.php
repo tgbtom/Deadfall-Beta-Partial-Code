@@ -156,6 +156,30 @@ class StructuresDB
         }
     }
     
+    public static function addAp($structure, $apToAdd, $townName)
+    {
+        $builtStructures = self::getTownStructures($townName);
+        $builtArray = explode(':', $builtStructures);
+        
+        foreach ($builtArray as $value)
+        {
+            $currentArray = explode('.', $value);
+            $building["Name"] = $currentArray[0];
+            $building["Ap"] = $currentArray[1];
+            $building["Level"] = $currentArray[2];
+            if ($building["Name"] == $structure)
+            {
+                $building["Ap"] += $apToAdd;
+            }
+            
+            $newBuildString .= $building["Name"] . "." . $building["Ap"] . "." . $building["Level"];
+        }
+        
+        $queryString = "UPDATE towns SET `buildings` = '" . $newBuildString . "' WHERE `townName` = '" . $townName . "'";
+        Database::sendQuery($queryString);
+        
+    }
+    
     public static function isStructureAffordable($structure_object, $townName)
     {   
         //Build an array of item cost objects        

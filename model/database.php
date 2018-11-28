@@ -33,4 +33,13 @@ class Database {
         }
         return self::$db;    
     }
+    
+    public static function sendQuery($queryString)
+    {
+        $dbCon = self::getDB();
+        
+        $statement = $dbCon->prepare($queryString);
+        $statement->execute();
+        $statement->closeCursor();
+    }
 }

@@ -20,11 +20,71 @@ if (isset($buildName) && isset($apToAssign))
         {
            $currentBuilding = new Structure($buildingsInfo[$i][0], $buildingsInfo[$i][1], $buildingsInfo[$i][2], $buildingsInfo[$i][3], $buildingsInfo[$i][4], $buildingsInfo[$i][5], $buildingsInfo[$i][6], $buildingsInfo[$i][7], $buildingsInfo[$i][8]);
            $builtDetails = StructuresDB::getBuiltDetails($buildName, $townName);
-           //Ensure the building is not maxxed out Level
-           //Check to see if it is a partial level (Resources already assigned)
-           //Ensure AP to assign is <= what the character has for AP, and if the apToAssign exceeds the remaining ap left for the level, reduce apToAssign to the remaining AP needed
-           //If apToAssign exceeds characters current AP, return to construction page with error ("Character no longer has 'x' AP")
-            //If a new level is just being started, check again for sufficient resources, then remove them from bank and Add AP to structure.
+           //Ensure the building is not maxed out Level
+           if ($builtDetails["Level"] >= $currentBuilding->getMaxLevel())
+           {
+               //Building is Maxed Out
+               echo "<script>window.location.href='../inTown/?locat=construction&e=Building was already completed.'</script>";
+           }
+           else
+           {
+               //Building is not max level
+               //Check to see if it is a partial level (Resources already assigned)
+               
+               $apRemaining = $currentBuilding->getApCost() - $builtDetails["Ap"];
+               
+               if ($builtDetails["Ap"] >= 1)
+               {
+                   //Structure has been started already
+                   //We need to check required AP, if apToAdd is greater than required ap, reduce apToAdd, also ensure character has enough ap still
+                   
+                   if ($apToAssign > $apRemaining)
+                   {
+                       $apToAssign = $apRemaining;
+                   }
+                   
+                   if ($charDetails["currentAP"] < $apToAssign)
+                   {
+                       //Return, Character does not have enough Ap
+                       echo "<script>window.location.href='../inTown/?locat=construction&e=Character does not have " . $apToAssign . " Ap.'</script>";
+                   }
+                   else
+                   {
+                       //Apply the AP to the structure*** <DONE>
+                       StructuresDB::addAp($currentBuilding->getName(), $apToAssign, $townName);
+                   }
+               }
+               else
+                {
+                   //We need to remove resources to contribute
+                   //Check if the structure is still affordable
+                    if (StructuresDB::isStructureAffordable($currentBuilding, $townName))
+                   {
+                       //Check character ap and ap required
+                       //...Then remove items from bank.
+                       
+                        if ($apToAssign > $apRemaining)
+                        {
+                            $apToAssign = $apRemaining;
+                        }
+                        
+                        if ($charDetails["currentAP"] < $apToAssign)
+                        {
+                            //Return, Character does not have enough Ap
+                            echo "<script>window.location.href='../inTown/?locat=construction&e=Character does not have " . $apToAssign . " Ap.'</script>";
+                        }
+                        else
+                        {
+                            //Apply the AP to the structure
+                            StructuresDB::addAp($currentBuilding->getName(), $apToAssign, $townName);
+                            //...then remove items from bank************************************
+                            
+                        }
+                       
+                   }
+                }
+               
+           }
         }
     }
 }
