@@ -11,6 +11,7 @@ $townName = $charDetails["townName"];
 $buildName = filter_input(INPUT_POST, "buildName");
 $apToAssign = filter_input(INPUT_POST, "apToAssign");
 
+
 if (isset($buildName) && isset($apToAssign))
 {
     //Create an object of the Structure that we are trying to upgrade, and an object of its town-specific stats
@@ -50,12 +51,20 @@ if (isset($buildName) && isset($apToAssign))
                    }
                    else
                    {
-                       //Apply the AP to the structure*** <DONE>
+                       //Apply the AP to the structure, REMOVE AP FROM CHAR****
+                       $newAp = $charDetails["currentAP"] - $apToAssign;
+                       $queryString = "UPDATE characters SET `currentAP` = " . $newAp . " WHERE "
+                               . "`character` = '" . $charDetails["character"] . "' AND "
+                               . "`username` = '" . $charDetails["username"] . "' AND "
+                               . "`townName` = '" . $townName ."'";
+                       Database::sendQuery($queryString);
+                       
                        StructuresDB::addAp($currentBuilding->getName(), $apToAssign, $townName);
+                       echo "<script>window.location.href='../inTown/?locat=construction'</script>";
                    }
                }
                else
-                {
+               {
                    //We need to remove resources to contribute
                    //Check if the structure is still affordable
                     if (StructuresDB::isStructureAffordable($currentBuilding, $townName))
@@ -75,12 +84,29 @@ if (isset($buildName) && isset($apToAssign))
                         }
                         else
                         {
-                            //Apply the AP to the structure
+                            //Apply the AP to the structure, REMOVE AP FROM CHAR
+                            $newAp = $charDetails["currentAP"] - $apToAssign;
+                            $queryString = "UPDATE characters SET `currentAP` = " . $newAp . " WHERE "
+                               . "`character` = '" . $charDetails["character"] . "' AND "
+                               . "`username` = '" . $charDetails["username"] . "' AND "
+                               . "`townName` = '" . $townName ."'";
+                            Database::sendQuery($queryString);
+                            
                             StructuresDB::addAp($currentBuilding->getName(), $apToAssign, $townName);
-                            //...then remove items from bank************************************
+                            
+                            //...then remove items from bank
+                            $itemCosts = $currentBuilding->getItemCosts_objects();
+                            foreach ($itemCosts->getItemCosts() as $value)
+                            {
+                                TownBankDB::removeItem($value->getItemId(), $value->getItemAmount(), $townName); 
+                            }
+                            echo "<script>window.location.href='../inTown/?locat=construction'</script>";
                             
                         }
                        
+                   }
+                   else{
+                       echo "<script>window.location.href='../inTown/?locat=construction&e=Structure is no longer affordable.'</script>";
                    }
                 }
                
@@ -91,7 +117,7 @@ if (isset($buildName) && isset($apToAssign))
 else
 {
     //If the page is being visisted without the correct data being transmitted, redirect to construction page
-    echo "<script>window.location.href = '../inTown/?locat=construction'</script>";
+    echo "<script>window.location.href = '../inTown/?locat=construction&e=fuct'</script>";
 }
 
 

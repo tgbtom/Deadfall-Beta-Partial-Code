@@ -161,7 +161,7 @@ class StructuresDB
         $builtStructures = self::getTownStructures($townName);
         $builtArray = explode(':', $builtStructures);
         
-        foreach ($builtArray as $value)
+        foreach ($builtArray as $key => $value)
         {
             $currentArray = explode('.', $value);
             $building["Name"] = $currentArray[0];
@@ -172,7 +172,13 @@ class StructuresDB
                 $building["Ap"] += $apToAdd;
             }
             
-            $newBuildString .= $building["Name"] . "." . $building["Ap"] . "." . $building["Level"];
+            if ($key == 0){
+                $newBuildString .= $building["Name"] . "." . $building["Ap"] . "." . $building["Level"];
+            }
+            else{
+                $newBuildString .= ":" . $building["Name"] . "." . $building["Ap"] . "." . $building["Level"];
+            }
+            
         }
         
         $queryString = "UPDATE towns SET `buildings` = '" . $newBuildString . "' WHERE `townName` = '" . $townName . "'";
@@ -227,5 +233,44 @@ class TownBankDB
         }
         
         return 0;
+    }
+    
+    public static function removeItem($itemId, $amountToRemove, $townName)
+    {
+        $dbCon = Database::getDB();
+        
+         //Get list of all items in bank
+        $query = "SELECT groundItems FROM `" . $townName . "` WHERE `x` = 0 AND `y` = 0";
+        $statement = $dbCon->prepare($query);
+        $statement->execute();
+        $result = $statement->fetch(); //0.41,1.41,2.3,.4,10.1,3.1,4.1,13.1,6.2,7.1,5.1
+        $statement->closeCursor();
+        
+        $bank = explode(",", $result["groundItems"]);
+        foreach($bank as $key => $value)
+        {
+            $currentItem = explode(".", $value);
+            $current["Id"] = $currentItem[0];
+            $current["Amount"] = $currentItem[1];
+            
+            if ($current["Id"] == $itemId)
+            {
+                $current["Amount"] = (($current["Amount"] - $amountToRemove) >= 0) ? $current["Amount"] - $amountToRemove : 0 ;
+            }
+            
+            if ($key == 0)
+            {
+                $newGroundItems .= $current["Id"] . "." . $current["Amount"];
+            }
+            else
+            {
+                $newGroundItems .= "," . $current["Id"] . "." . $current["Amount"];
+            }
+            
+        }
+        
+        $queryString = "UPDATE " . $townName . " SET `groundItems` = '" . $newGroundItems . "' WHERE `x` = 0 AND `y` = 0";
+        Database::sendQuery($queryString);
+        
     }
 }

@@ -196,27 +196,26 @@ require_once("../model/database.php");
                                 elseif ($builtDetails["Ap"] >= 1)
                                 {
                                     //Upgrade has already begun
-                                    $formName = "form" . $currentBuilding->getName();
-                                        $tableRow = "<form action='../functions/build.php' method='post' id='" . $formName . "'><tr>"
-                                                . "<td>" . $builtDetails['Level'] . "/"  . $currentBuilding->getMaxLevel() . "</td>"
-                                                . "<td>" . $indent . $currentBuilding->getName() . $defString . "</td>"
-                                                . "<td><small>Contribute to Upgrade</small></td><input hidden type='text' name='buildName' value='" . $currentBuilding->getName() . "'>"
-                                                . "<td class='apCell'><input type='number' placeholder='Ap' class='apInput' name='apToAssign' max='$charAp'>" . $builtDetails["Ap"] . "/" . $currentBuilding->getApCost() . " <img src='../images/icons/ap.png'></td>"
-                                                . "<td class='buttonCell'><button type='submit' form='" . $formName . "' value='Submit' class='buildButton'><span>Upgrade</span></button></td>"
-                                                . "</tr></form>";
+                                    $tableRow = "<form action='../functions/build.php' method='post'><tr>"
+                                            . "<td>" . $builtDetails['Level'] . "/"  . $currentBuilding->getMaxLevel() . "</td>"
+                                            . "<td>" . $indent . $currentBuilding->getName() . $defString . "</td>"
+                                            . "<td><small>Contribute to Upgrade</small></td><input hidden type='text' name='buildName' value='" . $currentBuilding->getName() . "'>"
+                                            . "<td class='apCell'><input type='number' placeholder='Ap' class='apInput' name='apToAssign' min=0 max='$charAp'>" . $builtDetails["Ap"] . "/" . $currentBuilding->getApCost() . " <img src='../images/icons/ap.png'></td>"
+                                            . "<td class='buttonCell'><button type='submit' value='Submit' class='buildButton'><span>Contribute</span></button></td>"
+                                            . "</tr></form>";
                                 }
                                 else
                                 {
                                     //Check if structure upgrade is affordable
                                     if (StructuresDB::isStructureAffordable($currentBuilding, $townName))
                                     {
-                                        $tableRow = "<tr>"
+                                        $tableRow = "<form action='../functions/build.php' method='post'><tr>"
                                                 . "<td>" . $builtDetails['Level'] . "/"  . $currentBuilding->getMaxLevel() . "</td>"
                                                 . "<td>" . $indent . $currentBuilding->getName() . $defString . "</td>"
-                                                . "<td>" . $resourceCostsString . "</td>"
-                                                . "<td class='apCell'><input type='number' placeholder='Ap' class='apInput' name='apToAssign' max='$charAp'>" . $builtDetails["Ap"] . "/" . $currentBuilding->getApCost() . " <img src='../images/icons/ap.png'></td>"
-                                                . "<td class='buttonCell'><button type='submit' form='' value='Submit' class='buildButton'><span>Upgrade</span></button></td>"
-                                                . "</tr>";
+                                                . "<td>" . $resourceCostsString . "</td><input hidden type='text' name='buildName' value='" . $currentBuilding->getName() . "'>"
+                                                . "<td class='apCell'><input type='number' placeholder='Ap' class='apInput' name='apToAssign' min=0 max='$charAp'>" . $builtDetails["Ap"] . "/" . $currentBuilding->getApCost() . " <img src='../images/icons/ap.png'></td>"
+                                                . "<td class='buttonCell'><button type='submit' value='Submit' class='buildButton'><span>Upgrade</span></button></td>"
+                                                . "</tr></form>";
                                     }
                                     else
                                     {
@@ -225,7 +224,7 @@ require_once("../model/database.php");
                                                 . "<td>" . $builtDetails['Level'] . "/"  . $currentBuilding->getMaxLevel() . "</td>"
                                                 . "<td>" . $indent . $currentBuilding->getName() . $defString . "</td>"
                                                 . "<td>" . $resourceCostsString . "</td>"
-                                                . "<td class='apCell'><input type='number' placeholder='Ap' class='apInput' name='apToAssign' max='$charAp'>" . $builtDetails["Ap"] . "/" . $currentBuilding->getApCost() . " <img src='../images/icons/ap.png'></td>"
+                                                . "<td class='apCell'><input type='number' placeholder='Ap' class='apInput' name='apToAssign' disabled max='$charAp'>" . $builtDetails["Ap"] . "/" . $currentBuilding->getApCost() . " <img src='../images/icons/ap.png'></td>"
                                                 . "<td class='buttonCell'>Not Enough Resources</td>"
                                                 . "</tr>";
                                     }
@@ -235,13 +234,13 @@ require_once("../model/database.php");
                             elseif ($builtDetails["Ap"] >= 1) //No --> But There is AP assigned
                             {
                                 //Allow AP contributions
-                                        $tableRow = "<tr>"
+                                        $tableRow = "<form action='../functions/build.php' method='post'><tr>"
                                                 . "<td>" . $builtDetails['Level'] . "/"  . $currentBuilding->getMaxLevel() . "</td>"
                                                 . "<td>" . $indent . $currentBuilding->getName() . $defString . "</td>"
-                                                . "<td><small>Contribute to Structure</small></td>"
-                                                . "<td class='apCell'><input type='number' placeholder='Ap' class='apInput' name='apToAssign' max='$charAp'>" . $builtDetails["Ap"] . "/" . $currentBuilding->getApCost() . " <img src='../images/icons/ap.png'></td>"
-                                                . "<td class='buttonCell'><button type='submit' form='' value='Submit' class='buildButton'><span>Build</span></button></td>"
-                                                . "</tr>";
+                                                . "<td><small>Contribute to Structure</small></td><input hidden type='text' name='buildName' value='" . $currentBuilding->getName() . "'>"
+                                                . "<td class='apCell'><input type='number' placeholder='Ap' class='apInput' name='apToAssign' min=0 max='$charAp'>" . $builtDetails["Ap"] . "/" . $currentBuilding->getApCost() . " <img src='../images/icons/ap.png'></td>"
+                                                . "<td class='buttonCell'><button type='submit' value='Submit' class='buildButton'><span>Contribute</span></button></td>"
+                                                . "</tr></form>";
                             }
                             else
                             {
@@ -252,13 +251,13 @@ require_once("../model/database.php");
                                     if (StructuresDB::isStructureAffordable($currentBuilding, $townName))
                                     {
                                         //Structure is affordable, and construction has not begun
-                                        $tableRow = "<tr>"
+                                        $tableRow = "<form action='../functions/build.php' method='post'><tr>"
                                                 . "<td>" . $builtDetails['Level'] . "/"  . $currentBuilding->getMaxLevel() . "</td>"
                                                 . "<td>" . $indent . $currentBuilding->getName() . $defString . "</td>"
-                                                . "<td>" . $resourceCostsString . "</td>"
-                                                . "<td class='apCell'><input type='number' placeholder='Ap' class='apInput' name='apToAssign' max='$charAp'>" . $builtDetails["Ap"] . "/" . $currentBuilding->getApCost() . " <img src='../images/icons/ap.png'></td>"
-                                                . "<td class='buttonCell'><button type='submit' form='' value='Submit' class='buildButton'><span>Build Now</span></button></td>"
-                                                . "</tr>";
+                                                . "<td>" . $resourceCostsString . "</td><input hidden type='text' name='buildName' value='" . $currentBuilding->getName() . "'>"
+                                                . "<td class='apCell'><input type='number' placeholder='Ap' class='apInput' name='apToAssign' min=0 max='$charAp'>" . $builtDetails["Ap"] . "/" . $currentBuilding->getApCost() . " <img src='../images/icons/ap.png'></td>"
+                                                . "<td class='buttonCell'><button type='submit' value='Submit' class='buildButton'><span>Build Now</span></button></td>"
+                                                . "</tr></form>";
                                     }
                                     else
                                     {
@@ -267,7 +266,7 @@ require_once("../model/database.php");
                                                 . "<td>" . $builtDetails['Level'] . "/"  . $currentBuilding->getMaxLevel() . "</td>"
                                                 . "<td>" . $indent . $currentBuilding->getName() . $defString . "</td>"
                                                 . "<td>" . $resourceCostsString . "</td>"
-                                                . "<td class='apCell'><input type='number' placeholder='Ap' class='apInput' name='apToAssign' max='$charAp'>" . $builtDetails["Ap"] . "/" . $currentBuilding->getApCost() . " <img src='../images/icons/ap.png'></td>"
+                                                . "<td class='apCell'><input type='number' placeholder='Ap' class='apInput' name='apToAssign' disabled max='$charAp'>" . $builtDetails["Ap"] . "/" . $currentBuilding->getApCost() . " <img src='../images/icons/ap.png'></td>"
                                                 . "<td class='buttonCell'>Not Enough Resources</td>"
                                                 . "</tr>";
                                     }
