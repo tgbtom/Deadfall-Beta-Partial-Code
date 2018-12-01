@@ -48,11 +48,11 @@ $query2 = mysqli_query($con, $query1);
 	tr {}
 	style1 {font-size:0.8em;}
 	.samePlayer
-	{cursor: hand; background-color: #998574; height: 1px; border: 1px solid #120B06;}
+	{cursor: pointer; background-color: #998574; height: 1px; border: 1px solid #120B06;}
 	.samePlayer2
 	{float: left; vertical-align: text-top; height: 1%;}
 	.sameChar
-	{cursor: hand; background-color: #BAA28D; height: 1px; border: 1px solid #120B06;}
+	{ background-color: #BAA28D; height: 1px; border: 1px solid #120B06;}
 	.sameChar2
 	{float: left; vertical-align: text-top; height: 1%;}
 	.head
@@ -70,7 +70,7 @@ $query2 = mysqli_query($con, $query1);
 			<script>
 		function changeChar(newChar) {
 
-		if (newChar.length == 0) 
+		if (newChar.length === 0) 
 		{
 			return;
 		} 
@@ -78,7 +78,7 @@ $query2 = mysqli_query($con, $query1);
 		{
         var xmlhttp = new XMLHttpRequest();
 			xmlhttp.onreadystatechange = function() {
-				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) 
+				if (xmlhttp.readyState === 4 && xmlhttp.status === 200) 
 				{
 					//document.getElementById("txtHint").innerHTML = xmlhttp.responseText;
 				}
@@ -135,12 +135,12 @@ $query2 = mysqli_query($con, $query1);
                                 if ($charName == $charRow)
                                 {
                                     echo "<tr class='sameChar'>";
-                                    echo "<td><p>" . $row['username'] . "</p></td>" . "<td class='sameChar'><p class='sameChar2' onclick='changeChar(`" . $charRow . "`)'>" . $row['character'] . "</p>";
+                                    echo "<td><p>" . $row['username'] . "</p></td>" . "<td class='sameChar' onclick='changeChar(`" . $charRow . "`)'><p class='sameChar2'>" . $row['character'] . "</p>";
                                 }
                                 else 
                                 {
                                     echo "<tr>";
-                                    echo "<td><p>" . $row['username'] . "</p></td>" . "<td class='samePlayer'><p class='samePlayer2' onclick='changeChar(`" . $charRow . "`)'>" . $row['character'] . "</p>";
+                                    echo "<td><p>" . $row['username'] . "</p></td>" . "<td class='samePlayer' onclick='changeChar(`" . $charRow . "`)'><p class='samePlayer2'>" . $row['character'] . "</p>";
                                 }
 		
 				if (doesStatusContainExt(12, $charRow)) //character is dead

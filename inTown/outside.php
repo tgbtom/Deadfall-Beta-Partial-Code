@@ -375,9 +375,13 @@ $query2 = mysqli_query($con, $query1);
 	#upArrow {position: relative; top: -118px; left: 5px;}
 	#downArrow {position: relative; top: -33px; left: -35px;}
 	.Arrow:hover {filter:brightness(0.8);}
-	.bulletinHead {border: 1px solid black; float: center; width: 65%; height: 15px; padding: 5px; margin-top: 5px; overflow: hidden;}
-	.bulletin {border: 1px solid black; float: center; max-height: 200px; width: 65%; padding: 5px; margin: 0px; overflow: auto;}
+	.bulletinHead {border: 1px solid black; float: left; width: 65%; height: 15px; padding: 5px; margin-top: 5px; overflow: hidden;}
+	.bulletin {border: 1px solid black; float: left; max-height: 200px; width: 65%; padding: 5px; margin: 0px; overflow: auto;}
 	.topBulletin { text-align: center; margin: 0px; padding: 0px;}
+        #lootWarning{color: red; font-weight: bold;}
+        #lootButton{margin: auto; text-align: center;}
+        #lootForm{text-align: center;}
+        #lootCell{text-align: center;}
 	
 	
 	.selected {border: 1px solid black;}
@@ -413,6 +417,7 @@ $query2 = mysqli_query($con, $query1);
 			document.getElementById("xco").innerHTML = Co;
 			document.getElementById("yco").innerHTML = Co2;
 			document.getElementById("lootability").innerHTML = Dep;
+                        
 			//Note: Arguments[0 - 2] come before the groundItems
 			document.getElementById("items").innerHTML = "";
 			for (i = 0; i < arguments.length; i++)
@@ -429,6 +434,10 @@ $query2 = mysqli_query($con, $query1);
 				}
 
 			}
+                                                
+                        if (Dep <= 0){
+                            document.getElementById("lootWarning").innerHTML = "This Zone is Depleted";
+                        }
 		}
 		
 	</script>
@@ -495,12 +504,12 @@ $query2 = mysqli_query($con, $query1);
 				//adds a '...' and # of remaining characters after the list hits specified maximum size
 				if($i > 10)
 				{
-					$chars2 = $chars2 . '</br> ... ' . (count($charactersList) - 11) . ' more.';
+					$chars2 = $chars2 . '&#13; ... ' . (count($charactersList) - 11) . ' more.';
 					$i = count($charactersList);
 				}
 				else
 				{
-					$chars2 = $chars2 . '</br>' . $charactersList[$i];
+					$chars2 = $chars2 . '&#13;' . $charactersList[$i];
 				}
 			}
 						
@@ -627,14 +636,14 @@ $query2 = mysqli_query($con, $query1);
 	echo '<tr><td id="zedCount">0</td><td id="lootability">0</td><td id="xco">0</td><td id="comma">,</td><td id="yco">0</td></tr>';
 	echo '<tr><th colspan="5">Items</th></tr>';
 	echo '<tr style="height:50px;"><td style="border: 1px solid #000000; max-width:140px;" id="items" colspan="5"><b><i>Use the navigation arrows on the left, to leave the town</i></b></td></tr>';
-	echo '<tr><td colspan="5" style="border: 1px solid #000000; max-width:140px;">';
+	echo '<tr><td colspan="5" class="lootCell">';
 	if (!($tempX == 0 && $tempY == 0)) //active loot button only if character isn't in town
 	{
-		echo '<form action=".?locat=outside" method="post"><input style="float:center; text-align:center;" type="submit" name="loot" value="Loot"></form>';
+		echo '<p id="lootWarning"></p><form action=".?locat=outside" method="post" id="lootForm"><input id="lootButton" type="submit" name="loot" value="Loot"></form>';
 	}
 	else
 	{
-		echo '<form action=".?locat=outside" method="post"><input style="float:center; text-align:center;" type="submit" name="loot" value="Loot" disabled></form>';
+		echo '<p id="lootWarning"></p><form action=".?locat=outside" method="post" id="lootForm"><input id="lootButton" type="submit" name="loot" value="Loot" disabled></form>';
 	}
 	echo '</td></tr>';
 	echo '</table>';

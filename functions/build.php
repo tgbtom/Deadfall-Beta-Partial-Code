@@ -59,7 +59,7 @@ if (isset($buildName) && isset($apToAssign))
                                . "`townName` = '" . $townName ."'";
                        Database::sendQuery($queryString);
                        
-                       StructuresDB::addAp($currentBuilding->getName(), $apToAssign, $townName);
+                       StructuresDB::addAp($currentBuilding, $apToAssign, $townName);
                        echo "<script>window.location.href='../inTown/?locat=construction'</script>";
                    }
                }
@@ -92,7 +92,7 @@ if (isset($buildName) && isset($apToAssign))
                                . "`townName` = '" . $townName ."'";
                             Database::sendQuery($queryString);
                             
-                            StructuresDB::addAp($currentBuilding->getName(), $apToAssign, $townName);
+                            StructuresDB::addAp($currentBuilding, $apToAssign, $townName);
                             
                             //...then remove items from bank
                             $itemCosts = $currentBuilding->getItemCosts_objects();

@@ -156,7 +156,7 @@ class StructuresDB
         }
     }
     
-    public static function addAp($structure, $apToAdd, $townName)
+    public static function addAp($structure_object, $apToAdd, $townName)
     {
         $builtStructures = self::getTownStructures($townName);
         $builtArray = explode(':', $builtStructures);
@@ -167,9 +167,14 @@ class StructuresDB
             $building["Name"] = $currentArray[0];
             $building["Ap"] = $currentArray[1];
             $building["Level"] = $currentArray[2];
-            if ($building["Name"] == $structure)
+            if ($building["Name"] == $structure_object->getName())
             {
                 $building["Ap"] += $apToAdd;
+                if ($building["Ap"] >= $structure_object->getApCost()){
+                    $building["Ap"] = 0;
+                    $building["Level"] += 1;
+                    self::addDefence($structure_object->getDefence(), $townName);
+                }
             }
             
             if ($key == 0){
@@ -183,7 +188,6 @@ class StructuresDB
         
         $queryString = "UPDATE towns SET `buildings` = '" . $newBuildString . "' WHERE `townName` = '" . $townName . "'";
         Database::sendQuery($queryString);
-        
     }
     
     public static function isStructureAffordable($structure_object, $townName)
@@ -203,6 +207,27 @@ class StructuresDB
         }
         //If all items are found to be sufficient
         return true;
+    }
+    
+    public static function addDefence($defenceToAdd, $townName){
+        $dbCon = Database::getDB();
+        
+        $query = "SELECT defenceSize FROM `towns` WHERE `townName` = :townName";
+        $statement = $dbCon->prepare($query);
+        $statement->bindValue(":townName", $townName);
+        $statement->execute();
+        $result = $statement->fetch();
+        $statement->closeCursor();
+        
+        $currentDefence = $result["defenceSize"];
+        $newDefence = $currentDefence + $defenceToAdd;
+        
+        $query2 = "UPDATE towns SET `defenceSize` = :defenceSize WHERE `townName` = :townName";
+        $statement2 = $dbCon->prepare($query2);
+        $statement2->bindValue(":defenceSize", $newDefence);
+        $statement2->bindValue(":townName", $townName);
+        $statement2->execute();
+        $statement->closeCursor();
     }
 }
 

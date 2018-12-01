@@ -1,0 +1,99 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Dec 1, 2018, 10:06:32 AM
+    Author     : Dingo
+*/
+
+       	table {
+            width:100%;
+            color:#000000;
+            border: 1px solid #120B06;
+            padding:2px;
+            background-color:#6D5A4A;
+            box-shadow: 7px 7px #333333;
+            border-collapse: collapse;
+        }
+        
+        td:first-child {
+            padding-left:7px;
+        }
+        
+        th{border-bottom: 1px solid black;}
+	input.number {width:40px;}
+	.data {width:150px; border: 1px solid black;}
+	.newBuild {color:#111111; border: 1px solid #120B06; border-collapse:collapse; padding:2px; background-color:#6D5A4A;}
+	.alreadyBuilt {color:#111111; border: 1px solid #120B06; border-collapse:collapse; padding:2px; background-color:#6D5A4A;}
+	.buildingHelp {cursor:help; overflow:auto;}
+	style1 {font-size:0.8em;}
+	.head {border: 1px solid black;}
+	.shield {float: right; display: block;}
+        .buttonCell {text-align: right; padding-right: 5px;}
+        small {color: #181818;}
+	.buildingName
+	{
+		float: left;
+		display: block;
+	}
+        .apInput
+        {
+            width: 50px;
+            border-radius: 7px;
+            margin-right: 8px;
+            float: right;
+        }
+        .buildButton {
+        display: inline-block;
+        float: right;
+        border-radius: 4px;
+        background-color: #54483E;
+        border: none;
+        color: #A39D8D;
+        text-align: center;
+        font-size: 16px;
+        padding: 5px;
+        width: 150px;
+        transition: all 0.5s;
+        cursor: pointer;
+        margin: 5px;
+        box-shadow: 3px 2px black;
+        }
+
+        .buildButton span {
+        cursor: pointer;
+        display: inline-block;
+        position: relative;
+        transition: 0.5s;
+        }
+
+        .buildButton span:after {
+        content: '\00bb';
+        position: absolute;
+        opacity: 0;
+        top: 0;
+        right: -20px;
+        transition: 0.5s;
+        }
+        
+        .buildButton:hover
+        {
+        background-color: #47372A;
+        transition: 0s;
+        }
+
+        .buildButton:hover span {
+        padding-right: 25px; 
+        }
+
+        .buildButton:hover span:after {
+        opacity: 1;
+        right: 0;
+        }
+        
+        .buildButton:active
+        {
+        box-shadow: none;
+        }
