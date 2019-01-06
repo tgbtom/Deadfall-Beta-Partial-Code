@@ -170,11 +170,13 @@ function replaceStatus($oldStat, $newStat) //Replace one status with another one
 }
 
 //When Second Argument is NULL, function will only remove the status specified by the first argument
-function replaceStatusExt($oldStat, $newStat, $charName) //Function to replace status effects from characters that are not logged into the current session
+function replaceStatusExt($oldStat, $newStat, $charName, $user = null) //Function to replace status effects from characters that are not logged into the current session
 {
 	
 	global $dbCon;
-	global $user;
+        if ($user == null){
+          global $user;  
+        }
 
 	$query = 'SELECT * FROM `characters` WHERE `username` = :user AND `character` = :char';
 	$statement = $dbCon->prepare($query);
@@ -254,10 +256,12 @@ function addStatus($newStat)
 		$statement4->closeCursor();
 }
 
-function addStatusExt($newStat, $charName)
+function addStatusExt($newStat, $charName, $user = null)
 {
 	global $dbCon;
-	global $user;
+        if ($user == null){
+           global $user; 
+        }
 	
 	$query1TEMP = 'SELECT * FROM `characters` WHERE `username` = :username AND `character` = :character';
 	$statement1TEMP = $dbCon->prepare($query1TEMP);
@@ -823,7 +827,7 @@ function getCharCoordsExt($character) //Return example => 0 => 5, 1=> -5  (Botto
 	}
 }
 
-
+//Upon death the character drops all items, and status is all reset to default
 function dropAllItemsExt($character)
 {
 	global $dbCon;
@@ -1004,7 +1008,7 @@ function closeTheTown($townName) //Officially ends the town, database table is l
 	{
 		$characterId = $current['id'];
 		
-		$query = 'UPDATE `characters` SET `townName` = "none" WHERE `id` = :id';
+		$query = 'UPDATE `characters` SET `townName` = "none", `status` = "3.7.11" WHERE `id` = :id';
 		$statement = $dbCon->prepare($query);
 		$statement->bindValue(':id', $characterId);
 		$statement->execute();

@@ -43,3 +43,23 @@ class Database {
         $statement->closeCursor();
     }
 }
+
+class Towns {
+    
+    public static function isTownCreated($townName){
+        $dbCon = Database::getDB();
+        
+        $query = "SELECT `townName` FROM `towns`";
+        $statement = $dbCon->prepare($query);
+        $statement->execute();
+        $results = $statement->fetchAll();
+        
+        foreach ($results as $result){
+            if ($result["townName"] == $townName){
+                return true;
+            }
+        }
+        return false;
+    }
+    
+}

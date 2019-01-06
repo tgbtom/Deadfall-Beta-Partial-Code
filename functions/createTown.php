@@ -3,11 +3,28 @@
 
 require_once('../connect.php');
 require_once('../functions/verifyLogin.php');
+require_once("../model/database.php");
 
 $newTown = filter_input(INPUT_POST, 'newTown');
-if (isset($newTown) && $newTown != NULL && $newTown != '')
+
+////VALIDATE THE TOWN NAME HERE
+$validPattern = "/[a-zA-Z]{" . strlen($newTown) . "}/";
+$validName = preg_match($validPattern, $newTown);
+//validate that the town name is not taken already
+
+if ((isset($newTown) && $newTown != NULL && $newTown != '') && $validName)
 {
-	createSettlement($newTown, 11);
+    if (!(Towns::isTownCreated($newTown))){
+        createSettlement($newTown, 11);
+    }
+    else{
+        $location = '/inTown/?locat=join&tempChar=' . $_SESSION['char'] . '&e=Settlement Name is already in use';	
+        echo '<script>window.location = "' . $root . $location .'";</script>';
+    }
+}
+else{
+    	$location = '/inTown/?locat=join&tempChar=' . $_SESSION['char'] . '&e=Settlement Name is Not Valid';	
+        echo '<script>window.location = "' . $root . $location .'";</script>';
 }
 $cName = filter_input(INPUT_POST, 'cName');
 
@@ -122,7 +139,8 @@ function createSettlement($settlementName, $mapSize)
 	}
 	if ($con->query($compilation) === TRUE) 
 	{
-	$location = '/inTown/?locat=join&tempChar=' . $_SESSION['char'];	echo '<script>window.location = "' . $root . $location .'";</script>';
+	$location = '/inTown/?locat=join&tempChar=' . $_SESSION['char'];	
+        echo '<script>window.location = "' . $root . $location .'";</script>';
 	}
 	//mysql_query($con2, $compilation);
 	

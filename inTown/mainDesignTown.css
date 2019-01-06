@@ -65,14 +65,14 @@ body
 
 .taskBox
 {
-	float: left;
+    float: left;
     min-width: 13%;
     max-width: 13%;
-	background-color: #A5907E;
-	border: 2px solid #000000;
-	padding: 4px;
-	margin: 25px;
-	box-shadow: 7px 7px #333333;
+    background-color: #A5907E;
+    border: 2px solid #000000;
+    padding: 4px;
+    margin: 25px;
+    box-shadow: 7px 7px #333333;
 }
 
 .taskBox img
@@ -80,7 +80,7 @@ body
     display: block;
     padding: auto;
     margin: 10px auto;
-	box-shadow: 5px 5px #333333;
+    box-shadow: 5px 5px #333333;
 }
 
 .centralBox
@@ -166,7 +166,6 @@ body
 	background-color:#6d5846;
 	color:#000000;
 	box-shadow: 7px 7px #333333;
-	
 }
 
 .zoneInfo
@@ -178,7 +177,12 @@ body
 	height: 125px;
 	margin: 10px;
 	overflow-x: auto;
-	overflow-y: auto;
+	overflow-y: scroll;
+        background-color:#6D5A4A;
+        box-shadow: 7px 7px #333333;
+        clear: right;
+        position: relative;
+        top: 50px;
 }
 
 .itemInfo
@@ -187,8 +191,13 @@ body
 	border: 1px solid black;
 	border-collapse: collapse;
 	width: 150px;
-	height: 125px;
+	height: 200px;
 	margin: 10px;
+        background-color:#6D5A4A;
+        box-shadow: 7px 7px #333333;
+        clear: both;
+        position: relative;
+        top: 80px;
 }
 
 .currentInfo

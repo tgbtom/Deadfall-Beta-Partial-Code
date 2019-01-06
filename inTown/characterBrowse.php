@@ -26,7 +26,16 @@ $_SESSION['y'] = '';
 	border-radius: 25px; 
 	padding: 1%; 
 	margin-bottom: 4%; 
-	background-color: #A5907E;;}
+	background-color: #A5907E;
+}
+
+.clickable
+{
+    	cursor: pointer;
+	border-left:1px solid black; 
+	border-right:1px solid black; 
+	background-color: #A08C7A;
+}
 
 </style>
 
@@ -58,6 +67,24 @@ $_SESSION['y'] = '';
 				document.getElementById("class").innerHTML = arg3;
 				document.getElementById("town2").innerHTML = "Town: ";
 				document.getElementById("class2").innerHTML = "Class: ";
+                                
+                                characterNames = document.getElementsByClassName("clickable");
+                                for (i=0; i < characterNames.length; i++)
+                                {
+                                    characterNames[i].style.backgroundColor = "#A08C7A";
+                                    if (i == characterNames.length - 1)
+                                    {
+                                        characterNames[i].style.border = "none";
+                                        characterNames[i].style.borderBottom = "1px solid black";
+                                    }
+                                    else
+                                    {
+                                        characterNames[i].style.border = "none"; 
+                                    }
+                                }
+                                document.getElementById(arg1).style.backgroundColor = "#BAA28D";
+                                document.getElementById(arg1).style.border = "1px solid black";
+                                
 
 				//Changes play button words depending on town status of selected character
 				var x = document.getElementById("town");
@@ -122,7 +149,7 @@ $_SESSION['y'] = '';
 		
 		<ul>
 		<table style="" class="browseCharsTable" cellspacing="0">
-		<tr><td style='border: 1px solid black;'>Level</td><td style='border: 1px solid black;'>Name</td><td style='border: 1px solid black;'>Class</td></tr>
+		<tr><td style='border: 1px solid black;'>Level</td><td style='border: 1px solid black;'>Name</td><td style='border: 1px solid black;'>Class</td><td style='border: 1px solid black;'>Town</td></tr>
 		
 		<?php 
 		
@@ -143,7 +170,7 @@ $_SESSION['y'] = '';
 				$tips2 = $result["townName"];
 				$tips3 = lcfirst($result["class"]); //returns class name with first character as lowercase
 				$classImg = $root . "/images/icons/" . lcfirst($tips3) . ".png"; 
-				echo "<tr>" . "<td>Lvl: " . $result["level"] . "</td><td onclick=displayInfo('$tips','$tips2','$tips3') class='hand'>" . $result["character"] . "</td><td><img src='$classImg'> " . $result["class"] . "</td></tr>";
+				echo "<tr id='" . $tips . "' class='clickable' onclick=displayInfo('$tips','$tips2','$tips3')>" . "<td>Lvl: " . $result["level"] . "</td><td>" . $result["character"] . "</td><td><img src='$classImg'> " . $result["class"] . "</td><td>" . $tips2 . "</td></tr>";
 			}
 		}
 	

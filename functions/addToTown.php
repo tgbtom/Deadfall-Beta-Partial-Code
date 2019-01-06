@@ -49,9 +49,9 @@ $statement->closeCursor();
 $maxAmount = $result['maxResidents'];
 $newAmount = $result['amountResidents'] + 1;
 
-$query = 'UPDATE `towns` SET `amountResidents` = :newamount WHERE `townName` = :townName';
+$query = 'UPDATE `towns` SET `amountResidents` = :newAmount WHERE `townName` = :townName';
 $statement = $dbCon->prepare($query);
-$statement->bindValue(':amountResidents', $newAmount);
+$statement->bindValue(':newAmount', $newAmount);
 $statement->bindValue(':townName', $newTown);
 $statement->execute();
 $statement->closeCursor();
@@ -99,4 +99,3 @@ if ($newAmount >= $maxAmount)
 	$statement->execute();
 	$statement->closeCursor();
 	echo '<script>window.location = "' . $root . '/inTown/?locat=inTown";</script>';
-?>

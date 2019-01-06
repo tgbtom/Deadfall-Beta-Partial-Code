@@ -88,39 +88,37 @@
 
 // When the user clicks on div, open the popup and close all other pop-ups
 function popUpMenu(x)
-{
+{   
 	var popup = document.getElementById(x);
-	if (popup.style.visibility == 'visible')
-	{
-		var wasUp = true;
+	if (popup.style.visibility === 'visible'){
+            var wasUp = true;
 	}
-	else 
-	{
-		var wasUp = false;
+	else{
+            var wasUp = false;
 	}
+        
 	var popuptext = document.getElementsByClassName('popuptext');
-	for (var i = 0; i < popuptext.length; i++)
-	{
+	for (var i = 0; i < popuptext.length; i++){
 		popuptext[i].style.visibility = 'hidden';
 	}
-	if (!wasUp)
-	{
+        
+        if (!wasUp){
 		popup.style.visibility = 'visible';
 	}
-    //popup.classList.toggle("show");
+
 }
 
 function newAction(target, hiddenNameId)
 {
-	if (target == 'drop')
+	if (target === 'drop')
 	{	
 		document.sendItemData.action = "../functions/dropItem.php?nameTagId=" + hiddenNameId;
 	}
-	else if (target == 'Eat' || target == 'Drink')
+	else if (target === 'Eat' || target === 'Drink')
 	{
 		document.sendItemData.action = "../functions/consume.php?nameTagId=" + hiddenNameId;
 	}
-	else if (target == 'Attack')
+	else if (target === 'Attack')
 	{
 		document.sendItemData.action = "../functions/consume.php?nameTagId=" + hiddenNameId;
 	}
@@ -251,11 +249,10 @@ $aliveRes = $maxRes - $deadRes;
 		
 		
 	</div>
-	
-	<div class="taskBox">
-		<a href="./?locat=construction"><img src="../images/leaveTown.png"></a>
-		<a href="./?locat=warehouse"><img src="../images/storage.png"></a>
-		<a href="./?locat=citizens"><img src="../images/citizens.png"></a>
-		<a href="./?locat=character"><img src="../images/stats.png"></a>
-		<a href="./?locat=outside"><img src="../images/outside.png"></a>
-	</div>
+<div class="taskBox">
+    <a href="./?locat=construction"><img src="../images/leaveTown.png"></a>
+    <a href="./?locat=warehouse"><img src="../images/storage.png"></a>
+    <a href="./?locat=citizens"><img src="../images/citizens.png"></a>
+    <a href="./?locat=character"><img src="../images/stats.png"></a>
+    <a href="./?locat=outside"><img src="../images/outside.png"></a>
+</div>

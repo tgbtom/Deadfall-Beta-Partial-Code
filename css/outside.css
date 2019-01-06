@@ -1,0 +1,93 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Dec 7, 2018, 11:17:45 PM
+    Author     : Dingo
+*/
+        .lootButton {
+        display: inline-block;
+        border-radius: 4px;
+        background-color: #54483E;
+        border: none;
+        color: #A39D8D;
+        text-align: center;
+        font-size: 16px;
+        padding: 5px;
+        width: 150px;
+        transition: all 0.5s;
+        cursor: pointer;
+        margin: 5px;
+        box-shadow: 3px 2px black;
+        }
+
+        .lootButton span {
+        cursor: pointer;
+        display: inline-block;
+        position: relative;
+        transition: 0.5s;
+        }
+
+        .lootButton span:after {
+        content: '\00bb';
+        position: absolute;
+        opacity: 0;
+        top: 0;
+        right: -20px;
+        transition: 0.5s;
+        }
+        
+        .lootButton:hover
+        {
+        background-color: #47372A;
+        transition: 0s;
+        }
+
+        .lootButton:hover span {
+        padding-right: 25px; 
+        }
+
+        .lootButton:hover span:after {
+        opacity: 1;
+        right: 0;
+        }
+        
+        .lootButton:active
+        {
+        box-shadow: none;
+        }
+        
+        .lightRow
+        {
+            background-color: #91755D;
+        }
+        
+        th{border-bottom:1px solid black; border-top:1px solid black; background-color:#6d5846;}
+	#comma{width:5%;}
+	#zedCount {width: 50%;text-align: left; padding-left: 5px; padding-top: 2px;}
+	#xco {width: 22.5%;text-align: right;}
+	#yco {width: 22.5%;text-align: left;}
+        #items{overflow-y: auto; border: 1px solid #000000; max-width:140px;}
+        #itemsDiv {min-height: 100px; overflow-y: auto;}
+	.data {border-bottom:1px solid black; background-color:#6d5846;}
+	.data2 {border-bottom:1px solid black;}
+	#leftArrow {position: relative; top: 10px; left: 110px;}
+	#rightArrow {position: relative; top: 10px; left: 231px;}
+	#upArrow {position: relative; top: -111px; left: 189px;}
+	#downArrow {position: relative; top: 121px; left: 149px;}
+	.Arrow:hover {filter:brightness(0.8);}
+        .bulletin {border: 1px solid black; width: 100%; height: 200px; padding: 5px; margin: 0px; overflow-y: auto; background-color:#6D5A4A; box-shadow: 7px 7px #333333; height: 20px;}
+	.bulletinHead {text-align: center; border: 1px solid black; height: 15px; padding: 5px; width: 95%; margin-top: 5px; overflow: hidden;}
+        .bulletinDiv{float: left; max-height: 200px; width: 75%; position: relative; top: 90px; margin-left: 5px; overflow-y: auto; box-shadow: 7px 7px #333333}
+	.topBulletin {text-align: center; margin: 0px; padding: 0px; width: inherit;}
+        #lootWarning{color: red; font-weight: bold;}
+        #lootButton{margin: auto; text-align: center;}
+        #lootForm{text-align: center;}
+        #lootCell{text-align: center;}
+        .centralBox{height: 600px;}
+        .fillerBox{border: 1px solid black; width: 25%; height: 280px; float: left; position: relative; top: 50px; background-color:#6D5A4A; box-shadow: 7px 7px #333333; margin-left: 5px;}
+
+	.selected {border: 1px solid black;}
+	.notSelected {border: 0px solid red;}

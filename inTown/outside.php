@@ -159,7 +159,6 @@ $query2 = mysqli_query($con, $query1);
 				echo "<script>window.location.href='.?locat=outside'</script>";
 			}
 		}
-		
 		elseif($dir == 2 && $canMove) //RIGHT
 		{
 			reduceAp();
@@ -351,7 +350,6 @@ $query2 = mysqli_query($con, $query1);
 		$statement->bindValue(':user', $playerName);
 		$statement->bindValue(':char', $charName);
 		$statement->execute();
-		$result = $statement->fetch();
 		$statement->closeCursor();
 	}
 	
@@ -362,30 +360,9 @@ $query2 = mysqli_query($con, $query1);
 <head>
 
 	<link rel="stylesheet" type="text/css" href="mainDesignTown.css">
+        <link rel="stylesheet" type="text/css" href="../css/outside.css">
 	<style>
-	th{border-bottom:1px solid black; border-top:1px solid black; background-color:#6d5846;}
-	#comma{width:5%;}
-	#zedCount {width: 50%;text-align: left; padding-left: 5px; padding-top: 2px;}
-	#xco {width: 22.5%;text-align: right;}
-	#yco {width: 22.5%;text-align: left;}
-	.data {border-bottom:1px solid black; background-color:#6d5846;}
-	.data2 {border-bottom:1px solid black;}
-	#leftArrow {position: relative; top: -68px; left: -5px;}
-	#rightArrow {position: relative; top: -68px; left: -25px;}
-	#upArrow {position: relative; top: -118px; left: 5px;}
-	#downArrow {position: relative; top: -33px; left: -35px;}
-	.Arrow:hover {filter:brightness(0.8);}
-	.bulletinHead {border: 1px solid black; float: left; width: 65%; height: 15px; padding: 5px; margin-top: 5px; overflow: hidden;}
-	.bulletin {border: 1px solid black; float: left; max-height: 200px; width: 65%; padding: 5px; margin: 0px; overflow: auto;}
-	.topBulletin { text-align: center; margin: 0px; padding: 0px;}
-        #lootWarning{color: red; font-weight: bold;}
-        #lootButton{margin: auto; text-align: center;}
-        #lootForm{text-align: center;}
-        #lootCell{text-align: center;}
-	
-	
-	.selected {border: 1px solid black;}
-	.notSelected {border: 0px solid red;}
+
 	</style>
 	
 	<title>Outside Map</title>
@@ -419,20 +396,27 @@ $query2 = mysqli_query($con, $query1);
 			document.getElementById("lootability").innerHTML = Dep;
                         
 			//Note: Arguments[0 - 2] come before the groundItems
-			document.getElementById("items").innerHTML = "";
-			for (i = 0; i < arguments.length; i++)
-			{
+			document.getElementById("itemsDiv").innerHTML = "";
+                        if ((Co == "0" && Co2 == "0")){
+                            document.getElementById("itemsDiv").innerHTML = "<b><i>Use the navigation arrows on the left, to leave the town.</i></b>";
+                        }
+                        else if (arguments.length <= 4){
+                            document.getElementById("itemsDiv").innerHTML = "<b><i>Nothing on the ground.</i></b>";
+                        }
+                        else{
+                            for (i = 0; i < arguments.length; i++)
+                            {
 				// > 3 to ensure it skips past coordinates and Zed Count AND depletion amount
 				if (i > 3)
 				{
-					if (arguments[i] != "-1")
-					{
-						var itemNameNow = itemsInfo[arguments[i]][0];
-						var itemDescNow = itemsInfo[arguments[i]][1];
-						document.getElementById("items").innerHTML = document.getElementById("items").innerHTML + '<img onclick="displayItem(`' + itemNameNow + '`,`' + itemDescNow + '`); this.className = `selected`" title="' + itemNameNow + '" src="../images/items/' + itemNameNow + '.png">';
-					}
+                                    if (arguments[i] != "-1")
+                                    {
+					var itemNameNow = itemsInfo[arguments[i]][0];
+					var itemDescNow = itemsInfo[arguments[i]][1];
+					document.getElementById("itemsDiv").innerHTML = document.getElementById("itemsDiv").innerHTML + '<img onclick="displayItem(`' + itemNameNow + '`,`' + itemDescNow + '`); this.className = `selected`" title="' + itemNameNow + '" src="../images/items/' + itemNameNow + '.png">';
+                                    }
 				}
-
+                            }
 			}
                                                 
                         if (Dep <= 0){
@@ -452,14 +436,6 @@ $query2 = mysqli_query($con, $query1);
 	<div class="centralBox">
 	
 		<?php 
-		/*<object width="176" height="176">
-		<param name="movie" value="outside/Deadfall World Beyond.swf">
-		<embed src="outside/Deadfall World Beyond.swf" width="176" height="176">
-		</embed>
-		</object>*/
-		 
-		
-		
 		//connect to, then query the settlements database to determine # of Z in each zone before drawing it, then colour determined by # of zeds
 		
 		if(! $con)
@@ -477,7 +453,7 @@ $query2 = mysqli_query($con, $query1);
 		
 
 		
-		echo '<svg width="176" height="176" style="box-shadow: 7px 7px #333333;">';
+		echo '<svg width="176" height="176" style="box-shadow: 7px 7px #333333; position: relative; left: 15px; top: 75px;">';
 		$x = 0;
 	
 		while ($row = mysqli_fetch_assoc($completeQuery))
@@ -512,26 +488,6 @@ $query2 = mysqli_query($con, $query1);
 					$chars2 = $chars2 . '&#13;' . $charactersList[$i];
 				}
 			}
-						
-			
-
-			
-			/*for ($indx = 0; $indx < count($groundSplit2); $indx++)
-			{
-				if ($groundSplit2[$indx] != "-1")
-				{
-				$currentindex = $groundSplit2[$indx];
-				$currentItem = $itemsInfo[$currentindex][0];
-				$itemNames = $itemNames . ", " . $currentItem;
-				echo "<p>" . $itemNames . "</p>";
-				}
-
-			}*/
-			
-			//:0.3:2.5
-			
-			//***If the current logged-in character is in the current co-ordinates, draw a small white square in the middle of the plot***
-			
 			
 			if ($x >= 176)
 			{
@@ -596,13 +552,13 @@ $query2 = mysqli_query($con, $query1);
 				{
 					if(in_array($charName, $charactersList)) 
 					{
-						$drawHere2 = '<rect onclick="top.display(' . $zeds . ',' . $realX . ',' . $realY . ',' . $lootability . ',' . $groundSplit . ')" width="4" height="4" x="' . ($x + 6) . '" y="' . ($y + 6) . '" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(155,155,155)"><title>' . $chars2 . '</title></rect>';
+						$drawHere2 = '<circle onclick="top.display(' . $zeds . ',' . $realX . ',' . $realY . ',' . $lootability . ',' . $groundSplit . ')" r="3" cx="' . ($x + 8) . '" cy="' . ($y + 8) . '" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(155,155,155)"><title>' . $chars2 . '</title></circle>';
 						echo $drawHere2;
 					}
 				
 					else
 					{
-						$drawHere2 = '<rect onclick="top.display(' . $zeds . ',' . $realX . ',' . $realY . ',' . $lootability . ',' . $groundSplit . ')" width="4" height="4" x="' . ($x + 6) . '" y="' . ($y + 6) . '" style="fill:rgb(0,204,255);stroke-width:1;stroke:rgb(0,122,153)"><title>' . $chars2 . '</title></rect>';
+						$drawHere2 = '<circle onclick="top.display(' . $zeds . ',' . $realX . ',' . $realY . ',' . $lootability . ',' . $groundSplit . ')" r="2.5" cx="' . ($x + 8) . '" cy="' . ($y + 8) . '" style="fill:rgb(0,204,255);stroke-width:1;stroke:rgb(0,122,153)"><title>' . $chars2 . '</title></circle>';
 						echo $drawHere2;
 					}
 				}
@@ -613,51 +569,47 @@ $query2 = mysqli_query($con, $query1);
 		}
 		
 		echo '</svg>';
-
-		/*for ($index = 0; $index <= 121; $index++) 
-		{
-			$x = $x + 16;
-			if ($x >= 176)
-			{
-				$x = 0;
-			}
-			$y = floor($index / 11) * 16;
-			echo $x;
-			$drawHere = '<rect width="16" height="16" x="' . $x . '" y="' . $y . '" style="fill:rgb(0,204,204);stroke-width:1;stroke:rgb(0,0,0)" />';
-			echo $drawHere;
-		}*/
-		
-		
+                
 		?>
-	<?php
+            
+            <div class="fillerBox">
+                <tr><td colspan="5" class="lootCell">
+                        
+                <?php 
+                if (!($tempX == 0 && $tempY == 0)) //active loot button only if character isn't in town
+                {
+                    echo '<p id="lootWarning"></p><form action=".?locat=outside" method="post" id="lootForm"><button class="lootButton" id="lootButton" type="submit" name="loot" value="Loot"><span>Loot Here</span></button></form>';
+                }
+                else
+                {
+                    echo '<p id="lootWarning"></p><form action=".?locat=outside" method="post" id="lootForm"><button class="lootButton" id="lootButton" type="submit" name="loot" value="Loot" disabled><span>Cannot Loot</span></button></form>';
+                }
+                ?>
+                        
+                 </td></tr>
+            </div>
+            
 	
-	echo '<table class="zoneInfo">';
-	echo '<tr><th style="padding-left:5px;"><img align="left" src="../images/icons/zombie.png"></th><th style=""><img align="left" src="../images/icons/lootability.png" title="Loots Remaining"></th><th style="text-align:right">x</th><th></th><th style="text-align:left">y</th></tr>';
-	echo '<tr><td id="zedCount">0</td><td id="lootability">0</td><td id="xco">0</td><td id="comma">,</td><td id="yco">0</td></tr>';
-	echo '<tr><th colspan="5">Items</th></tr>';
-	echo '<tr style="height:50px;"><td style="border: 1px solid #000000; max-width:140px;" id="items" colspan="5"><b><i>Use the navigation arrows on the left, to leave the town</i></b></td></tr>';
-	echo '<tr><td colspan="5" class="lootCell">';
-	if (!($tempX == 0 && $tempY == 0)) //active loot button only if character isn't in town
-	{
-		echo '<p id="lootWarning"></p><form action=".?locat=outside" method="post" id="lootForm"><input id="lootButton" type="submit" name="loot" value="Loot"></form>';
-	}
-	else
-	{
-		echo '<p id="lootWarning"></p><form action=".?locat=outside" method="post" id="lootForm"><input id="lootButton" type="submit" name="loot" value="Loot" disabled></form>';
-	}
-	echo '</td></tr>';
-	echo '</table>';
 	
-	echo "<br>" . getHordeSize($townName);
+	<table class="zoneInfo">
+	<tr><th style="padding-left:5px;"><img align="left" src="../images/icons/zombie.png"></th><th style=""><img align="left" src="../images/icons/lootability.png" title="Loots Remaining"></th><th style="text-align:right">x</th><th></th><th style="text-align:left">y</th></tr>
+	<tr class="lightRow"><td id="zedCount">0</td><td id="lootability">0</td><td id="xco">0</td><td id="comma">,</td><td id="yco">0</td></tr>
+	<tr><th colspan="5">Items</th></tr>
+	<tr class="lightRow"><td id="items" colspan="5"><div id="itemsDiv"></div></td></tr>
+	</table>
 	
-	echo '<table class="itemInfo">';
-	echo '<form action="' . $root . '../functions/pickUpItem.php" method="post">';
-	echo '<tr style="height:25px;"><td id="itemName" class="data"></td></tr>';
-	echo '<input type="hidden" name="location" value="/deadfall/outside.php">';
-	echo '<input type="hidden" value="none" name="itemName2" id="itemName2">';
-	echo '<tr><td id="itemDesc" style="padding-left:5px;" class ="data2"></td></tr>';
-	echo '<tr style="height:15%;"><td><input type="submit" id="PickUp" disabled value="Select an Item ->" style="float:center; width: 100%;"></form></td></tr>';
-	echo '</table>';
+	<br>
+	
+	<table class="itemInfo">
+	<form action="<?php echo $root; ?>/functions/pickUpItem.php" method="post">
+	<tr style="height:25px;"><td id="itemName" class="data"></td></tr>
+	<input type="hidden" name="location" value="/deadfall/outside.php">
+	<input type="hidden" value="none" name="itemName2" id="itemName2">
+        <tr class="lightRow"><td id="itemDesc" style="padding-left:5px;" class ="data2"></td></tr>
+	<tr style="height:15%;"><td><input type="submit" id="PickUp" disabled value="Select an Item ->" style="width: 100%;"></form></td></tr>
+	</table>
+        
+        <?php
 	
 		$curX = $_SESSION['x'];
 		$curY = $_SESSION['y'];
@@ -677,26 +629,26 @@ $query2 = mysqli_query($con, $query1);
 		$lootability = $result1['lootability'];
 		$bulletinArray = explode('.', $bulletin);
 		krsort($bulletinArray);
-		
-		if ($curX != 0 || $curY != 0)
-		{		
+				
 		//Updates the map when you first load into it from an external page
 		echo '<script>display(' . $zeds . ', ' . $curX . ', ' . $curY . ', ' . $lootability . ', ' . $groundItems . ');</script>';
-		}
-	?>
-	
-		<div class='bulletinHead'>
-		<h5 class='topBulletin'>Bulletin Board (<?php echo $curX . ',' . $curY;?>)</h5>
-		</div>
-		<div class='bulletin'>
-		<ul>
-		<?php $i = 0; foreach ($bulletinArray as $bul) : $i++?>
-		<li><?php echo $bul;?></li>
-		<?php endforeach;?>
-		</ul>
-		</div>
-		</div>
 		
+	?>
+                <div class="bulletinDiv">
+		<table class="bulletin">
+                    <thead>
+                    <tr class='bulletinHead'>
+                        <th><h5 class='topBulletin'>Bulletin Board (<?php echo $curX . ',' . $curY;?>)</h5></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                            <?php $i = 0; foreach ($bulletinArray as $bul) : $i++?>
+                    <tr><td><?php echo $bul;?></td></tr>
+                            <?php endforeach;?>
+                    </tbody>
+                </table>
+                </div>
+        </div>
 </div>
 	<?php	
 	Include ("../universal/hyperlinks.php");
