@@ -4,7 +4,10 @@ require_once ("../functions/verifyLogin.php");
 include ("../data/items.php");
 
 //gets the user and current character, and stores them in local variables
-$user = $_SESSION['login'];
+if (isset($_SESSION['login'])){
+	$user = $_SESSION['login'];
+}
+
 if (!isset($_SESSION['char']))
 {
 	$_SESSION['char'] = '';

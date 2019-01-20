@@ -31,7 +31,7 @@ $_SESSION['y'] = '';
 
 .clickable
 {
-    	cursor: pointer;
+    cursor: pointer;
 	border-left:1px solid black; 
 	border-right:1px solid black; 
 	background-color: #A08C7A;

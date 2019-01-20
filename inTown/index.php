@@ -48,24 +48,4 @@ switch ($locat)
 	
 	default: header ("Location: ../?error=Must Log In to Access the Requested Page");
 }
-/*
-if (isset($locat) && $locat == 'browseChars')
-{include ('characterBrowse.php');}
-else if (isset($locat) && $locat == 'construction')
-{include ('construction.php');}
-else if (isset($locat) && $locat == 'warehouse')
-{include ('warehouse.php');}
-else if (isset($locat) && $locat == 'citizens')
-{include ('citizens.php');}
-else if (isset($locat) && $locat == 'outside')
-{include ('outside.php');}
-else if (isset($locat) && $locat == 'character')
-{include ('character.php');}
-else if (isset($locat) && $locat == 'join')
-{include ('joinTown.php');}
-else if (isset($locat) && $locat == 'inTown')
-{include ('inTown.php');}
-else
-{header ("Location: ../?error=Must Log In to Access the Requested Page");}
-*/
 ?>
