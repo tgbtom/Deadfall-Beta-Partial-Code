@@ -62,9 +62,9 @@ $query2 = mysqli_query($con, $query1);
 		{
 			if (!($tempX == 0 && $tempY == 0)) //Continue only if character isn't in town
 			{
-				if (canMove())
+				if (canMove(2))
 				{
-					reduceAp();
+					reduceAp(2);
 					$itemToLoot = lootItem();
 					for ($i = 0; $i < sizeOf($itemsMaster); $i++)
 					{
@@ -317,7 +317,7 @@ $query2 = mysqli_query($con, $query1);
 		}
 	}
 	
-	function canMove()
+	function canMove($apRequired = 1)
 	{
 		global $dbCon;
 		global $playerName;
@@ -330,20 +330,22 @@ $query2 = mysqli_query($con, $query1);
 		$result = $statement->fetch();
 		$statement->closeCursor();
 		
-		if ($result['currentAP'] > 0)
-		{return true;}
-		else
-		{return false;}
+		if ($result['currentAP'] >= $apRequired){
+			return true;
+		}
+		else{
+			return false;
+		}
 	}
 	
-	function reduceAp()
+	function reduceAp($amountToReduce  =  1)
 	{
 		global $dbCon;
 		global $playerName;
 		global $charName;
 		global $currentAp;
 		
-		$newAp = $currentAp - 1;
+		$newAp = $currentAp - $amountToReduce;
 		$query = 'UPDATE `characters` SET `currentAp` = :newAp WHERE `username` = :user AND `character` = :char';
 		$statement = $dbCon->prepare($query);
 		$statement->bindValue(':newAp', $newAp);
@@ -423,7 +425,37 @@ $query2 = mysqli_query($con, $query1);
                             document.getElementById("lootWarning").innerHTML = "This Zone is Depleted";
                         }
 		}
-		
+		function remoteDisplay(Z, Co, Co2, Dep)
+		{
+			document.getElementById("remoteZedCount").innerHTML = Z;
+			document.getElementById("remoteXco").innerHTML = Co;
+			document.getElementById("remoteYco").innerHTML = Co2;
+			document.getElementById("remoteLootability").innerHTML = Dep;
+                        
+			//Note: Arguments[0 - 2] come before the groundItems
+			document.getElementById("remoteItemsDiv").innerHTML = "";
+                        if ((Co == "0" && Co2 == "0")){
+                            document.getElementById("remoteItemsDiv").innerHTML = "<b><i>Click on a Zone to see the last known information</i></b>";
+                        }
+                        else if (arguments.length <= 4){
+                            document.getElementById("remoteItemsDiv").innerHTML = "<b><i>Nothing seen at The zone.</i></b>";
+                        }
+                        else{
+                            for (i = 0; i < arguments.length; i++)
+                            {
+				// > 3 to ensure it skips past coordinates and Zed Count AND depletion amount
+				if (i > 3)
+				{
+                                    if (arguments[i] != "-1")
+                                    {
+					var itemNameNow = itemsInfo[arguments[i]][0];
+					var itemDescNow = itemsInfo[arguments[i]][1];
+					document.getElementById("remoteItemsDiv").innerHTML = document.getElementById("remoteItemsDiv").innerHTML + '<img title="' + itemNameNow + '" src="../images/items/' + itemNameNow + '.png">';
+                                    }
+				}
+                            }
+			}
+		}
 	</script>
 	</head>
 	<body>
@@ -497,47 +529,47 @@ $query2 = mysqli_query($con, $query1);
 			
 			if ($realX == 0 && $realY == 0)
 			{
-				$drawHere = '<rect onclick="top.display(' . $zeds . ',' . $realX . ',' . $realY . ',' . $lootability . ',' . $groundSplit . ')" width="16" height="16" x="' . $x . '" y="' . $y . '" style="fill:rgb(140,89,32);stroke-width:1;stroke:rgb(0,0,0)" />';
+				$drawHere = '<rect onclick="top.remoteDisplay(' . $zeds . ',' . $realX . ',' . $realY . ',' . $lootability . ',' . $groundSplit . ')" width="16" height="16" x="' . $x . '" y="' . $y . '" style="fill:rgb(140,89,32);stroke-width:1;stroke:rgb(0,0,0)" />';
 			}
 			
 			else if ($zeds == 0)
 			{
-				$drawHere = '<rect onclick="top.display(' . $zeds . ',' . $realX . ',' . $realY . ',' . $lootability . ',' . $groundSplit . ')" width="16" height="16" x="' . $x . '" y="' . $y . '" style="fill:rgb(2,148,23);stroke-width:1;stroke:rgb(0,0,0)" />';
+				$drawHere = '<rect onclick="top.remoteDisplay(' . $zeds . ',' . $realX . ',' . $realY . ',' . $lootability . ',' . $groundSplit . ')" width="16" height="16" x="' . $x . '" y="' . $y . '" style="fill:rgb(2,148,23);stroke-width:1;stroke:rgb(0,0,0)" />';
 			}
 
 			else if ($zeds == 1)
 			{
-				$drawHere = '<rect onclick="top.display(' . $zeds . ',' . $realX . ',' . $realY . ',' . $lootability . ',' . $groundSplit . ')" width="16" height="16" x="' . $x . '" y="' . $y . '" style="fill:rgb(2,122,19);stroke-width:1;stroke:rgb(0,0,0)" />';
+				$drawHere = '<rect onclick="top.remoteDisplay(' . $zeds . ',' . $realX . ',' . $realY . ',' . $lootability . ',' . $groundSplit . ')" width="16" height="16" x="' . $x . '" y="' . $y . '" style="fill:rgb(2,122,19);stroke-width:1;stroke:rgb(0,0,0)" />';
 			}
 			
 			else if ($zeds == 2 || $zeds == 3)
 			{
-				$drawHere = '<rect onclick="top.display(' . $zeds . ',' . $realX . ',' . $realY . ',' . $lootability . ',' . $groundSplit . ')" width="16" height="16" x="' . $x . '" y="' . $y . '" style="fill:rgb(2,97,15);stroke-width:1;stroke:rgb(0,0,0)" />';
+				$drawHere = '<rect onclick="top.remoteDisplay(' . $zeds . ',' . $realX . ',' . $realY . ',' . $lootability . ',' . $groundSplit . ')" width="16" height="16" x="' . $x . '" y="' . $y . '" style="fill:rgb(2,97,15);stroke-width:1;stroke:rgb(0,0,0)" />';
 			}
 			
 			else if ($zeds >= 4 && $zeds <= 6)
 			{
-				$drawHere = '<rect onclick="top.display(' . $zeds . ',' . $realX . ',' . $realY . ',' . $lootability . ',' . $groundSplit . ')" width="16" height="16" x="' . $x . '" y="' . $y . '" style="fill:rgb(168,159,24);stroke-width:1;stroke:rgb(0,0,0)" />';
+				$drawHere = '<rect onclick="top.remoteDisplay(' . $zeds . ',' . $realX . ',' . $realY . ',' . $lootability . ',' . $groundSplit . ')" width="16" height="16" x="' . $x . '" y="' . $y . '" style="fill:rgb(168,159,24);stroke-width:1;stroke:rgb(0,0,0)" />';
 			}
 			
 			else if ($zeds >= 7 && $zeds <= 12)
 			{
-				$drawHere = '<rect onclick="top.display(' . $zeds . ',' . $realX . ',' . $realY . ',' . $lootability . ',' . $groundSplit . ')" width="16" height="16" x="' . $x . '" y="' . $y . '" style="fill:rgb(252,150,23);stroke-width:1;stroke:rgb(0,0,0)" />';
+				$drawHere = '<rect onclick="top.remoteDisplay(' . $zeds . ',' . $realX . ',' . $realY . ',' . $lootability . ',' . $groundSplit . ')" width="16" height="16" x="' . $x . '" y="' . $y . '" style="fill:rgb(252,150,23);stroke-width:1;stroke:rgb(0,0,0)" />';
 			}
 			
 			else if ($zeds >= 13 && $zeds <= 25)
 			{
-				$drawHere = '<rect onclick="top.display(' . $zeds . ',' . $realX . ',' . $realY . ',' . $lootability . ',' . $groundSplit . ')" width="16" height="16" x="' . $x . '" y="' . $y . '" style="fill:rgb(252,26,23);stroke-width:1;stroke:rgb(0,0,0)" />';
+				$drawHere = '<rect onclick="top.remoteDisplay(' . $zeds . ',' . $realX . ',' . $realY . ',' . $lootability . ',' . $groundSplit . ')" width="16" height="16" x="' . $x . '" y="' . $y . '" style="fill:rgb(252,26,23);stroke-width:1;stroke:rgb(0,0,0)" />';
 			}
 			
 			else if ($zeds >= 26 && $zeds <= 40)
 			{
-				$drawHere = '<rect onclick="top.display(' . $zeds . ',' . $realX . ',' . $realY . ',' . $lootability . ',' . $groundSplit . ')" width="16" height="16" x="' . $x . '" y="' . $y . '" style="fill:rgb(179,18,168);stroke-width:1;stroke:rgb(0,0,0)" />';
+				$drawHere = '<rect onclick="top.remoteDisplay(' . $zeds . ',' . $realX . ',' . $realY . ',' . $lootability . ',' . $groundSplit . ')" width="16" height="16" x="' . $x . '" y="' . $y . '" style="fill:rgb(179,18,168);stroke-width:1;stroke:rgb(0,0,0)" />';
 			}
 			
 			else if ($zeds >= 41)
 			{
-				$drawHere = '<rect onclick="top.display(' . $zeds . ',' . $realX . ',' . $realY . ',' . $lootability . ',' . $groundSplit . ')" width="16" height="16" x="' . $x . '" y="' . $y . '" style="fill:rgb(64,64,64);stroke-width:1;stroke:rgb(0,0,0)" />';
+				$drawHere = '<rect onclick="top.remoteDisplay(' . $zeds . ',' . $realX . ',' . $realY . ',' . $lootability . ',' . $groundSplit . ')" width="16" height="16" x="' . $x . '" y="' . $y . '" style="fill:rgb(64,64,64);stroke-width:1;stroke:rgb(0,0,0)" />';
 			}
 
 	
@@ -578,7 +610,7 @@ $query2 = mysqli_query($con, $query1);
                 <?php 
                 if (!($tempX == 0 && $tempY == 0)) //active loot button only if character isn't in town
                 {
-                    echo '<p id="lootWarning"></p><form action=".?locat=outside" method="post" id="lootForm"><button class="lootButton" id="lootButton" type="submit" name="loot" value="Loot"><span>Loot Here</span></button></form>';
+                    echo '<p id="lootWarning"></p><form action=".?locat=outside" method="post" id="lootForm"><button class="lootButton" id="lootButton" type="submit" name="loot" value="Loot"><span>Loot | 2 AP</span></button></form>';
                 }
                 else
                 {
@@ -586,7 +618,14 @@ $query2 = mysqli_query($con, $query1);
                 }
                 ?>
                         
-                 </td></tr>
+                 </td></tr><hr style="border-color: black;"><hr style="border-color: black;">
+				 <table class="remoteInfo">
+				 	<tr><th colspan="5">Remote Zone Scouting</th></tr>
+					<tr><th style="padding-left:5px;"><img align="left" src="../images/icons/zombie.png"></th><th style=""><img align="left" src="../images/icons/lootability.png" title="Loots Remaining"></th><th style="text-align:right">x</th><th></th><th style="text-align:left">y</th></tr>
+					<tr class="lightRow"><td id="remoteZedCount">?</td><td id="remoteLootability">?</td><td id="remoteXco">?</td><td id="comma">,</td><td id="remoteYco">?</td></tr>
+					<tr><th colspan="5">Items</th></tr>
+					<tr class="lightRow"><td id="remoteItems" colspan="5"><div id="remoteItemsDiv"></div></td></tr>
+				</table>
             </div>
             
 	

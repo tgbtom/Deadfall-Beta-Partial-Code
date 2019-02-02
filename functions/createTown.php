@@ -4,6 +4,7 @@
 require_once('../connect.php');
 require_once('../functions/verifyLogin.php');
 require_once("../model/database.php");
+require_once("queryFunctions.php");
 
 $newTown = filter_input(INPUT_POST, 'newTown');
 
@@ -139,7 +140,10 @@ function createSettlement($settlementName, $mapSize)
 	}
 	if ($con->query($compilation) === TRUE) 
 	{
-	$location = '/inTown/?locat=join&tempChar=' . $_SESSION['char'];	
+		$hordeSize = getHordeSize($newTown);
+		$query = "UPDATE `towns` SET `hordeSize` = '" . $hordeSize . "' WHERE `townName` = '" . $newTown . "'";
+		Database::sendQuery($query);
+		$location = '/inTown/?locat=join&tempChar=' . $_SESSION['char'];	
         echo '<script>window.location = "' . $root . $location .'";</script>';
 	}
 	//mysql_query($con2, $compilation);

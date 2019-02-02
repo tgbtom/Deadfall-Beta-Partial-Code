@@ -83,6 +83,8 @@ function endDay() {
                     //***************************CHARACTER DIES HERE*****************************************
                     if (!doesStatusContainExt(12, $character)) {
                         killCharacter($character, $currentUsername, $newDead);
+                        $deathBulletin = $character . " starved to death.";
+                        Towns::addTownBulletin($deathBulletin, $townName);
                     }
                 }
             }
@@ -97,6 +99,8 @@ function endDay() {
                 //***************************CHARACTER DIES HERE*****************************************
                 if (!doesStatusContainExt(12, $character)) {
                     killCharacter($character, $currentUsername, $newDead);
+                    $deathBulletin = $character . " died of dehydration.";
+                    Towns::addTownBulletin($deathBulletin, $townName);
                 }
             }
         }

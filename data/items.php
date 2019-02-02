@@ -7,7 +7,7 @@ $itemsMaster = array(
 		array("Wood Board", "Resource", 2, 0),
 		array("Sheet Metal", "Resource", 3, 0),
 		array("Makeshift Spear", "Weapon", 2, 3),
-/*5*/	array("Stone", "Resource", 2, 0),
+/*5*/	array("Stone", "Resource", 2, 5),
 		array("Bow", "Weapon", 2, 3),
 		array("Arrow", "Ammo", 1, 2),
 		array("Rope", "Resource", 2, 1),

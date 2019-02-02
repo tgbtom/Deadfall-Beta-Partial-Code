@@ -61,5 +61,27 @@ class Towns {
         }
         return false;
     }
-    
+
+    public static function addTownBulletin($content, $townName){
+        $dbCon = Database::getDB();
+
+        //Get current bulletin, to concatenate new bulletin to
+        $query = "SELECT `bulletin` FROM `towns` WHERE `townName` = ':townName'";
+        $statement = $dbCon->prepare($query);
+        $statement->bindValue(":townName", $townName);
+        $statement->execute();
+        $result = $statement->fetch();
+        $statement->closeCursor();
+
+        $oldBulletin = $result['bulletin'];
+        $newBulletin = $oldBulletin . "." . $content;
+
+        //Update the bulletin to include the new content
+        $query2 = "UPDATE `towns` SET `bulletin` = ':bulletin' WHERE `townName` = ':townName;";
+        $statement2 = $dbCon->prepare($query2);
+        $statement2->bindValue(":bulletin", $newBulletin);
+        $statement2->bindValue(":townName", $townName);
+        $statement2->execute();
+        $statement2->closeCursor();
+    }
 }

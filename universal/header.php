@@ -2,6 +2,9 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<script type="text/javascript" src="../js/header.js"></script>
+
 <style>
 /* Popup container */
 .popup {
@@ -199,7 +202,7 @@ $aliveRes = $maxRes - $deadRes;
 		<div class="infoset2"><p><?php echo 'Lvl ' . htmlspecialchars($charLevel)?></p></div>
 		<div class="infoSet2"><p><?php echo $_SESSION['x'] . ", " . $_SESSION['y']?></p></div>
 		<div class="infoset2"><p><?php echo $currentAp . '/' . $maxAp . '<img src="../images/icons/ap.png" title="Action Points">'?></p></div>
-		<div class="infoset2"><p><?php echo 'Mass: ' . $currentMass . '/' . $weightCapacity; ?></p></div>
+		<div class="infoset2"><p id="carryCapacity"><?php echo 'Mass: ' . $currentMass . '/' . $weightCapacity; ?></p></div>
 		<!-- Display Inventory -->
 		<div class="infoset2"><p><?php 
 		if ($itemsHeld != NULL)
@@ -209,12 +212,13 @@ $aliveRes = $maxRes - $deadRes;
 			for ($i = 0; $i < sizeOf($itemsHeldArray); $i++)
 			{
 				$itemName = $itemsMaster[$itemsHeldArray[$i]][0];
+				$itemWeight = $itemsMaster[$itemsHeldArray[$i]][2]; 
 				
 				echo '<input type="hidden" name="location" value="'. $loc . '">';
 				echo '<input type="hidden" name="itemName' . $i . '" value="'. $itemName . '">';				
 				echo '<div class="popup" onclick="popUpMenu(`popUp' . $i . '`)"><img src="../images/items/' . $itemName . '.png" class="item"><img src="../images/rarity/' . getRarityString($itemsHeldArray[$i]) . '.png" title="' . $itemName . '" class="rarityBanner">';
 				echo '<span class="popuptext" id="popUp' . $i . '">';
-				echo '<p><u>' . $itemName . '</u></p><p class="rarity">' . getRarityString($itemsHeldArray[$i]) . '</p>';
+				echo '<p><u>' . $itemName . '</u></p><p class="rarity" style="">' . getRarityString($itemsHeldArray[$i]) . '</p><p class="weight">Weight: ' . $itemWeight . '</p>';
 				echo '<input onclick="newAction(`drop`, ' . $i .')" type="submit" value="Drop">';
 				if (checkUsability($itemsHeldArray[$i]) == 'Eat' || checkUsability($itemsHeldArray[$i]) == 'Drink')
 				{

@@ -460,7 +460,7 @@ function lootItem()
 		//this means depleted zone will always give item #0 (MUST BE CHANGED TO SPECIAL RARITY)
 		$rarityArray = array('Stone');
 	}
-	elseif ($random <= 124) //62%
+	elseif ($random <= 130) //65%
 	{
 		//common
 		$rarity = 0;
@@ -474,7 +474,7 @@ function lootItem()
 			}
 		}
 	}
-	elseif ($random <= 172) //24%
+	elseif ($random <= 172) //21%
 	{
 		//uncommon
 		$rarity = 1;
@@ -488,7 +488,7 @@ function lootItem()
 			}
 		}
 	}
-	elseif ($random <= 194)
+	elseif ($random <= 194) //11%
 	{
 		//rare
 		$rarity = 2;
@@ -502,7 +502,7 @@ function lootItem()
 			}
 		}
 	}
-	elseif ($random <= 199)
+	elseif ($random <= 199) //2.5%
 	{
 		//ultra-rare
 		$rarity = 3;
@@ -516,7 +516,7 @@ function lootItem()
 			}
 		}
 	}
-	elseif ($random == 200)
+	elseif ($random == 200) //0.5%
 	{
 		//legendary
 		$rarity = 4;

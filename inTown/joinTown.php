@@ -55,27 +55,33 @@ require_once ("../functions/verifyLogin.php");
 		<img src="../images/DeadFallLogo2.png">
 		</div>
 
-		<div class="browseBlock3">
+		<div class="browseBlock3" style="padding: 15px;">
 		
 		<?php
 		$check = "SELECT * FROM `towns` WHERE `townFull`=0";
 		$query = mysqli_query($con, $check);
 		$x = 0;
 
+		echo "<table>";
 		while ($row = mysqli_fetch_assoc($query))
 		{
 			$x += 1;
 			$t = $row["townName"];
 			$c = $cName;
-			$emptyTown = "<li>" . $x . ": " . $row["townName"] . "[" . $row["amountResidents"] . "/" . $row["maxResidents"] . "]  <form method='post' action='../functions/addToTown.php'><input type='hidden' name='newTown' value=$t><input type='hidden' name='char' value=$c><input type='submit' value='Join'></form></li>";
+			$emptyTown = "<tr><td>" . $x . ": " . $row["townName"] . "[" . $row["amountResidents"] . "/" . $row["maxResidents"] . "]  </td><td><form method='post' action='../functions/addToTown.php'><input type='hidden' name='newTown' value=$t><input type='hidden' name='char' value=$c><input type='submit' value='Join'></form></td></tr>";
 			echo $emptyTown;
 		}
+		echo "</table>";
 		?>
 		
 		<br><hr><br>
 		<h3>***Note: Do NOT use any spaces in town-name***</h3>
 		<form method='post' action='../functions/createTown.php'>
-		<input type='text' name='newTown' style="margin: 5px;">
+		<input type='text' name='newTown' required style="margin: 5px;">
+		<select required>
+		<option value="" selected disabled>Select Town Size</option>
+		<option value="1">(10) Band  of Survivors | 11x11 Map</option>
+		</select>
 		<input type='hidden' name='cName' value='<?php echo $cName;?>'>
 		<input type='hidden' name='char' value=$c>
 		<input type='submit' value='Create Town'>

@@ -44,7 +44,7 @@ $_SESSION['y'] = '';
 	var name="charName";
 	var town="No Town";
 
-		function validateinfo()
+		function info()
 			{
 				var a=document.forms["creation"]["charName"].value;
 				var b=document.forms["creation"]["gender"].value;
@@ -210,11 +210,11 @@ $_SESSION['y'] = '';
 					<input type="radio" name="gender" value="Female" disabled> FEMALE
 					<br><br>
 					<div class="spacer"><input type="radio" name="charClass" value="Survivor" checked><img src='../images/icons/survivor.png'> Survivor</div>
-					<div class="spacer2"><input type="radio" name="charClass" value="Builder"><img src='../images/icons/builder.png'> Builder</div>
+					<div class="spacer2"><input type="radio" name="charClass" value="Builder"><img src='../images/icons/builder.png'> Builder -- No  Effect</div>
 					<div class="spacer data3"><p class="caption">The Survivor class is an all around class. Survivors begin with 16 AP rather than 12 but have no special abilities.</p></div>
 					<div class="spacer2 data3"><p class="caption">The Builder class is for characters who want to focus on construction and building, AP is twice effective when constructing.</p></div>
-					<div class="spacer"><input type="radio" name="charClass" value="Runner"><img src='../images/icons/runner.png'> Runner</div>
-					<div class="spacer2"><input type="radio" name="charClass" value="Looter"><img src='../images/icons/looter.png'> Looter</div>
+					<div class="spacer"><input type="radio" name="charClass" value="Runner"><img src='../images/icons/runner.png'> Runner -- No  Effect</div>
+					<div class="spacer2"><input type="radio" name="charClass" value="Looter"><img src='../images/icons/looter.png'> Looter -- No  Effect</div>
 					<div class="spacer data3"><p class="caption">The Runner class is for characters who want to focus on exploration and travelling distances from town. Runners consume less AP when moving around.</p></div>
 					<div class="spacer2 data3"><p class="caption">The Looter class is for characters who want to focus on looting and bringing helpful resources into town for constructions and whatnot.</p></div>
 					<input type="submit" value="Create!">

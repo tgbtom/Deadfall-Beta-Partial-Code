@@ -40,6 +40,8 @@ $weightCapacity = $charDetails['maxItems'];
 $currentMass = $charDetails['itemsMass'];
 $remainingCapacity = $weightCapacity - $currentMass;
 
+$newGroundItems = null;
+
 //IF item is still on the ground, check if character can carry it. Then remove it from the ground, and add it to the Char's inventory
 //Remove the Item from the Ground in the zone
 if ($itemWeight <= $remainingCapacity)
