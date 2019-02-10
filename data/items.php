@@ -55,31 +55,31 @@ $itemsContainer = array();
 ****JavaScript Array is used to disply the item details on the Outside map*********
 ***********************************************************************************
 **********************************************************************************/
-
+//ItemName, ItemDesc, Item Weight
 var itemsInfo = [
-/*0*/	["Water Ration", "Drink this to quench your thirst."],
-		["Bits of Food", "These scraps aren't going to cut it for very long."],
-		["Wood Board", "Sturdy wooden board, could be useful for building."],
-		["Sheet Metal", "Heavy sheet of metal, could be useful for building."],
-		["Makeshift Spear", "Spear handcrafted with a wooden stick and a sharp tip."],
-/*5*/	["Stone", "Just a solid stone"],
-		["Bow", "A basic longbow, can use arrows to kill zombies."],
-		["Arrow", "Ammunition for bows."],
-		["Rope", "A length of rope, could be used to tie things together."],
-		["Battery", "A basic battery."],
-/*10*/	["Brick", "A basic building material."],
-		["Cloth", "Piece of cloth material."],
-		["Grenade", "A questionably old explosive."],
-		["Pistol", "A basic handgun, can be used while holding small bullets."],
-		["Slingshot", "Weapon used to propel rocks at unsuspecting targets."],
-/*15*/	["Rock", "A rock, can be launched with a slingshot."],
-		["Small Bullet", "Ammunition for small arms."],
-		["Sharp Stick", "Just a stick that has been sharpened at one end."],
-		["Assault Rifle", "Machine gun, uses medium ammo that has been packed into ammo magazines."],
-		["Bag of Sand", "Just a bag of dirt."],
-/*20*/	["Empty Mag", "Empty ammo magazine, can be filled with medium bullets."],
-		["Full Mag", "Full ammo magazine - One time use."],
-		["Medium Bullet", "Ammunition for medium guns."]
+/*0*/	["Water Ration", "Drink this to quench your thirst.", 2],
+		["Bits of Food", "These scraps aren't going to cut it for very long.", 1],
+		["Wood Board", "Sturdy wooden board, could be useful for building.", 2],
+		["Sheet Metal", "Heavy sheet of metal, could be useful for building.", 3],
+		["Makeshift Spear", "Spear handcrafted with a wooden stick and a sharp tip.", 2],
+/*5*/	["Stone", "Just a solid stone", 2],
+		["Bow", "A basic longbow, can use arrows to kill zombies.", 2],
+		["Arrow", "Ammunition for bows.", 1],
+		["Rope", "A length of rope, could be used to tie things together.", 2],
+		["Battery", "A basic battery.", 2],
+/*10*/	["Brick", "A basic building material.", 2],
+		["Cloth", "Piece of cloth material.", 2],
+		["Grenade", "A questionably old explosive.", 2],
+		["Pistol", "A basic handgun, can be used while holding small bullets.", 2],
+		["Slingshot", "Weapon used to propel rocks at unsuspecting targets.", 2],
+/*15*/	["Rock", "A rock, can be launched with a slingshot.", 1],
+		["Small Bullet", "Ammunition for small arms.", 1],
+		["Sharp Stick", "Just a stick that has been sharpened at one end.", 2],
+		["Assault Rifle", "Machine gun, uses medium ammo that has been packed into ammo magazines.", 2],
+		["Bag of Sand", "Just a bag of dirt.", 2],
+/*20*/	["Empty Mag", "Empty ammo magazine, can be filled with medium bullets.", 2],
+		["Full Mag", "Full ammo magazine - One time use.", 3],
+		["Medium Bullet", "Ammunition for medium guns.", 1]
 ];
 
 </script>

@@ -74,7 +74,8 @@ and open the template in the editor.
         #items{overflow-y: auto; border: 1px solid #000000; max-width:140px;}
         #itemsDiv {min-height: 100px; overflow-y: auto;}
 	.data {border-bottom:1px solid black; background-color:#6d5846;}
-	.data2 {border-bottom:1px solid black;}
+        .data2 {border-bottom:1px solid black;}
+        .data3 {border-bottom:1px solid black;}
 	#leftArrow {position: relative; top: 10px; left: 110px;}
 	#rightArrow {position: relative; top: 10px; left: 231px;}
 	#upArrow {position: relative; top: -111px; left: 189px;}

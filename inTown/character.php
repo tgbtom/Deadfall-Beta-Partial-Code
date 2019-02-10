@@ -1,9 +1,11 @@
 <?php
 require_once ("../connect.php");
 require_once ("../functions/verifyLogin.php");
-Include("../data/buildings.php");
-Include("../data/items.php");
+Include ("../data/buildings.php");
+Include ("../data/items.php");
 require_once ("../functions/queryFunctions.php");
+require_once ("../model/structures.php");
+require_once ("../model/database.php");
 
 $errorMessage = FILTER_INPUT(INPUT_GET, 'e');
 if (isset($errorMessage)) {
@@ -125,17 +127,21 @@ function endDay() {
 
 
         //Check for any structures that perform an action over night
+        
+        //Add 2 water to bank if the Reserve is Complete
         if (isStructureBuilt('Water Reserve', $townName)) {
             for ($i = 0; $i < 2; $i++) {
                 addToBank(0, $townName);
             }
         }
 
+        //Add 2 bits of food to the bank if Vegetable Garden is complete
         if (isStructureBuilt('Vegetable Garden', $townName)) {
             for ($i = 0; $i < 2; $i++) {
                 addToBank(1, $townName);
             }
         }
+
     } else {
         $query2 = 'UPDATE `towns` SET `readyResidents` = :newReady WHERE `townName` = :townName';
         $statement2 = $dbCon->prepare($query2);

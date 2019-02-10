@@ -12,7 +12,9 @@ array("Metal Patching", "Defence", "Wooden Wall", "80", "3.10", "150", "1", "Rei
 array("Sentry Tower", "Defence", "Wooden Wall", "75", "3.10:2.15:10.15", "100", "5", "Build a sentry tower on the wall. Used as a lookout.", "&nbsp&nbsp→"),
 array("Supply", "Supply", "Supply", "1", "", "0", "1", "Constructions that revolve around supplies/service.", "0"),
 array("Water Reserve", "Supply", "Supply", "50", "5.30:0.5:3.2", "0", "1", "Establish a holding area for all clean water reserves in the settlement. Once built; provides 2 water rations per day.", ""),
-array("Vegetable Garden", "Supply", "Supply", "85", "0.10", "0", "1", "A small plot to grow vegetables. Generates food overnight.", "")
+array("Vegetable Garden", "Supply", "Supply", "85", "0.10", "0", "1", "A small plot to grow vegetables. Generates food overnight.", ""),
+array("Production", "Production", "Production", "1", "", "0", "1", "Constructions that Correspond with Production Tasks", "0"),
+array("Fabrikator Workshop", "Production", "Production", "45", "0.10", "0", "1", "Allows the conversion of basic resources at a 3:1 Ratio", "")
 );
 //Compiled Database Text Array below !*!*!*!*[ADD TO THIS EVERYTIME A BUILDING IS ADDED]*!*!*!*!
 //Defence.0.1:Perimeter Fence.0.0:Wooden Wall.0.0:Inner Wall.0.0:Wooden Support.0.0:Metal Patching.0.0:Sentry Tower.0.0:Supply.0.1:Water Reserve.0.0:Vegetable Garden.0.0

@@ -60,7 +60,7 @@ function createSettlement($settlementName, $mapSize)
 		//error creating the table
 	}
 
-	$defaultBuildingsString = "Defence.0.1:Perimeter Fence.0.0:Wooden Wall.0.0:Inner Wall.0.0:Wooden Support.0.0:Metal Patching.0.0:Sentry Tower.0.0:Supply.0.1:Water Reserve.0.0:Vegetable Garden.0.0";
+	$defaultBuildingsString = "Defence.0.1:Perimeter Fence.0.0:Wooden Wall.0.0:Inner Wall.0.0:Wooden Support.0.0:Metal Patching.0.0:Sentry Tower.0.0:Supply.0.1:Water Reserve.0.0:Vegetable Garden.0.0:Production.0.1:Fabrikator Workshop.0.0";
 	
 	//add details of town to `towns` table
 	$query = 'INSERT INTO `towns` 

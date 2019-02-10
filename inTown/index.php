@@ -45,6 +45,10 @@ switch ($locat)
 	case 'inTown':
 	include ('inTown.php');
 	break;
+
+	case 'special':
+	include ('specialStructures.php');
+	break;
 	
 	default: header ("Location: ../?error=Must Log In to Access the Requested Page");
 }

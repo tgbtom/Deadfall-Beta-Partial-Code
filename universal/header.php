@@ -251,12 +251,12 @@ $aliveRes = $maxRes - $deadRes;
 		?>
 		</div>
 		
-		
 	</div>
 <div class="taskBox">
-    <a href="./?locat=construction"><img src="../images/leaveTown.png"></a>
-    <a href="./?locat=warehouse"><img src="../images/storage.png"></a>
-    <a href="./?locat=citizens"><img src="../images/citizens.png"></a>
-    <a href="./?locat=character"><img src="../images/stats.png"></a>
-    <a href="./?locat=outside"><img src="../images/outside.png"></a>
+    <a href="./?locat=construction"><img src="../images/leaveTown.png" title="Construction"></a>
+	<a href="./?locat=special"><img src="../images/leaveTown.png" title="Special Structures"></a>
+    <a href="./?locat=warehouse"><img src="../images/storage.png" title="Warehouse"></a>
+    <a href="./?locat=citizens"><img src="../images/citizens.png" title="Citizens"></a>
+    <a href="./?locat=character"><img src="../images/stats.png" title="Character Info"></a>
+    <a href="./?locat=outside"><img src="../images/outside.png" title="Outside Map"></a>
 </div>

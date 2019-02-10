@@ -231,6 +231,62 @@ class StructuresDB
     }
 }
 
+class SpecialStructures 
+{
+    public static function overnightFunctions($townName){
+        $structureStatus = StructuresDB::getBuiltDetails("Mechanical Water Pump", $townName);
+        if ($structureStatus["Level"] >= 1){
+            TownBankDB::addItem(0, 5, $townName);
+        }
+    }
+
+    private static function getSpecialStructures($townName){
+        $specialStructures = array(
+            "Fabrikator Workshop"
+        );
+        return $specialStructures;
+    }
+
+    public static function specialStructuresStatus($townName){
+        $dbCon = Database::getDB();
+        $specialStructures = self::getSpecialStructures($townName);
+        $builtSpecials = array();
+
+        foreach ($specialStructures as $current){
+            $currentDetails = StructuresDB::getBuiltDetails($current, $townName);
+            $level = $currentDetails["Level"];
+            if($level >= 1){
+                $builtSpecials[] .= $current;
+            }
+        }
+        return $builtSpecials;
+    }
+
+    public static function getHtmlContent($structure, $townName){
+        if($structure == "Fabrikator Workshop"){
+
+            $woodAmount = TownBankDB::getItemAmount(2, $townName);
+            $metalAmount = TownBankDB::getItemAmount(3, $townName);
+            $brickAmount = TownBankDB::getItemAmount(10, $townName);
+
+            $htmlContent = "<table class='specialTable'>
+            <tr><th colspan='2'><img src='../images/items/Wood Board.png'> Wood (" . $woodAmount . ") <img src='../images/items/Wood Board.png'></th></tr>
+            <form action='' method='post'><tr><td>3 <img src='../images/items/Wood Board.png'> ==> <img src='../images/items/Sheet Metal.png'> 1</td><td><button type='submit' name='specialFunction' value='convertWoodToMetal' class='buildButton'><span>Convert</span></button></td></tr></form>
+            <form action='' method='post'><tr><td>3 <img src='../images/items/Wood Board.png'> ==> <img src='../images/items/Brick.png'> 1</td><td><button type='submit' name='specialFunction' value='convertWoodToBrick' class='buildButton'><span>Convert</span></button></td></tr></form>
+            <tr><th colspan='2'><img src='../images/items/Sheet Metal.png'> Sheet Metal (" . $metalAmount . ") <img src='../images/items/Sheet Metal.png'></th></tr>
+            <form action='' method='post'><tr><td>3 <img src='../images/items/Sheet Metal.png'> ==> <img src='../images/items/Wood Board.png'> 1</td><td><button type='submit' name='specialFunction' value='convertMetalToWood' class='buildButton'><span>Convert</span></button></td></tr></form>
+            <form action='' method='post'><tr><td>3 <img src='../images/items/Sheet Metal.png'> ==> <img src='../images/items/Brick.png'> 1</td><td><button type='submit' name='specialFunction' value='convertMetalToBrick' class='buildButton'><span>Convert</span></button></td></tr></form>
+            <tr><th colspan='2'><img src='../images/items/Brick.png'> Brick (" . $brickAmount . ") <img src='../images/items/Brick.png'></th></tr>
+            <form action='' method='post'><tr><td>3 <img src='../images/items/Brick.png'> ==> <img src='../images/items/Wood Board.png'> 1</td><td><button type='submit' name='specialFunction' value='convertBrickToWood' class='buildButton'><span>Convert</span></button></td></tr></form>
+            <form action='' method='post'><tr><td>3 <img src='../images/items/Brick.png'> ==> <img src='../images/items/Sheet Metal.png'> 1</td><td><button type='submit' name='specialFunction' value='convertBrickToMetal' class='buildButton'><span>Convert</span></button></td></tr></form>
+            </table>";
+
+            return $htmlContent;
+        }
+    }
+
+}
+
 class TownBankDB
 {
     public static function getItemAmount($itemId, $townName)
@@ -270,6 +326,8 @@ class TownBankDB
         $statement->execute();
         $result = $statement->fetch(); //0.41,1.41,2.3,.4,10.1,3.1,4.1,13.1,6.2,7.1,5.1
         $statement->closeCursor();
+
+        $newGroundItems = "";
         
         $bank = explode(",", $result["groundItems"]);
         foreach($bank as $key => $value)
@@ -297,5 +355,56 @@ class TownBankDB
         $queryString = "UPDATE " . $townName . " SET `groundItems` = '" . $newGroundItems . "' WHERE `x` = 0 AND `y` = 0";
         Database::sendQuery($queryString);
         
+    }
+
+    public static function addItem($itemId, $amountToAdd, $townName){
+        $dbCon = Database::getDB();
+
+         //Get list of all items in bank
+         $query = "SELECT groundItems FROM `" . $townName . "` WHERE `x` = 0 AND `y` = 0";
+         $statement = $dbCon->prepare($query);
+         $statement->execute();
+         $result = $statement->fetch(); //0.41,1.41,2.3,.4,10.1,3.1,4.1,13.1,6.2,7.1,5.1
+         $statement->closeCursor();
+         
+         $newGroundItems = "";
+         $itemAdded = false;
+         $bank = explode(",", $result["groundItems"]);
+
+         if (empty($bank)){
+            $newGroundItems .= $itemId . "." . $amountToAdd;
+         }
+         else {
+            foreach($bank as $key => $value)
+            {
+                $currentItem = explode(".", $value);
+                $current["Id"] = $currentItem[0];
+                $current["Amount"] = $currentItem[1];
+                
+                if ($current["Id"] == $itemId)
+                {
+                   $current["Amount"] = $current["Amount"] + $amountToAdd;
+                   $itemAdded = true;
+                }
+                
+                if ($key == 0)
+                {
+                   $newGroundItems .= $current["Id"] . "." . $current["Amount"];
+                }
+                else
+                {
+                   $newGroundItems .= "," . $current["Id"] . "." . $current["Amount"];
+                }
+   
+                if (($key == count($bank) - 1) && $itemAdded == false){
+                   $newGroundItems .= "," . $itemId . "." . $amountToAdd;
+                }
+                
+            }
+         }
+         
+         $queryString = "UPDATE " . $townName . " SET `groundItems` = '" . $newGroundItems . "' WHERE `x` = 0 AND `y` = 0";
+         Database::sendQuery($queryString);
+         
     }
 }

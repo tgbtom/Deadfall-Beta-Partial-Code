@@ -375,11 +375,12 @@ $query2 = mysqli_query($con, $query1);
 		var xhttp = new XMLHttpRequest();
 	}
 	
-	function displayItem(item, desc)
+	function displayItem(item, desc, mass)
 	{
 		document.getElementById("itemName").innerHTML = item;
 		document.getElementById("itemName2").value = item;
 		document.getElementById("itemDesc").innerHTML = desc;
+		document.getElementById("itemDescMass").innerHTML = "Mass: " + mass;
 		document.getElementById("PickUp").value = "Pick Up " + item;
 		document.getElementById("PickUp").disabled = false;
 		//unselect previous items to change which item has the selected border
@@ -389,7 +390,6 @@ $query2 = mysqli_query($con, $query1);
 		sel[i].className = "notSelected";
 		}
 	}
-	
 	function display(Z, Co, Co2, Dep)
 		{
 			document.getElementById("zedCount").innerHTML = Z;
@@ -408,15 +408,15 @@ $query2 = mysqli_query($con, $query1);
                         else{
                             for (i = 0; i < arguments.length; i++)
                             {
-				// > 3 to ensure it skips past coordinates and Zed Count AND depletion amount
-				if (i > 3)
-				{
-                                    if (arguments[i] != "-1")
-                                    {
-					var itemNameNow = itemsInfo[arguments[i]][0];
-					var itemDescNow = itemsInfo[arguments[i]][1];
-					document.getElementById("itemsDiv").innerHTML = document.getElementById("itemsDiv").innerHTML + '<img onclick="displayItem(`' + itemNameNow + '`,`' + itemDescNow + '`); this.className = `selected`" title="' + itemNameNow + '" src="../images/items/' + itemNameNow + '.png">';
-                                    }
+								// > 3 to ensure it skips past coordinates and Zed Count AND depletion amount
+								if (i > 3)
+								{
+                    				if (arguments[i] != "-1"){
+									var itemNameNow = itemsInfo[arguments[i]][0];
+									var itemDescNow = itemsInfo[arguments[i]][1];
+									var itemMassNow = itemsInfo[arguments[i]][2];
+									document.getElementById("itemsDiv").innerHTML = document.getElementById("itemsDiv").innerHTML + '<img onclick="displayItem(`' + itemNameNow + '`,`' + itemDescNow + '`,`' + itemMassNow + '`); this.className = `selected`" title="' + itemNameNow + '" src="../images/items/' + itemNameNow + '.png">';
+                    			}
 				}
                             }
 			}
@@ -446,8 +446,8 @@ $query2 = mysqli_query($con, $query1);
 				// > 3 to ensure it skips past coordinates and Zed Count AND depletion amount
 				if (i > 3)
 				{
-                                    if (arguments[i] != "-1")
-                                    {
+                    if (arguments[i] != "-1")
+                    {
 					var itemNameNow = itemsInfo[arguments[i]][0];
 					var itemDescNow = itemsInfo[arguments[i]][1];
 					document.getElementById("remoteItemsDiv").innerHTML = document.getElementById("remoteItemsDiv").innerHTML + '<img title="' + itemNameNow + '" src="../images/items/' + itemNameNow + '.png">';
@@ -644,7 +644,8 @@ $query2 = mysqli_query($con, $query1);
 	<tr style="height:25px;"><td id="itemName" class="data"></td></tr>
 	<input type="hidden" name="location" value="/deadfall/outside.php">
 	<input type="hidden" value="none" name="itemName2" id="itemName2">
-        <tr class="lightRow"><td id="itemDesc" style="padding-left:5px;" class ="data2"></td></tr>
+    <tr class="lightRow"><td id="itemDesc" style="padding-left:5px;" class ="data2"></td></tr>
+	<tr class="lightRow"><td id="itemDescMass" style="padding-left:5px;" class ="data3"></td></tr>
 	<tr style="height:15%;"><td><input type="submit" id="PickUp" disabled value="Select an Item ->" style="width: 100%;"></form></td></tr>
 	</table>
         

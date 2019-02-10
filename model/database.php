@@ -77,7 +77,7 @@ class Towns {
         $newBulletin = $oldBulletin . "." . $content;
 
         //Update the bulletin to include the new content
-        $query2 = "UPDATE `towns` SET `bulletin` = ':bulletin' WHERE `townName` = ':townName;";
+        $query2 = "UPDATE `towns` SET `bulletin` = ':bulletin' WHERE `townName` = ':townName'";
         $statement2 = $dbCon->prepare($query2);
         $statement2->bindValue(":bulletin", $newBulletin);
         $statement2->bindValue(":townName", $townName);
