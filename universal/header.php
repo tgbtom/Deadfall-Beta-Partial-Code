@@ -117,7 +117,7 @@ function newAction(target, hiddenNameId)
 	{	
 		document.sendItemData.action = "../functions/dropItem.php?nameTagId=" + hiddenNameId;
 	}
-	else if (target === 'Eat' || target === 'Drink')
+	else if (target === 'Eat' || target === 'Drink' || target === 'Load')
 	{
 		document.sendItemData.action = "../functions/consume.php?nameTagId=" + hiddenNameId;
 	}
@@ -220,7 +220,7 @@ $aliveRes = $maxRes - $deadRes;
 				echo '<span class="popuptext" id="popUp' . $i . '">';
 				echo '<p><u>' . $itemName . '</u></p><p class="rarity" style="">' . getRarityString($itemsHeldArray[$i]) . '</p><p class="weight">Weight: ' . $itemWeight . '</p>';
 				echo '<input onclick="newAction(`drop`, ' . $i .')" type="submit" value="Drop">';
-				if (checkUsability($itemsHeldArray[$i]) == 'Eat' || checkUsability($itemsHeldArray[$i]) == 'Drink')
+				if (checkUsability($itemsHeldArray[$i]) == 'Eat' || checkUsability($itemsHeldArray[$i]) == 'Drink' || checkUsability($itemsHeldArray[$i]) == 'Load')
 				{
 					echo '<input onclick="newAction(`' . checkUsability($itemsHeldArray[$i]) . '`, ' . $i . ')" type="submit" value="' . checkUsability($itemsHeldArray[$i]) . '">';					
 				}

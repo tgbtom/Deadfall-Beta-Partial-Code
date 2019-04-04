@@ -27,10 +27,11 @@ $itemsMaster = array(
 		array("Medium Bullet", "Ammo", 1, 2)
 	);
 
-//itemID (Primary Key), function (0 -> Eat, 1 -> Drink, 2 -> Use), AP granted 
+//itemID (Primary Key), function (0 -> Eat, 1 -> Drink, 2 -> Use), AP granted (percentage)
 $itemsConsumable = array(
-		array(0, 1, 16),
-		array(1, 0, 10)
+		array(0, 1, 100),
+		array(1, 0, 50),
+		array(20, 3, 0)
 	);
 
 //itemID (Primary Key), Ammo ID (-1 means none), AP Cost, Min. Kills, Max. Kills, chance to break (out of 100), chance to get injured (out of 100), chance of ammo output, ammo output ID (-1) is for none

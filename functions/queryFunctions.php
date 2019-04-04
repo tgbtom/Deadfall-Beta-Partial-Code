@@ -678,7 +678,7 @@ function checkUsability ($arg1) //arg1 should be a number representing the item 
 	global $itemsMaster;
 	global $itemsConsumable;
 	$category = $itemsMaster[$arg1][1];
-	if ($category == "Consume")
+	if ($category != "Weapon")
 	{
 		for ($i = 0; $i < sizeOf($itemsConsumable); $i++)
 		{
@@ -686,18 +686,18 @@ function checkUsability ($arg1) //arg1 should be a number representing the item 
 			{
 				$functionId = $itemsConsumable[$i][1];
 				//$itemsConsumable[$i][1] = id of the function the item uses.
-				if ($functionId == 0)
-				{
+				if ($functionId == 0){
 					//function is 'Eat'
 					return 'Eat';
 				}
-				else if ($functionId == 1)
-				{
+				elseif ($functionId == 1){
 					return 'Drink';
 				}
-				else if ($functionID == 2)
-				{
+				elseif ($functionId == 2){
 					return 'Use';
+				}
+				elseif($functionId ==3){
+					return 'Load';
 				}
 			}
 		}
@@ -808,7 +808,6 @@ function removeItem($itemId)
 function getCharCoordsExt($character) //Return example => 0 => 5, 1=> -5  (Bottom right corner)
 {
 	global $dbCon;
-	global $user;
 	global $townName;
 	
 	$query = 'SELECT * FROM ' . $townName;
@@ -831,10 +830,12 @@ function getCharCoordsExt($character) //Return example => 0 => 5, 1=> -5  (Botto
 }
 
 //Upon death the character drops all items, and status is all reset to default
-function dropAllItemsExt($character)
+function dropAllItemsExt($character, $user = NULL)
 {
+	if($user == NULL){
+		global $user;
+	}
 	global $dbCon;
-	global $user;
 	global $townName;
 	
 	$query = 'SELECT items FROM `characters` WHERE `character` = :char AND `username` = :user';

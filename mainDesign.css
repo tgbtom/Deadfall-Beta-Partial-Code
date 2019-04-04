@@ -179,11 +179,10 @@ body
 
 .browseBlock3
 {
-	padding-top:20px;
+	padding-top: 20px;
 	width:75%;
-	height: 360px;		max-height: 800px;
+	min-height: 360px;		
 	margin: 25px auto;
-	float: left;
 	color: black;
 	background-color: #A5907E;
 	overflow: auto;

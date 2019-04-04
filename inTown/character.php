@@ -1,8 +1,8 @@
 <?php
 require_once ("../connect.php");
 require_once ("../functions/verifyLogin.php");
-Include ("../data/buildings.php");
-Include ("../data/items.php");
+require_once ("../data/buildings.php");
+require_once ("../data/items.php");
 require_once ("../functions/queryFunctions.php");
 require_once ("../model/structures.php");
 require_once ("../model/database.php");
@@ -11,7 +11,6 @@ $errorMessage = FILTER_INPUT(INPUT_GET, 'e');
 if (isset($errorMessage)) {
     echo "<script type='text/javascript'>alert('$errorMessage');</script>";
 }
-
 
 //All information here is retrieved from database simply using the login session and character session
 $playerName = $_SESSION['login'];
@@ -102,6 +101,17 @@ function endDay() {
                 if (!doesStatusContainExt(12, $character)) {
                     killCharacter($character, $currentUsername, $newDead);
                     $deathBulletin = $character . " died of dehydration.";
+                    Towns::addTownBulletin($deathBulletin, $townName); 
+                }
+            }
+
+            //Check for death of any characters that spent the night outside (60% chance to die)
+            $charLocation = getCharCoordsExt($character);
+            if($charLocation[0] != 0 || $charLocation[1] != 0){
+                if(mt_rand(0, 100) < 60){
+                    //Character dies from camping
+                    killCharacter($character, $currentUsername, $newDead);
+                    $deathBulletin = $character . " never returned from outside of town.";
                     Towns::addTownBulletin($deathBulletin, $townName);
                 }
             }
@@ -111,6 +121,19 @@ function endDay() {
         $dayNumber++;
         if ($dayNumber >= 5) {
             zedSpread($townName);
+        }
+
+        //If there was  an over run, publish results to bulletin
+        if (isset($overrun)){
+            $notice = "<strong>Horde Attack -> Night " . ($dayNumber - 1) . "</strong>: " . $overrun . " Zeds got through the defences and terrorized the citizens";
+            Towns::addTownBulletin($notice, $townName);
+            $notice = "as a result " . $newDead - $deadRes . " Survivors have been killed.";
+            Towns::addTownBulletin($notice, $townName);
+        }
+        //otherwise, post notice that you were safe
+        else{
+            $notice = "<strong>Horde Attack</strong>: The defences successfully fended off the horde for the night.";
+            Towns::addTownBulletin($notice, $townName);
         }
 
         //increase hordesize
@@ -193,10 +216,12 @@ function characterLottery($townName, &$newDead){
     $statement->closeCursor();
     
     //compile an array of character-user combo that are still alive
+    //Also only adds characters that are inside town to the lottery
     foreach ($results as $result){
         $currentChar = $result["character"];
         $currentUser = $result["username"];
-        if (!doesStatusContainExt(12, $currentChar, $currentUser)){
+        $charLocation = getCharCoordsExt($currentChar);
+        if (!doesStatusContainExt(12, $currentChar, $currentUser) && ($charLocation[0] == '0' && $charLocation[1] == '0')){
             //character is not dead, add him to the pool
             $currentCharCombo = array($currentUser, $currentChar);
             array_push($lotteryPool, $currentCharCombo);

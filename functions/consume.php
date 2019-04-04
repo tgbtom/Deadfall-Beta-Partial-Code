@@ -3,6 +3,7 @@ require_once ("../connect.php");
 require_once ("./verifyLogin.php");
 require_once ("../data/items.php");
 require_once ("../functions/queryFunctions.php");
+require_once ("../model/weapons.php");
 
 //gets the user and current character, and stores them in local variables
 $user = $_SESSION['login'];
@@ -113,11 +114,11 @@ if ($foundItem)
 		if (!(doesStatusContain(0))) 
 		{
 			addStatus(0);
-			$apToGain = getApForItemId($itemId);
-			if (($currentAp + $apToGain) > $maxAp)
+			$apToGain = getApForItemId($itemId)/100;
+			if (($currentAp + ($apToGain * $maxAp)) > $maxAp)
 			{$newAp = $maxAp;}
 			else
-			{$newAp = $currentAp + $apToGain;}
+			{$newAp = $currentAp + ($apToGain * $maxAp);}
 	
 			$query5 = 'UPDATE `characters` SET `currentAP` = :newAp WHERE `username` = :username AND `character` = :character';
 			$statement5 = $dbCon->prepare($query5);
@@ -165,11 +166,11 @@ if ($foundItem)
 		else  //else, if the character has NOT Drank today: Add 1 to his status array AND UPDATE AP accordingly
 		{
 			addStatus(1);
-			$apToGain = getApForItemId($itemId);
-			if (($currentAp + $apToGain) > $maxAp)
+			$apToGain = getApForItemId($itemId)/100;
+			if (($currentAp + ($apToGain * $maxAp)) > $maxAp)
 			{$newAp = $maxAp;}
 			else
-			{$newAp = $currentAp + $apToGain;}
+			{$newAp = $currentAp + ($apToGain * $maxAp);}
 	
 			$query5 = 'UPDATE `characters` SET `currentAP` = :newAp WHERE `username` = :username AND `character` = :character';
 			$statement5 = $dbCon->prepare($query5);
@@ -193,6 +194,8 @@ if ($foundItem)
 				$apUse = $itemsWeapon[$i][2];
 				$minKills = $itemsWeapon[$i][3];
 				$maxKills = $itemsWeapon[$i][4];
+
+				$weapon = new Weapon($itemsMaster[$itemId][0], $itemId, $itemsWeapon[$i][1], $itemsWeapon[$i][2], $itemsWeapon[$i][3], $itemsWeapon[$i][4], $itemsWeapon[$i][5], $itemsWeapon[$i][6], $itemsWeapon[$i][7], $itemsWeapon[$i][8]);
 			}
 		}
 		
@@ -220,6 +223,11 @@ if ($foundItem)
 						//Character has atleast 1 of the item
 						removeItem($ammoId);
 						$haveRequiredAmmo = true;
+
+						//Roll for Ammo Output
+						if($output = $weapon->rollForOutput()){
+							pickUpItem($output, $itemsMaster[$output][2]);
+						}
 					}
 				}
 				else
@@ -241,8 +249,8 @@ if ($foundItem)
 					$statement5->closeCursor();
 		
 					//... Kill zombies based on weapon stats and perform other calculations regarding weapon statistics. Weapon Break not for first round beta
-					$kills = mt_rand($minKills, min($maxKills, $zedCount));
-					$newZeds = (($zedCount - $kills) < 0) ? 0 : $zedCount - $kills;
+					$kills = ($zedCount > $minKills) ? mt_rand($minKills, min($maxKills, $zedCount)) : $zedCount;
+					$newZeds = (($zedCount - $kills) < 0) ? 0 : ($zedCount - $kills);
 					$addThisBulletin = $char . ' killed ' . $kills . ' zed(s) with ' . $itemName;
 					$newBulletin = ($oldBulletin == NULL) ? $addThisBulletin : $oldBulletin . '.' . $addThisBulletin;
 					
@@ -270,6 +278,51 @@ if ($foundItem)
 		{
 			echo "<script>window.location.href='../inTown/?locat=outside&e=You do not have enough AP to Attack with this weapon.'</script>";
 		}
+	}
+	elseif($itemFunction == "Load"){
+		/** 
+		 * 
+		 * 
+		 * 
+		 * 
+		 * 
+		 * 
+		 * Maintain inventory mass throughout
+		 * 
+		 * 
+		 * 
+		 * 
+		 * 
+		 * 
+		 *  */
+
+		$amountRemoved = 0;
+		
+		//Check inventory for ammo
+		for($i = 0; $i < 3; $i++){
+			if(characterIsHolding(22)){
+				removeItem(22);
+				$amountRemoved++;
+			}
+		}
+
+		//If not enough ammo was found and removed, regain the ammo that WAS found and removed 
+		if($amountRemoved < 3){
+			//Not enough ammo was found/removed, re-add the ammo
+			for($i = 0; $i < $amountRemoved; $i++){
+				pickUpItem(22, 1);
+				$amountRemoved = 0;
+				echo "<script>window.location.href='../inTown/?locat=outside&e=You do not have enough ammo to load the item.'</script>";
+
+			}
+		}
+		else{
+			//Remove empty mag and Add Full mag to inventory
+			removeItem(20);
+			pickUpItem(21, 3);
+			echo "<script>window.location.href='../inTown/?locat=inTown&e=You successfully loaded the item.'</script>";
+		}
+
 	}
 	
 }

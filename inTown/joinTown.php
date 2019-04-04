@@ -1,18 +1,63 @@
 <?php
 require_once ("../connect.php");
 require_once ("../functions/verifyLogin.php");
+require_once ("../model/database.php");
 
 //Check amount of Residents to display later
+// xax
+
+	//Check if there was multiple checkboxes checked for multi-join
+	$multiJoin = filter_input(INPUT_POST, 'selectedChars', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY);
+	$singleJoin = filter_input(INPUT_GET, 'selectedChar');
+
+	if(!isset($singleJoin)){
+		$singleJoin = filter_input(INPUT_POST, 'selectedChar');
+	}
 
 	$temp = filter_input(INPUT_GET, 'tempChar');
 	if (!isset($temp))
 	{
 		$temp = filter_input(INPUT_POST, 'tempChar');
+		if(isset($_SESSION["multijoin"])){
+			unset($_SESSION["multijoin"]);
+			$_SESSION["multijoin"] = [];
+		}
 	}
-	//$temp = $_POST["tempChar"]
+	else{
+		$tempSession = $_SESSION["multijoin"];
+		foreach($tempSession as $current){
+			$current = unserialize($current);
+			if(!in_array($current["id"], $multiJoin)){
+				//Wont reach this line if the character is already in the list. To prevent duplicates
+				$multiJoin[] = $current["id"];
+			}
+		}
+	}
+	$characterAmount = 1;
+
+
+	//multiJoin is an array of character ID's that need to join
+	if(!empty($multiJoin)){
+		echo sizeof($multiJoin) . " characters were checked off";
+		$characterAmount += sizeof($multiJoin);
+	}
+	else{
+		$multiJoin = [];
+	}
+
+	if(isset($singleJoin)){
+		if(!in_array($singleJoin, $multiJoin)){
+			$multiJoin[] = $singleJoin;
+		}
+	}
+
+	
+
+	//The character that was hovered over when Join town was pressed
 	$_SESSION['char'] = $temp;
 	$cName = $temp;
 	$pName = $_SESSION['login'];
+
 	//if the character is already in a town, forward the player to inTown.php
 	$query1 = "SELECT * FROM `characters` WHERE `username` = '$pName' AND `character` = '$cName'";
 	$query2 = mysqli_query($con, $query1);
@@ -42,9 +87,11 @@ require_once ("../functions/verifyLogin.php");
 		}
 	}
 ?>
+
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="../mainDesign.css">
+<link rel="stylesheet" type="text/css" href="../css/joinTown.css">
 <!-- source below grants access to JQuery,through Microsoft network (Can download Jquery file and host it through the website too) -->
 <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.3.min.js"></script>
 </head>
@@ -55,37 +102,83 @@ require_once ("../functions/verifyLogin.php");
 		<img src="../images/DeadFallLogo2.png">
 		</div>
 
-		<div class="browseBlock3" style="padding: 15px;">
+		<div class="browseBlock3">
+		
+		<div class="multiJoin">
+			<!-- Display all characters that have not joined a town yet -->
+			<?php 
+				//NEW METHOD OF DB CONNECTION
+				$dbCon = Database::getDB();
+				$query = "SELECT * FROM `characters` WHERE `username` = :username";
+				$statement = $dbCon->prepare($query);
+				$statement->bindValue(':username', $pName);
+				$statement->execute();
+				$characters = $statement->fetchAll();
+				$statement->closeCursor();
+
+				if($characterAmount > 1){
+					foreach($multiJoin as $characterId){
+						$character = Character::getCharacterById($characterId);
+						echo "<li>" . $character["character"] . " {Lv. " . $character["level"] . "}</li>";
+
+						//Add them to the Session List of MultiJoin
+						//***WILL NEED TO UNSERIALIZE TO UTILIZE THE OBJECTS WHEN ADDING CHARACTERS ON FUTURE PAGES */
+						$_SESSION["multijoin"][] = serialize($character);
+					}
+				}
+				else{
+					$character = Character::getCharacterById($singleJoin);
+					echo "<li>" . $character["character"] . " {Lv. " . $character["level"] . "}</li>";
+					$_SESSION["multijoin"][] = serialize($character);
+				}
+			?>
+		</div>
+
+		<table class='townList'><thead>
+		<tr>
+			<th>Town Name</th>
+			<th>Residents (Current/Max)</th>
+			<th>Join Town</th>
+		</tr>
+		</thead>
 		
 		<?php
-		$check = "SELECT * FROM `towns` WHERE `townFull`=0";
-		$query = mysqli_query($con, $check);
-		$x = 0;
 
-		echo "<table>";
-		while ($row = mysqli_fetch_assoc($query))
-		{
-			$x += 1;
-			$t = $row["townName"];
+		$query = "SELECT * FROM `towns` WHERE `townFull`=0";
+		$statement = $dbCon->prepare($query);
+		$statement->execute();
+		$results = $statement->fetchAll();
+		$statement->closeCursor();
+
+		foreach($results as $key => $result){
+			$t = $result["townName"];
 			$c = $cName;
-			$emptyTown = "<tr><td>" . $x . ": " . $row["townName"] . "[" . $row["amountResidents"] . "/" . $row["maxResidents"] . "]  </td><td><form method='post' action='../functions/addToTown.php'><input type='hidden' name='newTown' value=$t><input type='hidden' name='char' value=$c><input type='submit' value='Join'></form></td></tr>";
-			echo $emptyTown;
+			//$result["maxResidents"] - $result["amountResidents"] >= $characterAmount
+			if($result["maxResidents"] - $result["amountResidents"] >= $characterAmount){
+				$availableTown = "<tr><td>" . $t . "</td><td>[" . $result["amountResidents"] . "/" . $result["maxResidents"] . "]  </td><td><form method='post' action='../functions/addToTown.php'><input type='hidden' name='newTown' value=$t><input type='hidden' name='char' value=$c><button type='submit' value='Submit' class='joinButton'><span>Join Town</span></button></form></td></tr>";
+				echo $availableTown;
+			}
 		}
 		echo "</table>";
 		?>
 		
 		<br><hr><br>
-		<h3>***Note: Do NOT use any spaces in town-name***</h3>
-		<form method='post' action='../functions/createTown.php'>
-		<input type='text' name='newTown' required style="margin: 5px;">
-		<select required>
-		<option value="" selected disabled>Select Town Size</option>
-		<option value="1">(10) Band  of Survivors | 11x11 Map</option>
-		</select>
-		<input type='hidden' name='cName' value='<?php echo $cName;?>'>
-		<input type='hidden' name='char' value=$c>
-		<input type='submit' value='Create Town'>
-		</form>
+			<div class="createTown">
+				<form id='create' method='post' action='../functions/createTown.php'>
+				<h3>***Note: Do NOT use any spaces in town-name***</h3>
+				<label for='townName'><i>Town Name</i></label><br>
+					<input id='townName' type='text' name='newTown' required style="margin: 5px;"><br>
+					<label for='townSize'><i>Size</i></label><br>
+					<select id='townSize' required>
+					<option value="" selected disabled>Select Town Size</option>
+					<option value="1">(10) Band  of Survivors | 11x11 Map</option>
+					</select>
+
+					<input type='hidden' name='cName' value='<?php echo $cName;?>'>
+					<input type='hidden' name='char' value=$c>
+					<input type='submit' value='Create Town'>
+				</form>
+			</div>
 		</div>
 
 		

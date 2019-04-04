@@ -57,11 +57,12 @@ $_SESSION['y'] = '';
 				}
 			}
 		
-		function displayInfo(arg1,arg2,arg3)
+		function displayInfo(name,arg1,arg2,arg3)
 			{
 				document.getElementById("play").disabled = false;
-				document.getElementById("name").value = arg1;
-				document.getElementById("name2").innerHTML = arg1;
+				document.getElementById("charId").value = arg1;
+				document.getElementById("name").value = name;
+				document.getElementById("name2").innerHTML = name;
 				document.getElementById("name2").style.textAlign = "center";
 				document.getElementById("town").innerHTML = arg2;
 				document.getElementById("class").innerHTML = arg3;
@@ -130,6 +131,7 @@ $_SESSION['y'] = '';
 
 				}
 			}
+
 </script>
 
 <link rel="stylesheet" type="text/css" href="../mainDesign.css">
@@ -164,18 +166,28 @@ $_SESSION['y'] = '';
 			$results = $query->fetchAll();
 			$query->closeCursor();
 			
+			?>
+			<form name="Multi-Select" method="post">
+			<?php
 			foreach ($results as $result)
 			{
-				$tips = $result["character"];
+				$name = $result["character"];
+				$tips = $result["id"];
 				$tips2 = $result["townName"];
 				$tips3 = lcfirst($result["class"]); //returns class name with first character as lowercase
 				$classImg = $root . "/images/icons/" . lcfirst($tips3) . ".png"; 
-				echo "<tr id='" . $tips . "' class='clickable' onclick=displayInfo('$tips','$tips2','$tips3')>" . "<td>Lvl: " . $result["level"] . "</td><td>" . $result["character"] . "</td><td><img src='$classImg'> " . $result["class"] . "</td><td>" . $tips2 . "</td></tr>";
+				if($result["townName"] == 'none'){
+					echo "<tr id='" . $tips . "' class='clickable' onclick=displayInfo('$name','$tips','$tips2','$tips3')>" . "<td>Lvl: " . $result["level"] . "</td><td>" . $result["character"] . "</td><td><img src='$classImg'> " . $result["class"] . "</td><td>" . $tips2 . "</td><td><input type='checkbox' form='join' name='selectedChars[]' value=" . $result["id"] . "></td></tr>";
+				}
+				else{
+					echo "<tr id='" . $tips . "' class='clickable' onclick=displayInfo('$name','$tips','$tips2','$tips3')>" . "<td>Lvl: " . $result["level"] . "</td><td>" . $result["character"] . "</td><td><img src='$classImg'> " . $result["class"] . "</td><td colspan='2'>" . $tips2 . "</td></tr>";
+				}
 			}
 		}
 	
 	
 		?>
+		</form>
 		</table>
 		
 		</ul>
@@ -187,9 +199,12 @@ $_SESSION['y'] = '';
 		
 		<div class="infoBlock">
 		
-		<form action="<?php echo "../inTown/?locat=join";?>" method="post" name="joinOrPlay"><input type="submit" class="login-top" id="play" value="Welcome" onclick="checkTown()" name="tempChar2" disabled="true">
+		<form action="<?php echo "../inTown/?locat=join";?>" method="post" name="joinOrPlay" id="join"><input type="submit" class="login-top" id="play" value="Welcome" onclick="checkTown()" name="tempChar2" disabled="true">
 		<!-- Need to make the input type below so nobody can change it, make it just plain text if possible -->
-		<input id="name" name="tempChar" value="Select a Character" hidden></form>
+		<input id="name" name="tempChar" value="Select a Character" hidden>
+		<input id="charId" name="selectedChar" value=0 hidden>
+		</form>
+		
 		<table width="90%">
 		<tr><td style="border:1px solid black;" colspan="2"><b><p id="name2" style="text-align: left;">Please</p></b></td></tr>
 		<tr><td class="data1" colspan="2"><b><p id="town2">Select</p></td><td class="data2" style="visibility: hidden;"><p id="town">none</p></b></td></tr>

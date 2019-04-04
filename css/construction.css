@@ -45,55 +45,55 @@ and open the template in the editor.
             margin-right: 8px;
             float: right;
         }
-        .buildButton {
-        display: inline-block;
-        float: right;
-        border-radius: 4px;
-        background-color: #54483E;
-        border: none;
-        color: #A39D8D;
-        text-align: center;
-        font-size: 16px;
-        padding: 5px;
-        width: 150px;
-        transition: all 0.5s;
-        cursor: pointer;
-        margin: 5px;
-        box-shadow: 3px 2px black;
-        }
+    .buildButton {
+    display: inline-block;
+    float: right;
+    border-radius: 4px;
+    background-color: #54483E;
+    border: none;
+    color: #A39D8D;
+    text-align: center;
+    font-size: 16px;
+    padding: 5px;
+    width: 150px;
+    transition: all 0.5s;
+    cursor: pointer;
+    margin: 5px;
+    box-shadow: 3px 2px black;
+    }
 
-        .buildButton span {
-        cursor: pointer;
-        display: inline-block;
-        position: relative;
-        transition: 0.5s;
-        }
+    .buildButton span {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
+    }
 
-        .buildButton span:after {
-        content: '\00bb';
-        position: absolute;
-        opacity: 0;
-        top: 0;
-        right: -20px;
-        transition: 0.5s;
-        }
-        
-        .buildButton:hover
-        {
-        background-color: #47372A;
-        transition: 0s;
-        }
+    .buildButton span:after {
+    content: '\00bb';
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: -20px;
+    transition: 0.5s;
+    }
 
-        .buildButton:hover span {
-        padding-right: 25px; 
-        }
+    .buildButton:hover
+    {
+    background-color: #47372A;
+    transition: 0s;
+    }
 
-        .buildButton:hover span:after {
-        opacity: 1;
-        right: 0;
-        }
-        
-        .buildButton:active
-        {
-        box-shadow: none;
-        }
+    .buildButton:hover span {
+    padding-right: 25px; 
+    }
+
+    .buildButton:hover span:after {
+    opacity: 1;
+    right: 0;
+    }
+
+    .buildButton:active
+    {
+    box-shadow: none;
+    }
