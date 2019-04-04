@@ -1000,6 +1000,7 @@ function charsAlive($townName)
 function closeTheTown($townName) //Officially ends the town, database table is left for legacy records
 {
 	global $dbCon;
+	global $root;
 	// All chars from the town must be reset to 'none'
 	$query = 'SELECT * FROM `characters` WHERE `townName` = :townName';
 	$statement = $dbCon->prepare($query);
@@ -1031,7 +1032,7 @@ function closeTheTown($townName) //Officially ends the town, database table is l
 	$_SESSION['y'] = NULL;
 	$_SESSION['char'] = '';
 	
-	header("location: ../inTown/?locat=browseChars");
+	echo '<script>window.location = "' . $root . '/summary.php?town=' . $townName . '";</script>';
 }
 
 function isStructureBuilt($structure, $townName)
