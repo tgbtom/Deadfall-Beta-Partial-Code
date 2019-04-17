@@ -30,12 +30,13 @@ foreach($multiJoin as $characterObject){
 
 	if($result["townName"] == "none"){
 		//Char still has not joined a town
-		$query = "UPDATE `characters` SET `townName` = :newTown, `items` = :items, `itemsMass` = '0', `currentAP` = '16', `status` = '3.7.11' WHERE `character` = :char AND `username` = :user";
+		$query = "UPDATE `characters` SET `townName` = :newTown, `items` = :items, `itemsMass` = '0', `currentAP` = :maxAp, `status` = '3.7.11' WHERE `character` = :char AND `username` = :user";
 		$statement = $dbCon->prepare($query);
 		$statement->bindValue(':char', $charName);
 		$statement->bindValue(':items', $defaultItems);
 		$statement->bindValue(':user', $playerName);
 		$statement->bindValue(':newTown', $newTown);
+		$statement->bindValue(':maxAp', $result["maxAP"]);
 		$statement->execute();
 		$statement->closeCursor();
 

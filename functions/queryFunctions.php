@@ -33,14 +33,6 @@ else
 	$y = $_SESSION['y'];
 }
 
-
-
-//get char status to be used in status functions below
-$charDetails = getCharDetails();
-$statusString = $charDetails['status'];
-$statusArray = explode('.', $statusString);
-$townName = $charDetails['townName'];
-
 function getCharDetails()
 {
 	global $char;
@@ -57,6 +49,14 @@ function getCharDetails()
 	
 	return $result;
 }
+
+
+//get char status to be used in status functions below
+$charDetails = getCharDetails();
+$statusString = $charDetails['status'];
+$statusArray = explode('.', $statusString);
+$townName = $charDetails['townName'];
+
 
 function getTownDetails($townName)
 {
@@ -88,8 +88,12 @@ function getWarehouseItems($townName)
 
 function doesStatusContain($statusId)
 {
-	global $statusArray;
-	for ($i = 0; $i < sizeOf($statusArray); $i++)
+
+	global $statusString;
+
+	$statusArray = explode('.', $statusString);
+
+	for ($i = 0; $i < sizeof($statusArray); $i++)
 	{
 		if ($statusArray[$i] == $statusId)
 		{return true;}
@@ -458,7 +462,15 @@ function lootItem()
 	if ($depletion <= 0)
 	{
 		//this means depleted zone will always give item #0 (MUST BE CHANGED TO SPECIAL RARITY)
-		$rarityArray = array('Stone');
+		foreach ($itemsMaster as $itemsMasterCur)
+		{
+			//if rarity = 5 the item is scrap
+			if ($itemsMasterCur[3] == 5)
+			{
+				//add the item name to the end of the rarity array (common)
+				array_push($rarityArray, $itemsMasterCur[0]);
+			}
+		}
 	}
 	elseif ($random <= 130) //65%
 	{
@@ -640,8 +652,8 @@ function dropItem($itemId)
 	$statement->closeCursor();
 }
 
-function dropItemExt($itemId, $charX, $charY)
-{
+function dropItemExt($itemId, $charX, $charY){
+
 	global $dbCon;
 	global $townName;
 	
@@ -673,7 +685,7 @@ function dropItemExt($itemId, $charX, $charY)
 }
 
 //PERHAPS RETURN THE FUNCTION ID of the item, where ID 0 is EAT, 156 could be the availability of Both Eat or Attack for example
-function checkUsability ($arg1) //arg1 should be a number representing the item ID
+function checkUsability($arg1) //arg1 should be a number representing the item ID
 {
 	global $itemsMaster;
 	global $itemsConsumable;
@@ -716,7 +728,7 @@ function checkUsability ($arg1) //arg1 should be a number representing the item 
 	}
 }
 
-function characterIsHolding ($itemId) //Checks if the current session's character has the item specified
+function characterIsHolding($itemId) //Checks if the current session's character has the item specified
 {	
 	global $dbCon;
 	global $char;
@@ -962,6 +974,10 @@ function getRarityString($itemId)
 		
 		case '4':
 		return 'Legendary';
+		break;
+
+		case '5':
+		return 'Scrap';
 		break;
 		
 		default: return 'Common';

@@ -3,10 +3,6 @@ require_once ("../connect.php");
 require_once ("../functions/verifyLogin.php");
 
 $errorMessage = FILTER_INPUT(INPUT_GET, 'e');
-if (isset($errorMessage))
-{
-	echo "<script type='text/javascript'>alert('$errorMessage');</script>";
-}
 ?>
 <html>
 <head>
@@ -74,3 +70,17 @@ $query2 = mysqli_query($con, $query1);
 	?>
 </body>
 </html>
+<?php
+if (isset($errorMessage))
+{
+	?>
+	<script type='text/javascript'> 
+		document.onreadystatechange = function(){
+		if(document.readyState == "complete"){
+			alert("<?php echo $errorMessage; ?>");
+		}
+		};
+	</script>
+	<?php
+} 
+?>

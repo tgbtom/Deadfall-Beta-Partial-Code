@@ -84,7 +84,7 @@ function endDay() {
                     //***************************CHARACTER DIES HERE*****************************************
                     if (!doesStatusContainExt(12, $character)) {
                         killCharacter($character, $currentUsername, $newDead);
-                        $deathBulletin = $character . " starved to death.";
+                        $deathBulletin = "<red>" . $character . " starved to death</red>";
                         Towns::addTownBulletin($deathBulletin, $townName);
                     }
                 }
@@ -100,7 +100,7 @@ function endDay() {
                 //***************************CHARACTER DIES HERE*****************************************
                 if (!doesStatusContainExt(12, $character)) {
                     killCharacter($character, $currentUsername, $newDead);
-                    $deathBulletin = $character . " died of dehydration.";
+                    $deathBulletin = "<red>" . $character . " died of dehydration</red>";
                     Towns::addTownBulletin($deathBulletin, $townName); 
                 }
             }
@@ -111,7 +111,7 @@ function endDay() {
                 if(mt_rand(0, 100) < 60){
                     //Character dies from camping
                     killCharacter($character, $currentUsername, $newDead);
-                    $deathBulletin = $character . " never returned from outside of town.";
+                    $deathBulletin = "<red>" . $character . " never returned from outside of town</red>";
                     Towns::addTownBulletin($deathBulletin, $townName);
                 }
             }
@@ -125,14 +125,14 @@ function endDay() {
 
         //If there was  an over run, publish results to bulletin
         if (isset($overrun)){
-            $notice = "<strong>Horde Attack -> Night " . ($dayNumber - 1) . "</strong>: " . $overrun . " Zeds got through the defences and terrorized the citizens";
+            $notice = "<red><strong>Horde Attack -> Night " . ($dayNumber - 1) . "</strong>: " . $overrun . " Zeds got through the defences and terrorized the citizens</red>";
             Towns::addTownBulletin($notice, $townName);
-            $notice = "as a result " . $newDead - $deadRes . " Survivors have been killed.";
+            $notice = "<red>as a result " . $newDead - $deadRes . " Survivors have been killed</red>";
             Towns::addTownBulletin($notice, $townName);
         }
         //otherwise, post notice that you were safe
         else{
-            $notice = "<strong>Horde Attack</strong>: The defences successfully fended off the horde for the night.";
+            $notice = "<green><strong>Horde Attack</strong>: The defences successfully fended off the horde for the night</green>";
             Towns::addTownBulletin($notice, $townName);
         }
 
@@ -151,17 +151,23 @@ function endDay() {
 
         //Check for any structures that perform an action over night
         
-        //Add 2 water to bank if the Reserve is Complete
+        //Add water to bank if the Reserve is Complete
         if (isStructureBuilt('Water Reserve', $townName)) {
-            for ($i = 0; $i < 2; $i++) {
+            $amount = mt_rand(2,4);
+            for ($i = 0; $i < $amount; $i++) {
                 addToBank(0, $townName);
+                $notice = "<blue>" . $amount . " Water Rations were collected from the Water Reserve</blue>";
+                Towns::addTownBulletin($notice, $townName);
             }
         }
 
-        //Add 2 bits of food to the bank if Vegetable Garden is complete
+        //Add bits of food to the bank if Vegetable Garden is complete
         if (isStructureBuilt('Vegetable Garden', $townName)) {
-            for ($i = 0; $i < 2; $i++) {
+            $amount = mt_rand(1,4);
+            for ($i = 0; $i < $amount; $i++) {
                 addToBank(1, $townName);
+                $notice = "<blue>" . $amount . " Bits of Food were collected from the Vegetable Garden</blue>";
+                Towns::addTownBulletin($notice, $townName);
             }
         }
 
@@ -194,6 +200,11 @@ function killCharacter($character, $username, &$newDead) {
 
     //This function kills the character on the database end
     dropAllItemsExt($character);
+
+    //Add a notice of their death to the bulletin
+    $notice = "<red>" . $character . "[" . $username . "] Has died from zeds</red>";
+    Towns::addTownBulletin($notice, $townName);
+
     //Check if any chars are left alive in this town, otherwise needs to end town
     if (charsAlive($townName) == 0) {
         //All characters are dead

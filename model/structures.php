@@ -160,6 +160,7 @@ class StructuresDB
     {
         $builtStructures = self::getTownStructures($townName);
         $builtArray = explode(':', $builtStructures);
+        $newBuildString = "";
         
         foreach ($builtArray as $key => $value)
         {
@@ -174,6 +175,10 @@ class StructuresDB
                     $building["Ap"] = 0;
                     $building["Level"] += 1;
                     self::addDefence($structure_object->getDefence(), $townName);
+
+                    //Add this to The Bulletin --> Level X Outter Wall Has been Completed
+                    $notice = "<yellow>Level " . $building["Level"] . " " . $building["Name"] . " Has been Completed</yellow>";
+                    Towns::addTownBulletin($notice, $townName);
                 }
             }
             
@@ -329,6 +334,10 @@ class TownBankDB
 
         $newGroundItems = "";
         
+        //This bool is used to ensure that if the first item in the bank is removed and results in 0 items left, 
+        //the string knows that the next item can be considered the new first bank item
+        $skippedOne = false;
+
         $bank = explode(",", $result["groundItems"]);
         foreach($bank as $key => $value)
         {
@@ -338,16 +347,27 @@ class TownBankDB
             
             if ($current["Id"] == $itemId)
             {
-                $current["Amount"] = (($current["Amount"] - $amountToRemove) >= 0) ? $current["Amount"] - $amountToRemove : 0 ;
+                $current["Amount"] = (($current["Amount"] - $amountToRemove) > 0) ? $current["Amount"] - $amountToRemove : 0 ;
             }
             
-            if ($key == 0)
-            {
-                $newGroundItems .= $current["Id"] . "." . $current["Amount"];
+            //Only recompile item to list if there is atleast 1 of the item remaining
+            if($current["Amount"] > 0){
+                if ($key == 0 || $skippedOne == true)
+                {
+                    $skippedOne = false;
+                    $newGroundItems .= $current["Id"] . "." . $current["Amount"];
+                }
+                else
+                {
+                    $newGroundItems .= "," . $current["Id"] . "." . $current["Amount"];
+                }
             }
-            else
-            {
-                $newGroundItems .= "," . $current["Id"] . "." . $current["Amount"];
+            elseif($key == 0){
+                $skippedOne = true;
+                continue;
+            }
+            else{
+                continue;
             }
             
         }

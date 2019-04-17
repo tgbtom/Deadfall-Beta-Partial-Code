@@ -30,12 +30,19 @@ require_once("../model/database.php");
         $yCo = $_SESSION['y'];
         $reqMet = false;
         $itemAmt =0;
+
+        $apNotice = "";
         
         $charDetails = getCharDetails();
         $townName = $charDetails['townName'];
         $charLevel = $charDetails['level'];
         $charClass = $charDetails['class'];
         $charAp = $charDetails['currentAP'];
+
+        if($charClass == "Builder"){
+            //Make note of Double contribution room for builders because their AP counts as 2 towards structures
+            $apNotice = "<small> 2x</small>";
+        }
         
         $bank = getWarehouseItems($townName);
         $townBank = explode(',', $bank);
@@ -81,14 +88,14 @@ require_once("../model/database.php");
                                 $itemIdNeeded = $value->getItemId();
                                 $itemName = $itemsMaster[$itemIdNeeded][0];
                                 $itemAmountNeeded = $value->getItemAmount();
-                                $resourceCostsString .= "  <img src='../images/items/" . $itemName . ".png'>" . TownBankDB::getItemAmount($itemIdNeeded, $townName) . "/" . $itemAmountNeeded;
+                                $resourceCostsString .= "  <img src='../images/items/" . $itemName . ".png' title='" . $itemName . "'>" . TownBankDB::getItemAmount($itemIdNeeded, $townName) . "/" . $itemAmountNeeded;
                             }
                             //This code repeats for every building that exists in the configuration
                             
                             //Check if the building adds defence, if it does, add a shield icon to the row
                             if ($currentBuilding->getDefence() > 0)
                             {
-                                $defString = "<style1> <img src='../images/icons/shield.png'>" . $currentBuilding->getDefence() . "</style1>";
+                                $defString = "<style1> <img src='../images/icons/shield.png' title='Defence Given'>" . $currentBuilding->getDefence() . "</style1>";
                             }
      
                             
@@ -122,8 +129,8 @@ require_once("../model/database.php");
                                             . "<td>" . $builtDetails['Level'] . "/"  . $currentBuilding->getMaxLevel() . "</td>"
                                             . "<td>" . $indent . $currentBuilding->getName() . $defString . "</td>"
                                             . "<td><small>Contribute to Upgrade</small></td><input hidden type='text' name='buildName' value='" . $currentBuilding->getName() . "'>"
-                                            . "<td class='apCell'><input type='number' placeholder='Ap' class='apInput' name='apToAssign' min=0 max='$charAp'>" . $builtDetails["Ap"] . "/" . $currentBuilding->getApCost() . " <img src='../images/icons/ap.png'></td>"
-                                            . "<td class='buttonCell'><button type='submit' value='Submit' class='buildButton'><span>Contribute</span></button></td>"
+                                            . "<td class='apCell'><input type='number' placeholder='Ap' class='apInput' name='apToAssign' min=0 max='$charAp'>" . $ap . $builtDetails["Ap"] . "/" . $currentBuilding->getApCost() . " <img src='../images/icons/ap.png'></td>"
+                                            . "<td class='buttonCell'><button type='submit' value='Submit' class='buildButton'><span>Contribute  " . $apNotice . "</span></button></td>"
                                             . "</tr></form>";
                                 }
                                 else
@@ -136,7 +143,7 @@ require_once("../model/database.php");
                                                 . "<td>" . $indent . $currentBuilding->getName() . $defString . "</td>"
                                                 . "<td>" . $resourceCostsString . "</td><input hidden type='text' name='buildName' value='" . $currentBuilding->getName() . "'>"
                                                 . "<td class='apCell'><input type='number' placeholder='Ap' class='apInput' name='apToAssign' min=0 max='$charAp'>" . $builtDetails["Ap"] . "/" . $currentBuilding->getApCost() . " <img src='../images/icons/ap.png'></td>"
-                                                . "<td class='buttonCell'><button type='submit' value='Submit' class='buildButton'><span>Upgrade</span></button></td>"
+                                                . "<td class='buttonCell'><button type='submit' value='Submit' class='buildButton'><span>Upgrade  " . $apNotice . "</span></button></td>"
                                                 . "</tr></form>";
                                     }
                                     else
@@ -161,7 +168,7 @@ require_once("../model/database.php");
                                                 . "<td>" . $indent . $currentBuilding->getName() . $defString . "</td>"
                                                 . "<td><small>Contribute to Structure</small></td><input hidden type='text' name='buildName' value='" . $currentBuilding->getName() . "'>"
                                                 . "<td class='apCell'><input type='number' placeholder='Ap' class='apInput' name='apToAssign' min=0 max='$charAp'>" . $builtDetails["Ap"] . "/" . $currentBuilding->getApCost() . " <img src='../images/icons/ap.png'></td>"
-                                                . "<td class='buttonCell'><button type='submit' value='Submit' class='buildButton'><span>Contribute</span></button></td>"
+                                                . "<td class='buttonCell'><button type='submit' value='Submit' class='buildButton'><span>Contribute " . $apNotice . "</span></button></td>"
                                                 . "</tr></form>";
                             }
                             else
@@ -178,7 +185,7 @@ require_once("../model/database.php");
                                                 . "<td>" . $indent . $currentBuilding->getName() . $defString . "</td>"
                                                 . "<td>" . $resourceCostsString . "</td><input hidden type='text' name='buildName' value='" . $currentBuilding->getName() . "'>"
                                                 . "<td class='apCell'><input type='number' placeholder='Ap' class='apInput' name='apToAssign' min=0 max='$charAp'>" . $builtDetails["Ap"] . "/" . $currentBuilding->getApCost() . " <img src='../images/icons/ap.png'></td>"
-                                                . "<td class='buttonCell'><button type='submit' value='Submit' class='buildButton'><span>Build Now</span></button></td>"
+                                                . "<td class='buttonCell'><button type='submit' value='Submit' class='buildButton'><span>Build Now  " . $apNotice . "</span></button></td>"
                                                 . "</tr></form>";
                                     }
                                     else

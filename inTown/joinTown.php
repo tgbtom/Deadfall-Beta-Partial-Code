@@ -27,6 +27,9 @@ require_once ("../model/database.php");
 		$tempSession = $_SESSION["multijoin"];
 		foreach($tempSession as $current){
 			$current = unserialize($current);
+			if(!is_array($multiJoin)){
+				$multiJoin = [];
+			}
 			if(!in_array($current["id"], $multiJoin)){
 				//Wont reach this line if the character is already in the list. To prevent duplicates
 				$multiJoin[] = $current["id"];
@@ -35,20 +38,21 @@ require_once ("../model/database.php");
 	}
 	$characterAmount = 1;
 
-
-	//multiJoin is an array of character ID's that need to join
-	if(!empty($multiJoin)){
-		echo sizeof($multiJoin) . " characters were checked off";
-		$characterAmount += sizeof($multiJoin);
-	}
-	else{
-		$multiJoin = [];
-	}
-
 	if(isset($singleJoin)){
+		if(!is_array($multiJoin)){
+			$multiJoin = [];
+		}
 		if(!in_array($singleJoin, $multiJoin)){
 			$multiJoin[] = $singleJoin;
 		}
+	}
+
+	//multiJoin is an array of character ID's that need to join
+	if(!empty($multiJoin)){
+		$characterAmount = sizeof($multiJoin);
+	}
+	else{
+		$multiJoin = [$singleJoin];
 	}
 
 	
@@ -93,7 +97,7 @@ require_once ("../model/database.php");
 <link rel="stylesheet" type="text/css" href="../mainDesign.css">
 <link rel="stylesheet" type="text/css" href="../css/joinTown.css">
 <!-- source below grants access to JQuery,through Microsoft network (Can download Jquery file and host it through the website too) -->
-<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.3.min.js"></script>
+<!-- <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.3.min.js"></script> -->
 </head>
 
 <body bgcolor="#1A0000">
@@ -119,7 +123,7 @@ require_once ("../model/database.php");
 				if($characterAmount > 1){
 					foreach($multiJoin as $characterId){
 						$character = Character::getCharacterById($characterId);
-						echo "<li>" . $character["character"] . " {Lv. " . $character["level"] . "}</li>";
+						echo "<li><img src='../images/icons/" . lcfirst($character["class"]) . ".png' title='" . $character["class"] . "'> " . $character["character"] . " {Lv. " . $character["level"] . "}</li>";
 
 						//Add them to the Session List of MultiJoin
 						//***WILL NEED TO UNSERIALIZE TO UTILIZE THE OBJECTS WHEN ADDING CHARACTERS ON FUTURE PAGES */

@@ -11,7 +11,6 @@ $y = $_SESSION['y'];
 
 //Gets the name of the item attempting to be picked up
 $itemName = filter_input(INPUT_POST, 'itemName2');
-echo 'Name; ' . $itemName;
 $location = filter_input(INPUT_POST, 'location');
 
 //Determine The weight of the item by finding it in the items data array
@@ -61,7 +60,6 @@ if ($itemWeight <= $remainingCapacity)
 	{
 		for ($i = 0; $i < sizeOf($groundArray); $i++)
 		{
-                    echo '1 item';
 			$currentItemSplit = explode('.', $groundArray[$i]);
 			$currentItemId = $currentItemSplit[0];
 			$currentItemAmount = $currentItemSplit[1];
@@ -162,7 +160,7 @@ if ($itemWeight <= $remainingCapacity)
 		}
 		else
 		{
-			//echo '<script>window.location = "' . $root . '/inTown/?locat=warehouse&e=Item%20could%20not%20be%20found%20in%20this%20location.%20OH NONONO";</script>';
+			echo '<script>window.location = "' . $root . '/inTown/?locat=warehouse&e=Item%20could%20not%20be%20found%20in%20this%20location.";</script>';
 		}
 		
 	}

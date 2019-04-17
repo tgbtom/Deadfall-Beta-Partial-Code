@@ -10,6 +10,9 @@ $townName = $charDetails["townName"];
 
 $buildName = filter_input(INPUT_POST, "buildName");
 $apToAssign = filter_input(INPUT_POST, "apToAssign");
+if($charDetails["class"] == "Builder"){
+    $apToAssign *= 2;
+}
 
 
 if (isset($buildName) && isset($apToAssign))
@@ -44,15 +47,24 @@ if (isset($buildName) && isset($apToAssign))
                        $apToAssign = $apRemaining;
                    }
                    
-                   if ($charDetails["currentAP"] < $apToAssign)
-                   {
-                       //Return, Character does not have enough Ap
-                       echo "<script>window.location.href='../inTown/?locat=construction&e=Character does not have " . $apToAssign . " Ap.'</script>";
-                   }
+                    if($charDetails["class"] == "Builder" && $charDetails["currentAP"] < $apToAssign/2){
+                        echo "<script>window.location.href='../inTown/?locat=construction&e=Character does not have " . $apToAssign . " Ap.'</script>";
+                    }
+                    elseif ($charDetails["class"] != "Builder" && $charDetails["currentAP"] < $apToAssign)
+                    {
+                        //Return, Character does not have enough Ap
+                        echo "<script>window.location.href='../inTown/?locat=construction&e=Character does not have " . $apToAssign . " Ap.'</script>";
+                    }
                    else
                    {
                        //Apply the AP to the structure, REMOVE AP FROM CHAR****
-                       $newAp = $charDetails["currentAP"] - $apToAssign;
+                       //Builders have half the AP removed because it doubles the AP value above and we dont want to remove double AP
+                       if($charDetails["class"] == "Builder"){
+                        $newAp = $charDetails["currentAP"] - ceil($apToAssign/2);
+                       }
+                       else{
+                        $newAp = $charDetails["currentAP"] - $apToAssign;
+                       }
                        $queryString = "UPDATE characters SET `currentAP` = " . $newAp . " WHERE "
                                . "`character` = '" . $charDetails["character"] . "' AND "
                                . "`username` = '" . $charDetails["username"] . "' AND "
@@ -85,7 +97,12 @@ if (isset($buildName) && isset($apToAssign))
                         else
                         {
                             //Apply the AP to the structure, REMOVE AP FROM CHAR
-                            $newAp = $charDetails["currentAP"] - $apToAssign;
+                            if($charDetails["class"] == "Builder"){
+                                $newAp = $charDetails["currentAP"] - ceil($apToAssign/2);
+                            }
+                            else{
+                                $newAp = $charDetails["currentAP"] - $apToAssign;
+                            }
                             $queryString = "UPDATE characters SET `currentAP` = " . $newAp . " WHERE "
                                . "`character` = '" . $charDetails["character"] . "' AND "
                                . "`username` = '" . $charDetails["username"] . "' AND "

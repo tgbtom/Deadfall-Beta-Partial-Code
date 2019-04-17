@@ -1,6 +1,7 @@
 <?php 
 require_once ("../connect.php");
 require_once ("./verifyLogin.php");
+require_once ("../model/database.php");
 
 $selected_class = filter_input(INPUT_POST, 'charClass');
 $selected_name = filter_input(INPUT_POST, 'charName');
@@ -13,38 +14,69 @@ if(session_status() == PHP_SESSION_NONE){
 }
 
 $user = $_SESSION['login'];
-$nameQuer = "SELECT * FROM `characters` WHERE `username`='" . $user . "' AND `character`='" . $selected_name . "'";
-$check = $dbCon->prepare($nameQuer);
-$check->execute();
-$results = $check->fetchAll();
-$check->closeCursor();
 
-if (sizeof($results) <= 0)
-{	
-    $query = "INSERT INTO characters 
-    (`username`, `character`, `class`, `gender`, `level`, `experience`, `townName`, `items`, `itemsMass`, `maxItems`, `bonusItems`, `maxBonusItems`, `currentAP`, `maxAP`, `status`) 
-    VALUES 
-    (:user, :character, :class, :gender, '0', '0', 'none', NULL, '0', '20', 'none', '0', '16', '16', '3.7.11')";
 
-    try{
-        $statement = $dbCon->prepare($query);
-        $statement->bindValue(':user', $user);
-        $statement->bindValue(':character', $selected_name);
-        $statement->bindValue(':class', $selected_class);
-        $statement->bindValue(':gender', $selected_gender);
-        $statement->execute();
+//Ensure that current user has no more than 20 characters
+$dbCon = Database::getDB();
+$query = "SELECT * FROM `characters` WHERE `username` = :username";
+$statement = $dbCon->prepare($query);
+$statement->bindValue(":username", $user);
+$statement->execute();
+$results = $statement->fetchAll();
+$statement->closeCursor();
 
-        $statement->closeCursor();
-        echo '<script>window.location = "' . $root . '/inTown/?locat=browseChars";</script>';
-    }
-    catch(PDOException $e){
-        echo "There was a problem while trying to create the character";
-        echo $e;
-    }
+if(sizeof($results) >= 20){
+    //The current user already has 20 or more characters, revert them back to character browsewith this error
+    echo '<script>window.location = "' . $root . '/inTown/?locat=browseChars&e=You have exceeded the maximum amount of characters";</script>';
 }
-else
-{	
-    echo "Character name is taken";
+else{
+    $nameQuer = "SELECT * FROM `characters` WHERE `character`= :selected_char";
+    $check = $dbCon->prepare($nameQuer);
+    $check->bindValue(":selected_char", $selected_name);
+    $check->execute();
+    $results = $check->fetchAll();
+    $check->closeCursor();
+    
+    if (sizeof($results) <= 0)
+    {	
+        $query = "INSERT INTO characters 
+        (`username`, `character`, `class`, `gender`, `level`, `experience`, `townName`, `items`, `itemsMass`, `maxItems`, `bonusItems`, `maxBonusItems`, `currentAP`, `maxAP`, `status`) 
+        VALUES 
+        (:user, :character, :class, :gender, '0', '0', 'none', NULL, '0', '20', 'none', '0', :classAp, :classAp2, '3.7.11')";
+    
+        //Establish how much AP the character  should  have, based on Class
+        switch($selected_class){
+            case 'Survivor':
+            $classAp = 16;
+            break;
+    
+            case 'Builder':
+            $classAp = 12;
+            break;
+        }
+    
+        try{
+            $statement = $dbCon->prepare($query);
+            $statement->bindValue(':user', $user);
+            $statement->bindValue(':character', $selected_name);
+            $statement->bindValue(':class', $selected_class);
+            $statement->bindValue(':gender', $selected_gender);
+            $statement->bindValue(':classAp', $classAp);
+            $statement->bindValue(':classAp2', $classAp);
+            $statement->execute();
+    
+            $statement->closeCursor();
+            echo '<script>window.location = "' . $root . '/inTown/?locat=browseChars";</script>';
+        }
+        catch(PDOException $e){
+            echo "There was a problem while trying to create the character";
+            echo $e;
+        }
+    }
+    else
+    {	
+        echo "Character name is taken";
+    }
 }
 
 ?>

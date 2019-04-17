@@ -212,13 +212,21 @@ $aliveRes = $maxRes - $deadRes;
 			for ($i = 0; $i < sizeOf($itemsHeldArray); $i++)
 			{
 				$itemName = $itemsMaster[$itemsHeldArray[$i]][0];
-				$itemWeight = $itemsMaster[$itemsHeldArray[$i]][2]; 
+				$itemWeight = $itemsMaster[$itemsHeldArray[$i]][2];
+				$itemCategory = $itemsMaster[$itemsHeldArray[$i]][1];
 				
 				echo '<input type="hidden" name="location" value="'. $loc . '">';
 				echo '<input type="hidden" name="itemName' . $i . '" value="'. $itemName . '">';				
 				echo '<div class="popup" onclick="popUpMenu(`popUp' . $i . '`)"><img src="../images/items/' . $itemName . '.png" class="item"><img src="../images/rarity/' . getRarityString($itemsHeldArray[$i]) . '.png" title="' . $itemName . '" class="rarityBanner">';
 				echo '<span class="popuptext" id="popUp' . $i . '">';
 				echo '<p><u>' . $itemName . '</u></p><p class="rarity" style="">' . getRarityString($itemsHeldArray[$i]) . '</p><p class="weight">Weight: ' . $itemWeight . '</p>';
+				if($itemCategory == "Consume"){
+					foreach($itemsConsumable as $check){
+						if ($check[0] == $itemsHeldArray[$i]){
+							echo "<p>" . $check[2] . "% AP</p>";
+						}
+					}
+				}
 				echo '<input onclick="newAction(`drop`, ' . $i .')" type="submit" value="Drop">';
 				if (checkUsability($itemsHeldArray[$i]) == 'Eat' || checkUsability($itemsHeldArray[$i]) == 'Drink' || checkUsability($itemsHeldArray[$i]) == 'Load')
 				{
@@ -253,8 +261,8 @@ $aliveRes = $maxRes - $deadRes;
 		
 	</div>
 <div class="taskBox">
-    <a href="./?locat=construction"><img src="../images/leaveTown.png" title="Construction"></a>
-	<a href="./?locat=special"><img src="../images/leaveTown.png" title="Special Structures"></a>
+    <a href="./?locat=construction"><img src="../images/construction.png" title="Construction"></a>
+	<a href="./?locat=special"><img src="../images/special.png" title="Special Structures"></a>
     <a href="./?locat=warehouse"><img src="../images/storage.png" title="Warehouse"></a>
     <a href="./?locat=citizens"><img src="../images/citizens.png" title="Citizens"></a>
     <a href="./?locat=character"><img src="../images/stats.png" title="Character Info"></a>
