@@ -467,7 +467,7 @@ function lootItem()
 			//if rarity = 5 the item is scrap
 			if ($itemsMasterCur[3] == 5)
 			{
-				//add the item name to the end of the rarity array (common)
+				//add the item name to the end of the rarity array (scrap)
 				array_push($rarityArray, $itemsMasterCur[0]);
 			}
 		}

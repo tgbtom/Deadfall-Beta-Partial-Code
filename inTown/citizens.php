@@ -2,8 +2,9 @@
 require_once ("../connect.php");
 require_once ("../functions/verifyLogin.php");
 require_once ("../functions/queryFunctions.php");
-Include("../data/buildings.php");
-Include("../data/items.php");
+require_once ("../data/status.php");
+require_once ("../data/buildings.php");
+require_once ("../data/items.php");
 $errorMessage = FILTER_INPUT(INPUT_GET, 'e');
 if (isset($errorMessage))
 {
@@ -41,7 +42,7 @@ $query2 = mysqli_query($con, $query1);
 
 	<link rel="stylesheet" type="text/css" href="mainDesignTown.css">
 	<style>
-	table {width:100%;}
+	table {width:100%; border-collapse: collapse;}
 	table, tr, td {color:#120B06; padding:2px;}
 	input.number {width:40px;}
 	.data {width:150px;}
@@ -56,7 +57,7 @@ $query2 = mysqli_query($con, $query1);
 	.sameChar2
 	{float: left; vertical-align: text-top; height: 1%;}
 	.head
-	{border: 1px solid black;}
+	{border: 1px solid black; background-color: #4F3523;}
 	.itemDiv {
     position: relative;
     display: inline-block;
@@ -162,7 +163,21 @@ $query2 = mysqli_query($con, $query1);
 					}
 				}
 				
-				echo "</td><td style='border: 1px solid #120B06;'></td>";
+				echo "</td><td style='border: 1px solid #120B06;'>";
+				
+				//Draw all status' except for 12 and 10
+
+				foreach($statusArray as $currentStatus){
+
+					if($currentStatus != 10 && $currentStatus != 12){
+						//draw the image
+						$statusName = $statusMaster[$currentStatus];
+						$currentImage = "<img src='../images/status/" . $statusName . ".png' alt='" . $statusName . "' title='" . $statusName . "'>";
+						echo $currentImage;
+					}
+				}
+				
+				echo "</td>";
 				echo "</tr>";
 			}
 			
@@ -190,9 +205,20 @@ $query2 = mysqli_query($con, $query1);
 					}
 				}
 				
-				echo "</td><td style='border: 1px solid #120B06;'></td>";
+				echo "</td><td style='border: 1px solid #120B06;'>";
+				//Draw all status' except for 12 and 10
+
+				foreach($statusArray as $currentStatus){
+
+					if($currentStatus != 10 && $currentStatus != 12){
+						//draw the image
+						$statusName = $statusMaster[$currentStatus];
+						$currentImage = "<img src='../images/status/" . $statusName . ".png' alt='" . $statusName . "' title='" . $statusName . "'>";
+						echo $currentImage;
+					}
+				}
 				
-				echo "</tr>";
+				echo "</td></tr>";
 			}
 			
 		}

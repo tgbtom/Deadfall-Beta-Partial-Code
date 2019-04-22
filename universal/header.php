@@ -130,6 +130,7 @@ function newAction(target, hiddenNameId)
 		document.sendItemData.action = "../inTown/?locat=warehouse";
 	}
 }
+
 </script>
 
 </body>
