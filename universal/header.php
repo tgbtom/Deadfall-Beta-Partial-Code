@@ -191,24 +191,22 @@ $aliveRes = $maxRes - $deadRes;
 	</div>	
 	
 	<div class="infoSet">
-		<div class="infoSet1"><p><?php echo htmlspecialchars($townName)?></p></div>
-		<div class="infoSet1"><p><?php echo 'Day ' . $dayNumber?></p></div>
+		<div class="infoSet1"><p><b>Town: </b><?php echo htmlspecialchars($townName)?></p></div>
+		<div class="infoSet1"><p><?php echo '<b>Day</b> ' . $dayNumber ?></p></div>
 		<div class="infoSet1"><p><?php echo $readyRes . '/' . $aliveRes . ' Ready'?>
 		</p></div>
-		<div class="infoSet1"><p><?php echo '<img src="../images/icons/zombie.png" title="Horde Size"> ' . $hordeSize?></p></div>
-		<div class="infoSet1"><p><?php echo '<img src="../images/icons/shield.png" title="Defence Amount"> ' . $defenceSize?></p></div>
+		<div class="infoSet1"><p><?php echo '<img src="../images/icons/sword.png" title="Horde Size"> ' . $hordeSize?> | <?php echo $defenceSize . ' <img src="../images/icons/shield.png" title="Defence Amount"> '?></p></div>
 		<div class="infoset2"><p><?php echo "logged in as: " . htmlspecialchars($playerName)?></p></div>
 		<div class="infoset2"><p><?php echo '<img src="' . $root . '/images/icons/' . lcfirst(htmlspecialchars($charClass)) .  '.png" title="' . htmlspecialchars($charClass) . '"> ' . htmlspecialchars($charClass); ?></p></div>
 		<div class="infoset2"><p><?php echo htmlspecialchars($charName)?></p></div>
 		<div class="infoset2"><p><?php echo 'Lvl ' . htmlspecialchars($charLevel)?></p></div>
 		<div class="infoSet2"><p><?php echo $_SESSION['x'] . ", " . $_SESSION['y']?></p></div>
 		<div class="infoset2"><p><?php echo $currentAp . '/' . $maxAp . '<img src="../images/icons/ap.png" title="Action Points">'?></p></div>
-		<div class="infoset2"><p id="carryCapacity"><?php echo 'Mass: ' . $currentMass . '/' . $weightCapacity; ?></p></div>
 		<!-- Display Inventory -->
 		<div class="infoset2"><p><?php 
 		if ($itemsHeld != NULL)
 		{
-			echo '<u><b>Inventory</b></u>';
+			echo '<u><b>Inventory</b></u> <grp id="carryCapacity">(' . $currentMass . '/' . $weightCapacity . ')</grp>';
 			echo '<form id="sendItemData" name="sendItemData" method="post">';
 			for ($i = 0; $i < sizeOf($itemsHeldArray); $i++)
 			{
@@ -242,7 +240,7 @@ $aliveRes = $maxRes - $deadRes;
 			echo '</form>';
 		}
 		else
-		{echo 'empty';}
+		{echo '<u><b>Inventory</b></u> <grp id="carryCapacity">(' . $currentMass . '/' . $weightCapacity . ')</grp><br> Empty';}
 		?>
 		</p></div>
 		<!-- Display Status Effects -->

@@ -39,7 +39,10 @@
 		<div class="news">
 		<h3 align="center">News and Updates</h3>
 		<hr style="width:103%; border-color: black;">
-		<ul>	
+		<ul>
+			<li><p><img src="images/icons/sword.png" align="center"> <b>May 19th, 2019:</b> <i>The <q>horde size</q> (attack) image has been added!</i></p></li>
+			<li><p><img src="images/icons/zombie.png" align="center"> <b>May 19th, 2019:</b> The <q>zombie</q> image has been updated!</p></li>	
+			<li><p><img src="images/Added/Bits of Food.png" align="center"> <b>May 19th, 2019:</b> The artwork for <q>Bits of food</q> has been updated!</p></li>
 			<li><p><img src="images/items/Bow.png" align="center"><img src="images/items/Arrow.png" align="center"><img src="images/items/Pistol.png" align="center"> <b>July 22nd, 2018:</b> Art has been updated for the following items: Pistol, Bow, and Arrow. </i></p></li>
 			<li><p><img src="images/items/fillerItem.png" align="center"> <b>April 26th, 2018:</b> The following items have been added: Bow, Arrow, Slingshot, Rock, Cloth, Pistol, Small Bullet</i></p></li>
 			<li><p><img src="images/items/Grenade.png" align="center"> <b>November 14th, 2017:</b> <i>The <q>Grenade</q> has been added!</i></p></li>
