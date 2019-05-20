@@ -5,76 +5,7 @@
 
 <script type="text/javascript" src="../js/header.js"></script>
 
-<style>
-/* Popup container */
-.popup {
-    position: relative;
-    display: inline-block;
-    cursor: pointer;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-
-/* The actual popup */
-.popup .popuptext {
-    visibility: hidden;
-    width: 160px;
-    background-color: #555;
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 8px 0;
-    position: absolute;
-    z-index: 1;
-    bottom: 125%;
-    left: 50%;
-    margin-left: -80px;
-}
-
-/* Popup arrow */
-.popup .popuptext::after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: #555 transparent transparent transparent;
-}
-
-/* Toggle this class - hide and show the popup */
-.popup .show {
-    visibility: visible;
-    -webkit-animation: fadeIn 1s;
-    animation: fadeIn 1s;
-}
-
-/* Add animation (fade in the popup) */
-@-webkit-keyframes fadeIn {
-    from {opacity: 0;} 
-    to {opacity: 1;}
-}
-
-@keyframes fadeIn {
-    from {opacity: 0;}
-    to {opacity:1 ;}
-}
-
-.rarityBanner  
-{
-	position: absolute;
-	top: -2px;
-	left: -2px;
-}
-
-.item
-{
-	margin-right: 4px;
-}
-</style>
+<link rel="stylesheet" href="../css/header.css" type="text/css">
 </head>
 <body style="text-align:center">
 
@@ -186,24 +117,27 @@ $aliveRes = $maxRes - $deadRes;
 
 ?>
 
-<div class="header">
+	<div class="header">
 	<a href="<?php echo "../inTown/?locat=inTown"; ?>"><img src="../images/DeadFallLogo2.png"></a>
 	</div>	
 	
 	<div class="infoSet">
 		<div class="infoSet1"><p><b>Town: </b><?php echo htmlspecialchars($townName)?></p></div>
-		<div class="infoSet1"><p><?php echo '<b>Day</b> ' . $dayNumber ?></p></div>
-		<div class="infoSet1"><p><?php echo $readyRes . '/' . $aliveRes . ' Ready'?>
-		</p></div>
+		<!-- <div class="infoSet1"><p><?php echo $readyRes . '/' . $aliveRes . ' Ready'?></p></div> -->
 		<div class="infoSet1"><p><?php echo '<img src="../images/icons/sword.png" title="Horde Size"> ' . $hordeSize?> | <?php echo $defenceSize . ' <img src="../images/icons/shield.png" title="Defence Amount"> '?></p></div>
-		<div class="infoset2"><p><?php echo "logged in as: " . htmlspecialchars($playerName)?></p></div>
-		<div class="infoset2"><p><?php echo '<img src="' . $root . '/images/icons/' . lcfirst(htmlspecialchars($charClass)) .  '.png" title="' . htmlspecialchars($charClass) . '"> ' . htmlspecialchars($charClass); ?></p></div>
-		<div class="infoset2"><p><?php echo htmlspecialchars($charName)?></p></div>
-		<div class="infoset2"><p><?php echo 'Lvl ' . htmlspecialchars($charLevel)?></p></div>
-		<div class="infoSet2"><p><?php echo $_SESSION['x'] . ", " . $_SESSION['y']?></p></div>
+		
+		<div class="infoset2"><p><?php echo "<b>User:</b> " . htmlspecialchars($playerName)?></p></div>
+		<div class="infoset2"><p><b>Character: </b><?php echo htmlspecialchars($charName)?> | 
+		<?php echo ' Lv. ' . htmlspecialchars($charLevel)?> | 
+		<?php echo ' <img src="' . $root . '/images/icons/' . lcfirst(htmlspecialchars($charClass)) .  '.png" title="' . htmlspecialchars($charClass) . '"> ' . htmlspecialchars($charClass); ?></p></div>
+		<br>
+		<div class="infoSet2" style="clear: both;"><p><b>Location: </b><?php echo $_SESSION['x'] . ", " . $_SESSION['y']?></p></div>
 		<div class="infoset2"><p><?php echo $currentAp . '/' . $maxAp . '<img src="../images/icons/ap.png" title="Action Points">'?></p></div>
+
+		<div class="headerBottom">
+		<div class="infoSet3"><p><b>Day</b>  <?php echo $dayNumber . " (" . $readyRes . '/' . $aliveRes . ' Ready)'?></p><button type="submit" value="" class="endButton"><span>Ready</span></button></div>
 		<!-- Display Inventory -->
-		<div class="infoset2"><p><?php 
+		<div class="infoset3"><p><?php 
 		if ($itemsHeld != NULL)
 		{
 			echo '<u><b>Inventory</b></u> <grp id="carryCapacity">(' . $currentMass . '/' . $weightCapacity . ')</grp>';
@@ -240,11 +174,11 @@ $aliveRes = $maxRes - $deadRes;
 			echo '</form>';
 		}
 		else
-		{echo '<u><b>Inventory</b></u> <grp id="carryCapacity">(' . $currentMass . '/' . $weightCapacity . ')</grp><br> Empty';}
+		{echo '<u><b>Inventory</b></u> <grp id="carryCapacity">(' . $currentMass . '/' . $weightCapacity . ')</grp><br><br>Empty';}
 		?>
 		</p></div>
 		<!-- Display Status Effects -->
-		<div class="infoset2"><p><?php 
+		<div class="infoset3"><p><?php 
 		if ($status != NULL)
 		{
 			echo '<u><b>Status</b></u><form>';
@@ -257,6 +191,7 @@ $aliveRes = $maxRes - $deadRes;
 		}
 		?>
 		</div>
+	</div>
 		
 	</div>
 <div class="taskBox">

@@ -1,0 +1,136 @@
+/* Popup container */
+.popup {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* The actual popup */
+.popup .popuptext {
+    visibility: hidden;
+    width: 160px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -80px;
+}
+
+/* Popup arrow */
+.popup .popuptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+/* Toggle this class - hide and show the popup */
+.popup .show {
+    visibility: visible;
+    -webkit-animation: fadeIn 1s;
+    animation: fadeIn 1s;
+}
+
+/* Add animation (fade in the popup) */
+@-webkit-keyframes fadeIn {
+    from {opacity: 0;} 
+    to {opacity: 1;}
+}
+
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity:1 ;}
+}
+
+.rarityBanner  
+{
+	position: absolute;
+	top: -2px;
+	left: -2px;
+}
+
+.item
+{
+	margin-right: 4px;
+}
+
+.endButton {
+    display: inline-block;
+    border-radius: 4px;
+    background-color: #54483E;
+    border: none;
+    color: #A39D8D;
+    text-align: center;
+    font-size: 16px;
+    padding: 5px;
+    width: 150px;
+    transition: all 0.5s;
+    cursor: pointer;
+    margin: -5px 5px 5px 5px
+    box-shadow: 3px 2px black;
+}
+
+.endButton span {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
+}
+
+.endButton span:after {
+    content: '\00bb';
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: -20px;
+    transition: 0.5s;
+}
+
+.endButton:hover
+{
+    background-color: #47372A;
+    transition: 0s;
+}
+
+.endButton:hover span {
+    padding-right: 25px; 
+}
+
+.endButton:hover span:after {
+    opacity: 1;
+    right: 0;
+}
+
+.endButton:active
+{
+    box-shadow: none;
+}
+
+/* input[type=submit]{
+    width: 99%;
+    background-color: #54483E;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow: 3px 2px black;
+}
+
+input[type=submit]:hover{
+    background-color: #47372A;
+} */

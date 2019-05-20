@@ -159,14 +159,37 @@ body
 
 .infoSet2
 {
-	float: left;
+	float: right;
 	padding-left: 10px;
 	padding-right: 10px;
 	border: 1px solid black;
 	background-color:#6d5846;
 	color:#000000;
-	box-shadow: 7px 7px #333333;
+	box-shadow:-7px 7px #333333;
 	text-align: center;
+}
+
+.infoSet3
+{
+	margin-left: 0;
+	margin-right: -6;
+	height: 85px;
+	vertical-align: top;
+	padding-left: 10px;
+	padding-right: 10px;
+	border: 1px solid black;
+	background-color:#6d5846;
+	color:#000000;
+	box-shadow:7px 7px #333333;
+	text-align: center;
+	display: inline-block;
+}
+
+.headerBottom{
+	width: auto;
+	margin: 0 auto;
+	text-align: center;
+	float: left;
 }
 
 .zoneInfo
