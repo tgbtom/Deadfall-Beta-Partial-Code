@@ -21,6 +21,7 @@
   });*/
 
 // When the user clicks on div, open the popup and close all other pop-ups
+
 function popUpMenu(x)
 {   
 	var popup = document.getElementById(x);
@@ -68,10 +69,30 @@ function newAction(target, hiddenNameId)
 </html>
 
 <?php 
-include ("../data/items.php");
-include ("../data/status.php");
+require_once ("../data/items.php");
+require_once ("../data/status.php");
 
 require_once ("../functions/queryFunctions.php");
+require_once ("../model/structures.php");
+require_once ("../model/database.php");
+require_once ("../model/endDay.php");
+
+//See if we are loading from an  end day
+$endDay = filter_input(INPUT_POST, 'endDay');
+if (isset($endDay)) {
+	if ($endDay == 'end') {
+		//end the day
+		if (doesStatusContain(10)) {
+			//Char has already ended the day --> does nothing
+		} else {
+			replaceStatus(11, 10);
+			endDay();
+
+			//Reload the header to properly clear post data so data will not be resubmitted when character is changed
+			echo '<meta http-equiv="refresh" content="0">';
+		}
+	}
+}
 
 //gets the user and current character, and stores them in local variables
 $user = $_SESSION['login'];
@@ -135,7 +156,13 @@ $aliveRes = $maxRes - $deadRes;
 		<div class="infoset2"><p><?php echo $currentAp . '/' . $maxAp . '<img src="../images/icons/ap.png" title="Action Points">'?></p></div>
 
 		<div class="headerBottom">
-		<div class="infoSet3"><p><b>Day</b>  <?php echo $dayNumber . " (" . $readyRes . '/' . $aliveRes . ' Ready)'?></p><button type="submit" value="" class="endButton"><span>Ready</span></button></div>
+		<div class="infoSet3"><p><b>Day</b>  <?php echo $dayNumber . " (" . $readyRes . '/' . $aliveRes . ' Ready)'?></p>
+			<form action='' method='post' name='end' id='endForm'>
+				<input hidden value='end' name='endDay'>
+				<button type='submit' id='endButton' onclick='verify()' class="endButton" value='End Day' id='endDayButtonContainer'><span id="endDayButtonText">Ready</span></button>
+			</form>
+			<!-- <button type="submit" value="" class="endButton"><span>Ready</span></button> -->
+		</div>
 		<!-- Display Inventory -->
 		<div class="infoset3"><p><?php 
 		if ($itemsHeld != NULL)
@@ -202,3 +229,35 @@ $aliveRes = $maxRes - $deadRes;
     <a href="./?locat=character"><img src="../images/stats.png" title="Character Info"></a>
     <a href="./?locat=outside"><img src="../images/outside.png" title="Outside Map"></a>
 </div>
+
+<script type="text/javascript">
+	function verify()
+	{
+		if (confirm('You are done using this character for the in-game day?'))
+		{
+			document.end.submit();
+		}
+	}
+
+	function dayAlreadyEnded()
+	{
+		endButton.setAttribute('disabled', 'disabled');
+	}
+</script>
+
+<?php
+if (doesStatusContain(10)) {
+	//Char has already ended the day
+	echo '<script>dayAlreadyEnded();</script>';
+}
+
+//Only one character needs to set ready AND its the current character
+echo "<script>";
+if($maxRes - $deadRes - $readyRes == 1 && doesStatusContain(11)){
+	echo "document.getElementById('endDayButtonText').innerHTML = 'End Day';";
+}
+elseif(doesStatusContain(10)){
+	echo "document.getElementById('endDayButtonText').innerHTML = '<yellow>Ended</yellow>';";
+}
+echo "</script>";
+?>
