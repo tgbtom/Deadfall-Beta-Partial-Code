@@ -9,82 +9,6 @@
 </head>
 <body style="text-align:center">
 
-
-<script>
-
-/*$(document).click(function(){
-  	var popuptext = document.getElementsByClassName('popuptext');
-	for (var i = 0; i < popuptext.length; i++)
-	{
-		popuptext[i].style.visibility = 'hidden';
-	}
-  });*/
-
-// When the user clicks on div, open the popup and close all other pop-ups
-
-function popUpMenu(x)
-{   
-	var popup = document.getElementById(x);
-	if (popup.style.visibility === 'visible'){
-            var wasUp = true;
-	}
-	else{
-            var wasUp = false;
-	}
-        
-	var popuptext = document.getElementsByClassName('popuptext');
-	for (var i = 0; i < popuptext.length; i++){
-		popuptext[i].style.visibility = 'hidden';
-	}
-        
-        if (!wasUp){
-		popup.style.visibility = 'visible';
-	}
-
-}
-
-function newAction(target, hiddenNameId)
-{
-	if (target === 'drop')
-	{	
-		document.sendItemData.action = "../functions/dropItem.php?nameTagId=" + hiddenNameId;
-	}
-	else if (target === 'Eat' || target === 'Drink' || target === 'Load')
-	{
-		document.sendItemData.action = "../functions/consume.php?nameTagId=" + hiddenNameId;
-	}
-	else if (target === 'Attack')
-	{
-		document.sendItemData.action = "../functions/consume.php?nameTagId=" + hiddenNameId;
-	}
-	else
-	{
-		document.sendItemData.action = "../inTown/?locat=warehouse";
-	}
-}
-
-function changeChar(newChar) {
-		if (newChar.length === 0) 
-		{
-			return;
-		} 
-		else
-		{
-			var xmlhttp = new XMLHttpRequest();
-				xmlhttp.onreadystatechange = function() {
-					if (xmlhttp.readyState === 4 && xmlhttp.status === 200) 
-					{
-						//document.getElementById("txtHint").innerHTML = xmlhttp.responseText;
-					}
-				};
-			xmlhttp.open("GET", "../functions/changeChar.php?change="+newChar, true);
-			xmlhttp.send();
-			window.location.reload();
-		}	
-	}
-
-</script>
-
 </body>
 </html>
 
@@ -185,7 +109,7 @@ if (isset($dropAll)) {
 		<div class="infoSet1"><p><?php echo '<img src="../images/icons/sword.png" title="Horde Size"> ' . $hordeSize?> | <?php echo $defenceSize . ' <img src="../images/icons/shield.png" title="Defence Amount"> '?></p></div>
 		
 		<div class="infoset2"><p><?php echo "<b>User:</b> " . htmlspecialchars($playerName)?></p></div>
-		<div class="infoset2"><p><b>Character: </b><img src="../images/leftArrow.png" onclick=changeChar('<?php echo $previousChar->character; ?>') class="headNavArrowLeft"> <?php echo htmlspecialchars($charName)?> <img src="../images/rightArrow.png" onclick=changeChar('<?php echo $nextChar->character; ?>') class="headNavArrowRight"> | 
+		<div class="infoset2"><p><b>Character: </b><img src="../images/leftArrow.png" title="<?php echo $previousChar->character;?>" onclick=changeChar('<?php echo $previousChar->character; ?>') class="headNavArrowLeft"> <?php echo htmlspecialchars($charName)?> <img src="../images/rightArrow.png" title="<?php echo $nextChar->character;?>" onclick=changeChar('<?php echo $nextChar->character; ?>') class="headNavArrowRight"> | 
 		<?php echo ' Lv. ' . htmlspecialchars($charLevel)?> | 
 		<?php echo ' <img src="' . $root . '/images/icons/' . lcfirst(htmlspecialchars($charClass)) .  '.png" title="' . htmlspecialchars($charClass) . '"> ' . htmlspecialchars($charClass); ?></p></div>
 		<br>
