@@ -68,29 +68,27 @@ $query2 = mysqli_query($con, $query1);
 	}
 	</style>
 	
-			<script>
+	<script>
 		function changeChar(newChar) {
-
 		if (newChar.length === 0) 
 		{
 			return;
 		} 
 		else
 		{
-        var xmlhttp = new XMLHttpRequest();
-			xmlhttp.onreadystatechange = function() {
-				if (xmlhttp.readyState === 4 && xmlhttp.status === 200) 
-				{
-					//document.getElementById("txtHint").innerHTML = xmlhttp.responseText;
-				}
-			};
-        xmlhttp.open("GET", "../functions/changeChar.php?change="+newChar, true);
-        xmlhttp.send();
-		window.location.reload();
-    }	
-}
-
-		</script>
+			var xmlhttp = new XMLHttpRequest();
+				xmlhttp.onreadystatechange = function() {
+					if (xmlhttp.readyState === 4 && xmlhttp.status === 200) 
+					{
+						//document.getElementById("txtHint").innerHTML = xmlhttp.responseText;
+					}
+				};
+			xmlhttp.open("GET", "../functions/changeChar.php?change="+newChar, true);
+			xmlhttp.send();
+			window.location.reload();
+    	}	
+		}
+	</script>
 </head>
 
 <body>

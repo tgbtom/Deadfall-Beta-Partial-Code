@@ -830,7 +830,7 @@ function getCharCoordsExt($character) //Return example => 0 => 5, 1=> -5  (Botto
 	
 	foreach ($result as $current)
 	{
-		$CharsArray = explode('.', $current['charactersHere']);
+		$charsArray = explode('.', $current['charactersHere']);
 		if (!empty($charsArray))
 		{
 			if (in_array($character, $charsArray))
@@ -866,7 +866,7 @@ function dropAllItemsExt($character, $user = NULL)
 	
 	if ($charX == 0 && $charY == 0)
 	{
-		//Character died in Town
+		//Character died/dropped in Town
 		for ($i2 = 0; $i2 < sizeOf($oldItems); $i2++)
 		{
 			$itemId = $oldItems[$i2];
@@ -936,13 +936,15 @@ function dropAllItemsExt($character, $user = NULL)
 	}
 	else
 	{
-		//Character died outside
+		//Character died/dropped outside
 		for ($i = 0; $i < sizeOf($oldItems); $i++)
 		{
-			dropItemExt($oldItems[$i], $charX, $charY);
+			if(is_numeric($oldItems[$i])){
+				dropItemExt($oldItems[$i], $charX, $charY);
+			}
 		}
 	}
-	$query = 'UPDATE `characters` SET `items` = NULL, `itemsMass` = "0", `currentAP` = "0" WHERE `character` = :char AND `username` = :user';
+	$query = 'UPDATE `characters` SET `items` = NULL, `itemsMass` = "0" WHERE `character` = :char AND `username` = :user';
 	$statement = $dbCon->prepare($query);
 	$statement->bindValue(':char', $character);
 	$statement->bindValue(':user', $user);

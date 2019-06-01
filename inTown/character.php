@@ -67,12 +67,12 @@ while ($row = mysqli_fetch_assoc($Query4)) {
 }
 ?>
 
-            <div class='centralBox'>
+            <!-- <div class='centralBox'>
                 <form action='.?locat=character' method='post' name='end'>
                     <input hidden value='end' name='endDay'>
                     <input type='button' id='endButton' onclick='verify()' value='End Day'>
                 </form>
-            </div>
+            </div> -->
 
 
 

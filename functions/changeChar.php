@@ -22,7 +22,7 @@ $statement1->closeCursor();
 
 if ($result1)
 {
-$_SESSION['char'] = $newChar;
+	$_SESSION['char'] = $newChar;
 
 
 	$townName = $result1['townName'];

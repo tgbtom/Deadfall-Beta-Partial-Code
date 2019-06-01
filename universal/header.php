@@ -63,6 +63,26 @@ function newAction(target, hiddenNameId)
 	}
 }
 
+function changeChar(newChar) {
+		if (newChar.length === 0) 
+		{
+			return;
+		} 
+		else
+		{
+			var xmlhttp = new XMLHttpRequest();
+				xmlhttp.onreadystatechange = function() {
+					if (xmlhttp.readyState === 4 && xmlhttp.status === 200) 
+					{
+						//document.getElementById("txtHint").innerHTML = xmlhttp.responseText;
+					}
+				};
+			xmlhttp.open("GET", "../functions/changeChar.php?change="+newChar, true);
+			xmlhttp.send();
+			window.location.reload();
+		}	
+	}
+
 </script>
 
 </body>
@@ -94,6 +114,7 @@ if (isset($endDay)) {
 	}
 }
 
+
 //gets the user and current character, and stores them in local variables
 $user = $_SESSION['login'];
 $char = $_SESSION['char'];
@@ -118,6 +139,11 @@ $currentAp = $charDetails['currentAP'];
 $maxAp = $charDetails['maxAP'];
 $townName = $charDetails['townName'];
 
+$charObject = new Character($charDetails['id']);
+$previousChar = Character::getSequentialCharacter($charObject, "prev");
+$nextChar = Character::getSequentialCharacter($charObject, "next");
+echo "<script>console.log('hmmada" . $nextChar->character . "')</script>";
+
 $loc = $_SERVER['REQUEST_URI'];
 
 //query loads the row in the towns DB that corresponds to the current town 
@@ -136,6 +162,17 @@ $maxRes = $result2['maxResidents'];
 $deadRes = $result2['deadResidents'];
 $aliveRes = $maxRes - $deadRes;
 
+$dropAll = filter_input(INPUT_POST, 'dropAllItems');
+if (isset($dropAll)) {
+	if ($dropAll == "true") {
+		//drop all items
+		dropAllItemsExt($char);
+		//Reload the header to properly clear post data so data will not be resubmitted when character is changed
+		echo '<meta http-equiv="refresh" content="0">';
+	}
+}
+
+
 ?>
 
 	<div class="header">
@@ -148,26 +185,39 @@ $aliveRes = $maxRes - $deadRes;
 		<div class="infoSet1"><p><?php echo '<img src="../images/icons/sword.png" title="Horde Size"> ' . $hordeSize?> | <?php echo $defenceSize . ' <img src="../images/icons/shield.png" title="Defence Amount"> '?></p></div>
 		
 		<div class="infoset2"><p><?php echo "<b>User:</b> " . htmlspecialchars($playerName)?></p></div>
-		<div class="infoset2"><p><b>Character: </b><?php echo htmlspecialchars($charName)?> | 
+		<div class="infoset2"><p><b>Character: </b><img src="../images/leftArrow.png" onclick=changeChar('<?php echo $previousChar->character; ?>') class="headNavArrowLeft"> <?php echo htmlspecialchars($charName)?> <img src="../images/rightArrow.png" onclick=changeChar('<?php echo $nextChar->character; ?>') class="headNavArrowRight"> | 
 		<?php echo ' Lv. ' . htmlspecialchars($charLevel)?> | 
 		<?php echo ' <img src="' . $root . '/images/icons/' . lcfirst(htmlspecialchars($charClass)) .  '.png" title="' . htmlspecialchars($charClass) . '"> ' . htmlspecialchars($charClass); ?></p></div>
 		<br>
-		<div class="infoSet2" style="clear: both;"><p><b>Location: </b><?php echo $_SESSION['x'] . ", " . $_SESSION['y']?></p></div>
+
+
+		<div class="infoSet2" style="clear: both;">
+			<p><b>Location: </b><?php echo $_SESSION['x'] . ", " . $_SESSION['y']?>
+
+			<?php 
+			//if Day is ended and the character is outside of town... Draw a tent
+			if(($_SESSION["x"] != 0 || $_SESSION["y"] != 0) && doesStatusContain(10)){
+				echo "<img src='../images/icons/tent.png' alt='Camping Out' title='Camped Outside'>";
+			}
+			?>
+		</p></div>
+		
+		
 		<div class="infoset2"><p><?php echo $currentAp . '/' . $maxAp . '<img src="../images/icons/ap.png" title="Action Points">'?></p></div>
 
 		<div class="headerBottom">
 		<div class="infoSet3"><p><b>Day</b>  <?php echo $dayNumber . " (" . $readyRes . '/' . $aliveRes . ' Ready)'?></p>
-			<form action='' method='post' name='end' id='endForm'>
+			<form action='' method='post' name='end' id='endForm' onsubmit='return confirm("Are you sure you are done with this character for the day?")'>
 				<input hidden value='end' name='endDay'>
-				<button type='submit' id='endButton' onclick='verify()' class="endButton" value='End Day' id='endDayButtonContainer'><span id="endDayButtonText">Ready</span></button>
+				<button type='submit' id='endButton' onclick='verify()' class="endButton" value='End Day' id='endDayButtonContainer'><span id="endDayButtonText"><litegreen>Set Ready</litegreen></span></button>
 			</form>
 			<!-- <button type="submit" value="" class="endButton"><span>Ready</span></button> -->
 		</div>
 		<!-- Display Inventory -->
-		<div class="infoset3"><p><?php 
+		<div class="infoset3"><form action="" method="post" style="display: inline;"><p><?php 
 		if ($itemsHeld != NULL)
 		{
-			echo '<u><b>Inventory</b></u> <grp id="carryCapacity">(' . $currentMass . '/' . $weightCapacity . ')</grp>';
+			echo '<u><b>Inventory</b></u> <grp id="carryCapacity">(' . $currentMass . '/' . $weightCapacity . ')</grp> <input type="image" style="top: 2px; position: relative; display: inline;" src="../images/icons/dropIcon.png" title="Drop All Items"><input type="hidden" name="dropAllItems" value="true"></form>';
 			echo '<form id="sendItemData" name="sendItemData" method="post">';
 			for ($i = 0; $i < sizeOf($itemsHeldArray); $i++)
 			{
@@ -231,13 +281,13 @@ $aliveRes = $maxRes - $deadRes;
 </div>
 
 <script type="text/javascript">
-	function verify()
-	{
-		if (confirm('You are done using this character for the in-game day?'))
-		{
-			document.end.submit();
-		}
-	}
+	// function verify()
+	// {
+	// 	if (confirm('You are done using this character for the in-game day?'))
+	// 	{
+	// 		document.end.submit();
+	// 	}
+	// }
 
 	function dayAlreadyEnded()
 	{
@@ -254,10 +304,16 @@ if (doesStatusContain(10)) {
 //Only one character needs to set ready AND its the current character
 echo "<script>";
 if($maxRes - $deadRes - $readyRes == 1 && doesStatusContain(11)){
-	echo "document.getElementById('endDayButtonText').innerHTML = 'End Day';";
+	echo "document.getElementById('endDayButtonText').innerHTML = '<red>End Day</red>';";
+	echo "document.end.setAttribute('onsubmit', 'return confirm(`WARNING: Ending the day for this character will initiate the horde attack and begin a new day. Are you sure you wish to continue?`)')";
 }
-elseif(doesStatusContain(10)){
+elseif(doesStatusContain(10)){ //Character Has already Set Ready
 	echo "document.getElementById('endDayButtonText').innerHTML = '<yellow>Ended</yellow>';";
+	echo "document.getElementById('endButton').className = 'endButtonDisabled';";
+}
+
+if($_SESSION['x'] != 0 || $_SESSION['y'] != 0){
+	echo "document.end.setAttribute('onsubmit', 'return confirm(`WARNING: Are you sure you would like to camp outside for the night?`)')";
 }
 echo "</script>";
 ?>

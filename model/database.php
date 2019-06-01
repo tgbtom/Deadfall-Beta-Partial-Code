@@ -130,4 +130,60 @@ class Character {
         return $result; 
     }
 
+    public static function getSequentialCharacter($currentCharacter, $dir){
+        //DIR should be 'next' or 'prev', sorted by ID
+        
+        $stopNextId = false;
+
+        $dbCon = Database::getDB();
+
+        $query = "SELECT * FROM `characters` WHERE `username` = :username AND `townName` = :townName ORDER BY `id`";
+        $statement = $dbCon->prepare($query);
+        $statement->bindValue(':username', $currentCharacter->username);
+        $statement->bindValue(':townName', $currentCharacter->townName);
+        $statement->execute();
+        $result = $statement->fetchAll();
+        $statement->closeCursor();
+
+        if($dir == "next"){
+            foreach($result as $key => $current){
+                
+                if($current["id"] == $currentCharacter->id){
+                    echo "<script>console.log('NEXT')</script>";
+                    $stopNextId = true;
+                    if($key == count($result) - 1){
+                        //Last char, so go to first char
+                        return new Character($result[0]["id"]);
+                    }
+                    continue;
+                }
+                elseif($stopNextId == true){
+                    echo "<script>console.log('NEXT2')</script>";
+                    return new Character($current["id"]);
+                    exit;
+                }
+            }
+        }
+        elseif($dir == "prev"){
+            $previousId = -1;
+            if(count($result) == 1){
+                return new Character($currentCharacter->id);
+            }
+            else{
+                foreach($result as $key => $current){
+                    if($previousId != -1)
+                    {
+                        if($current["id"] == $currentCharacter->id){
+                            return new Character($previousId);
+                        }
+                    }
+                    elseif($current["id"] == $currentCharacter->id){
+                        return new Character($result[count($result) - 1]["id"]);
+                    }
+                    $previousId = $current["id"];
+                }
+            }
+        }
+    }
+
 }
