@@ -6,6 +6,7 @@ require_once ("../functions/queryFunctions.php");
 //All information here is retrieved from database simply using the login session and character session
 $playerName = $_SESSION['login'];
 $charName = $_SESSION['char'];
+$charId = $_SESSION['char_id'];
 
 //Set Variables which correspond with the character that is in session (town name, level, class, etc.)
 $charDetails = getCharDetails();
@@ -58,25 +59,26 @@ function endDay() {
 
         foreach ($result as $current) {
             $character = $current['character'];
+            $characterId = $current['id'];
             $currentUsername = $current["username"];
 
-            if (!doesStatusContainExt(12, $character, $currentUsername)) { //If character is not dead, reset ATE/DRANK/DAY ENDED
-                replaceStatusExt(10, 11, $character);
+            if (!doesStatusContainExt(12, $characterId, $currentUsername)) { //If character is not dead, reset ATE/DRANK/DAY ENDED
+                replaceStatusExt(10, 11, $characterId);
                 //Remove status for ATE/DRANK
-                replaceStatusExt(0, NULL, $character);
-                replaceStatusExt(1, NULL, $character);
+                replaceStatusExt(0, NULL, $characterId);
+                replaceStatusExt(1, NULL, $characterId);
             }
             if ($dayNumber % 2 == 0) { //If day is an even number, change hunger 
-                if (doesStatusContainExt(2, $character)) { //character WAS FULL
-                    replaceStatusExt(2, 3, $character);
-                } elseif (doesStatusContainExt(3, $character)) { //character WAS HUNGRY
-                    replaceStatusExt(3, 4, $character);
-                } elseif (doesStatusContainExt(4, $character)) { //character WAS VERY HUNGRY
-                    replaceStatusExt(4, 5, $character);
-                } elseif (doesStatusContainExt(5, $character)) { //character WAS STARVING
+                if (doesStatusContainExt(2, $characterId)) { //character WAS FULL
+                    replaceStatusExt(2, 3, $characterId);
+                } elseif (doesStatusContainExt(3, $characterId)) { //character WAS HUNGRY
+                    replaceStatusExt(3, 4, $characterId);
+                } elseif (doesStatusContainExt(4, $characterId)) { //character WAS VERY HUNGRY
+                    replaceStatusExt(4, 5, $characterId);
+                } elseif (doesStatusContainExt(5, $characterId)) { //character WAS STARVING
                     //***************************CHARACTER DIES HERE*****************************************
-                    if (!doesStatusContainExt(12, $character)) {
-                        killCharacter($character, $currentUsername, $newDead);
+                    if (!doesStatusContainExt(12, $characterId)) {
+                        killCharacter($characterId, $currentUsername, $newDead);
                         $deathBulletin = "<red>" . $character . " starved to death</red>";
                         Towns::addTownBulletin($deathBulletin, $townId);
                     }
@@ -103,7 +105,7 @@ function endDay() {
             if($charLocation[0] != 0 || $charLocation[1] != 0){
                 if(mt_rand(0, 100) < 60){
                     //Character dies from camping
-                    killCharacter($character, $currentUsername, $newDead);
+                    killCharacter($characterId, $currentUsername, $newDead);
                     $deathBulletin = "<red>" . $character . " never returned from outside of town</red>";
                     Towns::addTownBulletin($deathBulletin, $townId);
                 }
@@ -226,11 +228,12 @@ function characterLottery($townId, &$newDead){
     //Also only adds characters that are inside town to the lottery
     foreach ($results as $result){
         $currentChar = $result["character"];
+        $currentCharId = $result["id"];
         $currentUser = $result["username"];
-        $charLocation = getCharCoordsExt($currentChar);
+        $charLocation = getCharCoordsExt($currentCharId);
         if (!doesStatusContainExt(12, $currentChar, $currentUser) && ($charLocation[0] == '0' && $charLocation[1] == '0')){
             //character is not dead, add him to the pool
-            $currentCharCombo = array($currentUser, $currentChar);
+            $currentCharCombo = array($currentUser, $currentCharId);
             array_push($lotteryPool, $currentCharCombo);
         }
     }

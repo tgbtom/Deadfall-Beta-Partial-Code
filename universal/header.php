@@ -56,7 +56,8 @@ $statusArray = explode('.', $status);
 
 $currentAp = $charDetails['currentAP'];
 $maxAp = $charDetails['maxAP'];
-$townName = $charDetails['townName'];
+$townId = $charDetails['town_id'];
+$townName = Towns::getTownNameById($townId);
 
 $charObject = new Character($charDetails['id']);
 $previousChar = Character::getSequentialCharacter($charObject, "prev");

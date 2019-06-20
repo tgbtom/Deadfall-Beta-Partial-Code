@@ -103,7 +103,7 @@ class Towns {
 
 class Character {
 
-    public $id, $username, $character, $class, $gender, $level, $exp, $townName, $items, $itemsMass, $bonusItems, $maxBonusItems, $currentAP, $maxAP, $status;
+    public $id, $username, $character, $class, $gender, $level, $exp, $townId, $items, $itemsMass, $bonusItems, $maxBonusItems, $currentAP, $maxAP, $status;
     
     public function __construct($characterId){
         $this->id = $characterId;
@@ -122,7 +122,7 @@ class Character {
         $this->gender = $result["gender"];
         $this->level = $result["level"];
         $this->exp = $result["experience"];
-        $this->townName = $result["townName"];
+        $this->townId = $result["town_id"];
         $this->items = $result["items"];
         $this->itemsMass = $result["itemsMass"];
         $this->bonusItems = $result["bonusItems"];
@@ -152,10 +152,10 @@ class Character {
 
         $dbCon = Database::getDB();
 
-        $query = "SELECT * FROM `characters` WHERE `username` = :username AND `townName` = :townName ORDER BY `id`";
+        $query = "SELECT * FROM `characters` WHERE `username` = :username AND `town_id` = :townId ORDER BY `id`";
         $statement = $dbCon->prepare($query);
         $statement->bindValue(':username', $currentCharacter->username);
-        $statement->bindValue(':townName', $currentCharacter->townName);
+        $statement->bindValue(':townId', $currentCharacter->townId);
         $statement->execute();
         $result = $statement->fetchAll();
         $statement->closeCursor();
