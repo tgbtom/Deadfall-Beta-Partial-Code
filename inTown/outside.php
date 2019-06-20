@@ -365,14 +365,193 @@ $query2 = mysqli_query($con, $query1);
 <head>
 
 	<link rel="stylesheet" type="text/css" href="mainDesignTown.css">
-    <link rel="stylesheet" type="text/css" href="../css/outside.css">
+        <link rel="stylesheet" type="text/css" href="../css/outside.css">
+	<style>
+
+	</style>
 	
 	<title>Outside Map</title>
+	<script type='text/javascript'>
 
-	<script type="text/javascript" src="../js/outside.js"></script>
+	function moveCharacter()
+	{
+		var xhttp = new XMLHttpRequest();
+	}
+	
+	function displayItem(item, desc, mass)
+	{
+		document.getElementById("itemName").innerHTML = item;
+		document.getElementById("itemName2").value = item;
+		document.getElementById("itemDesc").innerHTML = desc;
+		document.getElementById("itemDescMass").innerHTML = "Mass: " + mass;
+		document.getElementById("PickUp").value = "Pick Up " + item;
+		document.getElementById("PickUp").disabled = false;
+		//unselect previous items to change which item has the selected border
+		var sel = document.getElementsByClassName("selected");
+		for (i = 0; i < sel.length; i++) 
+		{
+		sel[i].className = "notSelected";
+		}
+	}
+	function display(Z, Co, Co2, Dep)
+		{
+			document.getElementById("zedCount").innerHTML = Z;
+			document.getElementById("xco").innerHTML = Co;
+			document.getElementById("yco").innerHTML = Co2;
+			document.getElementById("lootability").innerHTML = Dep;
 
-</head>
-<body>
+			var root = "<?php echo $root ?>";
+			var loc = "<?php echo $loc ?>";
+                        
+			//Note: Arguments[0 - 2] come before the groundItems
+			document.getElementById("itemsDiv").innerHTML = "";
+                        if ((Co == "0" && Co2 == "0")){
+                            document.getElementById("itemsDiv").innerHTML = "<b><i>Use the navigation arrows on the left, to leave the town.</i></b>";
+                        }
+                        else if (arguments.length <= 4){
+                            document.getElementById("itemsDiv").innerHTML = "<b><i>Nothing on the ground.</i></b>";
+                        }
+                        else{
+                            for (i = 0; i < arguments.length; i++)
+                            {
+								// > 3 to ensure it skips past coordinates and Zed Count AND depletion amount
+								if (i > 3)
+								{
+                    				if (arguments[i] != "-1"){
+									var itemNameNow = itemsInfo[arguments[i]][0];
+									var itemDescNow = itemsInfo[arguments[i]][1];
+									var itemMassNow = itemsInfo[arguments[i]][2];
+
+									// <table class="itemInfo">
+									// <form action="/functions/pickUpItem.php" method="post">
+									// <tr style="height:25px;"><td id="itemName" class="data"></td></tr>
+									// <input type="hidden" name="location" value="/deadfall/outside.php">
+									// <input type="hidden" value="none" name="itemName2" id="itemName2">
+									// <tr class="lightRow"><td id="itemDesc" style="padding-left:5px;" class ="data2"></td></tr>
+									// <tr class="lightRow"><td id="itemDescMass" style="padding-left:5px;" class ="data3"></td></tr>
+									// <tr style="height:15%;"><td><input type="submit" id="PickUp" disabled value="Select an Item ->" style="width: 100%;"></form></td></tr>
+									// </table>
+
+
+
+									document.getElementById("itemsDiv").innerHTML = document.getElementById("itemsDiv").innerHTML +
+									'<form action="../functions/pickUpItem.php" method="post" style="display: inline-block;">' + 
+									'<input type="hidden" name="location" value="/deadfall/outside.php"><input type="hidden" value="' + itemNameNow + '" name="itemName2" id="itemName2">' +
+									'<div class="popup" onclick="popUpMenuA(`popUpA' + i + '`)"><img src="../images/items/' + itemNameNow + '.png" class="item"><img src="../images/rarity/' + getRarityString(arguments[i]) + '.png" title="' + itemNameNow + '" class="rarityBanner">' + 
+									'<span class="popuptexta" style="visibility:hidden;" id="popUpA' + i + '">' +
+									'<p><u>' + itemNameNow + '</u></p><p class="rarity">' + getRarityString(arguments[i]) + '</p><p class="weight">' + getItemMass(arguments[i]) + '</p>' +
+									'<input type="submit" class="act_button" value="Pick Up">' +
+									'</span></div></form>'; 
+                    				}
+								}
+                            }
+						}
+                                                
+                        if (Dep <= 0){
+                            document.getElementById("lootWarning").innerHTML = "This Zone is Depleted";
+                        }
+		}
+		
+		function remoteDisplay(Z, Co, Co2, Dep)
+		{
+			document.getElementById("remoteZedCount").innerHTML = Z;
+			document.getElementById("remoteXco").innerHTML = Co;
+			document.getElementById("remoteYco").innerHTML = Co2;
+			document.getElementById("remoteLootability").innerHTML = Dep;
+                        
+			//Note: Arguments[0 - 2] come before the groundItems
+			document.getElementById("remoteItemsDiv").innerHTML = "";
+				if ((Co == "0" && Co2 == "0")){
+					document.getElementById("remoteItemsDiv").innerHTML = "<b><i>Click on a Zone to see the last known information</i></b>";
+				}
+				else if (arguments.length <= 4){
+					document.getElementById("remoteItemsDiv").innerHTML = "<b><i>Nothing seen at The zone.</i></b>";
+				}
+				else{
+					for (i = 0; i < arguments.length; i++)
+					{
+						// > 3 to ensure it skips past coordinates and Zed Count AND depletion amount
+						if (i > 3)
+						{
+							if (arguments[i] != "-1")
+							{
+							var itemNameNow = itemsInfo[arguments[i]][0];
+							var itemDescNow = itemsInfo[arguments[i]][1];
+							document.getElementById("remoteItemsDiv").innerHTML = document.getElementById("remoteItemsDiv").innerHTML + '<img title="' + itemNameNow + '" src="../images/items/' + itemNameNow + '.png">';
+							}
+						}
+					}
+			}
+		}
+
+		function popUpMenuA(x)
+{   
+	var popup = document.getElementById(x);
+	if (popup.style.visibility === 'visible'){
+            var wasUp = true;
+	}
+	else{
+            var wasUp = false;
+	}
+        
+	var popuptext = document.getElementsByClassName('popuptexta');
+	for (var i = 0; i < popuptext.length; i++){
+		popuptext[i].style.visibility = 'hidden';
+	}
+        
+        if (!wasUp){
+		popup.style.visibility = 'visible';
+	}
+
+}
+
+		itemsList = [];
+		<?php 
+			foreach ($itemsMaster as $current){
+				echo "itemsList.push(['" . $current[0] . "', '" . $current[1]  . "', " . $current[2]  . ", " . $current[3]  . "]);";
+			}
+		?>
+
+	function getRarityString(itemId){
+
+		var returnVal = itemsList[itemId][3];
+		switch (returnVal){
+
+		case 0:
+		return 'Common';
+		break;
+		
+		case 1:
+		return 'Uncommon';
+		break;
+		
+		case 2:
+		return 'Rare';
+		break;
+		
+		case 3:
+		return 'Ultra-Rare';
+		break;
+		
+		case 4:
+		return 'Legendary';
+		break;
+
+		case 5:
+		return 'Scrap';
+		break;
+		
+		default: return 'Common';
+		}
+	}
+
+	function getItemMass(itemId){
+		return itemsList[itemId][2];
+	}
+
+	</script>
+	</head>
+	<body>
 	
 
 <div class="Container">
