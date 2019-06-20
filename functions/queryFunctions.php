@@ -2,19 +2,22 @@
 require_once ("../connect.php");
 require_once ("../functions/verifyLogin.php");
 include ("../data/items.php");
+require_once ("../model/database.php");
 
 //gets the user and current character, and stores them in local variables
 if (isset($_SESSION['login'])){
 	$user = $_SESSION['login'];
 }
 
-if (!isset($_SESSION['char']))
+if (!isset($_SESSION['char_id']))
 {
 	$_SESSION['char'] = '';
+	$_SESSION['char_id'] = '';
 }
 else
 {
 	$char = $_SESSION['char'];
+	$charId = $_SESSION['char_id'];
 }
 if (!isset($_SESSION['x']))
 {
@@ -35,14 +38,14 @@ else
 
 function getCharDetails()
 {
-	global $char;
+	global $charId;
 	global $user;
 	global $dbCon;
 	
-	$query = 'SELECT * FROM `characters` WHERE `username` = :user AND `character` = :char';
+	$query = 'SELECT * FROM `characters` WHERE `username` = :user AND `id` = :id';
 	$statement = $dbCon->prepare($query);
 	$statement->bindValue(':user', $user);
-	$statement->bindValue(':char', $char);
+	$statement->bindValue(':id', $charId);
 	$statement->execute();
 	$result = $statement->fetch();
 	$statement->closeCursor();
@@ -55,7 +58,8 @@ function getCharDetails()
 $charDetails = getCharDetails();
 $statusString = $charDetails['status'];
 $statusArray = explode('.', $statusString);
-$townName = $charDetails['townName'];
+$townId = $charDetails['town_id'];
+$townName = Towns::getTownNameById($townId);
 
 
 function getTownDetails($townName)
@@ -554,15 +558,18 @@ function lootItem()
 	{
 		$depletion = 0;
 	}
+
 	
 	if($oldBulletin == NULL)
 	{
-		$newBulletin = $randomItem . ' was looted by ' . $char;
+		$newBulletin = '<yellow>' . $randomItem . ' was looted by ' . $char . '</yellow>';
 	}
 	else
 	{
-		$newBulletin = $oldBulletin . '.' . $randomItem . ' was looted by ' . $char;	
+		$newBulletin = $oldBulletin . '.<yellow>' . $randomItem . ' was looted by ' . $char . '</yellow>';	
 	}
+
+	
 	
 	
 	$query = 'UPDATE ' . $townName . ' SET `lootability` = :lootability, `bulletin` = :newBulletin WHERE `x` = :x AND `y` = :y';
@@ -817,7 +824,7 @@ function removeItem($itemId)
 	
 }
 
-function getCharCoordsExt($character) //Return example => 0 => 5, 1=> -5  (Bottom right corner)
+function getCharCoordsExt($characterId) //Return example => 0 => 5, 1=> -5  (Bottom right corner)
 {
 	global $dbCon;
 	global $townName;
@@ -833,7 +840,7 @@ function getCharCoordsExt($character) //Return example => 0 => 5, 1=> -5  (Botto
 		$charsArray = explode('.', $current['charactersHere']);
 		if (!empty($charsArray))
 		{
-			if (in_array($character, $charsArray))
+			if (in_array($characterId, $charsArray))
 			{
 				return array($current['x'], $current['y']);
 			}	
@@ -842,7 +849,7 @@ function getCharCoordsExt($character) //Return example => 0 => 5, 1=> -5  (Botto
 }
 
 //Upon death the character drops all items, and status is all reset to default
-function dropAllItemsExt($character, $user = NULL)
+function dropAllItemsExt($characterId, $user = NULL)
 {
 	if($user == NULL){
 		global $user;
@@ -850,15 +857,15 @@ function dropAllItemsExt($character, $user = NULL)
 	global $dbCon;
 	global $townName;
 	
-	$query = 'SELECT items FROM `characters` WHERE `character` = :char AND `username` = :user';
+	$query = 'SELECT items FROM `characters` WHERE `id` = :id AND `username` = :user';
 	$statement = $dbCon->prepare($query);
-	$statement->bindValue(':char', $character);
+	$statement->bindValue(':id', $characterId);
 	$statement->bindValue(':user', $user);
 	$statement->execute();
 	$result = $statement->fetch();
 	$statement->closeCursor();
 	
-	$coordsArray = getCharCoordsExt($character);
+	$coordsArray = getCharCoordsExt($characterId);
 	
 	$charX = $coordsArray[0];
 	$charY = $coordsArray[1];
@@ -944,9 +951,9 @@ function dropAllItemsExt($character, $user = NULL)
 			}
 		}
 	}
-	$query = 'UPDATE `characters` SET `items` = NULL, `itemsMass` = "0" WHERE `character` = :char AND `username` = :user';
+	$query = 'UPDATE `characters` SET `items` = NULL, `itemsMass` = "0" WHERE `id` = :id AND `username` = :user';
 	$statement = $dbCon->prepare($query);
-	$statement->bindValue(':char', $character);
+	$statement->bindValue(':id', $characterId);
 	$statement->bindValue(':user', $user);
 	$statement->execute();
 	$statement->closeCursor();

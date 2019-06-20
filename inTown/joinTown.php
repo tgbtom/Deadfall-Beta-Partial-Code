@@ -8,11 +8,14 @@ require_once ("../model/database.php");
 
 	//Check if there was multiple checkboxes checked for multi-join
 	$multiJoin = filter_input(INPUT_POST, 'selectedChars', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY);
+
+	//STORES the ID of the character that was selected separate from checkboxes
 	$singleJoin = filter_input(INPUT_GET, 'selectedChar');
 
 	if(!isset($singleJoin)){
 		$singleJoin = filter_input(INPUT_POST, 'selectedChar');
 	}
+	$_SESSION['char_id'] = $singleJoin;
 
 	$temp = filter_input(INPUT_GET, 'tempChar');
 	if (!isset($temp))
@@ -59,26 +62,32 @@ require_once ("../model/database.php");
 
 	//The character that was hovered over when Join town was pressed
 	$_SESSION['char'] = $temp;
+
+	//SET CHAR ID SESSION HERE
+
 	$cName = $temp;
 	$pName = $_SESSION['login'];
 
 	//if the character is already in a town, forward the player to inTown.php
-	$query1 = "SELECT * FROM `characters` WHERE `username` = '$pName' AND `character` = '$cName'";
+	$query1 = "SELECT * FROM `characters` WHERE `username` = '$pName' AND `id` = '$singleJoin'";
 	$query2 = mysqli_query($con, $query1);
 	while ($row = mysqli_fetch_assoc($query2))
 	{
-		if ($row['townName'] != 'none')
+		if ($row['town_id'] != NULL)
 		{
+		$townName = Towns::getTownNameById($row['town_id']);
+
 			//***SET SESSION for the character's current location ***ALSO add this code to 'addToTown.php' for players that join a new town
 			//First we search every zone to figure out where the current character is ($con = settlements DB)
-			$querySelect = "SELECT * FROM `" . $row['townName'] . "`";
+			$querySelect = "SELECT * FROM `" . $townName . "`";
 			$querySelect2 = mysqli_query($con,$querySelect);
 			while ($row = mysqli_fetch_assoc($querySelect2))
 			{
 				$currentRow = explode('.', $row['charactersHere']);
 				for ($i = 0; $i < count($currentRow); $i++)
 				{
-					if ($currentRow[$i] == $cName)
+					//Once we found the location of the 'single join' character, set sessions for x  and y
+					if ($currentRow[$i] == $singleJoin)
 					{
 						$_SESSION['x'] = $row['x'];
 						$_SESSION['y'] = $row['y'];
@@ -156,10 +165,11 @@ require_once ("../model/database.php");
 
 		foreach($results as $key => $result){
 			$t = $result["townName"];
+			$townId = $result["town_id"];
 			$c = $cName;
 			//$result["maxResidents"] - $result["amountResidents"] >= $characterAmount
 			if($result["maxResidents"] - $result["amountResidents"] >= $characterAmount){
-				$availableTown = "<tr><td>" . $t . "</td><td>[" . $result["amountResidents"] . "/" . $result["maxResidents"] . "]  </td><td><form method='post' action='../functions/addToTown.php'><input type='hidden' name='newTown' value=$t><input type='hidden' name='char' value=$c><button type='submit' value='Submit' class='joinButton'><span>Join Town</span></button></form></td></tr>";
+				$availableTown = "<tr><td>" . $t . "</td><td>[" . $result["amountResidents"] . "/" . $result["maxResidents"] . "]  </td><td><form method='post' action='../functions/addToTown.php'><input type='hidden' name='newTown' value=$townId><input type='hidden' name='char' value=$c><button type='submit' value='Submit' class='joinButton'><span>Join Town</span></button></form></td></tr>";
 				echo $availableTown;
 			}
 		}

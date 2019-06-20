@@ -46,29 +46,44 @@ class Database {
 
 class Towns {
     
-    public static function isTownCreated($townName){
+    public static function isTownCreated($townId){
         $dbCon = Database::getDB();
         
-        $query = "SELECT `townName` FROM `towns`";
+        $query = "SELECT `town_id` FROM `towns`";
         $statement = $dbCon->prepare($query);
         $statement->execute();
         $results = $statement->fetchAll();
         
         foreach ($results as $result){
-            if ($result["townName"] == $townName){
+            if ($result["town_id"] == $townId){
                 return true;
             }
         }
         return false;
     }
 
-    public static function addTownBulletin($content, $townName){
+    public static function getTownNameById($townId){
+
+        $dbCon = Database::getDB();
+
+        $query = "SELECT `townName` FROM `towns` WHERE `town_id` = :townId";
+        $statement = $dbCon->prepare($query);
+        $statement->bindValue(':townId', $townId);
+        $statement->execute();
+        $result = $statement->fetch();
+        $statement->closeCursor();
+
+        return $result['townName'];
+
+    }
+
+    public static function addTownBulletin($content, $townId){
         $dbCon = Database::getDB();
 
         //Get current bulletin, to concatenate new bulletin to
-        $query = "SELECT `bulletin` FROM `towns` WHERE `townName` = :townName";
+        $query = "SELECT `bulletin` FROM `towns` WHERE `town_id` = :townId";
         $statement = $dbCon->prepare($query);
-        $statement->bindValue(":townName", $townName);
+        $statement->bindValue(":townId", $townId);
         $statement->execute();
         $result = $statement->fetch();
         $statement->closeCursor();
@@ -77,10 +92,10 @@ class Towns {
         $newBulletin = $oldBulletin . "." . $content;
 
         //Update the bulletin to include the new content
-        $query2 = "UPDATE `towns` SET `bulletin` = :bulletin WHERE `townName` = :townName";
+        $query2 = "UPDATE `towns` SET `bulletin` = :bulletin WHERE `town_id` = :townId";
         $statement2 = $dbCon->prepare($query2);
         $statement2->bindValue(":bulletin", $newBulletin);
-        $statement2->bindValue(":townName", $townName);
+        $statement2->bindValue(":townId", $townId);
         $statement2->execute();
         $statement2->closeCursor();
     }

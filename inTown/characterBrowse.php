@@ -89,7 +89,7 @@ $_SESSION['y'] = '';
 
 				//Changes play button words depending on town status of selected character
 				var x = document.getElementById("town");
-				if (x.innerHTML == "none")
+				if (x.innerHTML == '')
 				{
 					document.getElementById("play").value = "Join Town";
 				}
@@ -171,12 +171,13 @@ $_SESSION['y'] = '';
 			<?php
 			foreach ($results as $result)
 			{
+				$townId = $result["town_id"];
 				$name = $result["character"];
 				$tips = $result["id"];
-				$tips2 = $result["townName"];
+				$tips2 = Towns::getTownNameById($townId);
 				$tips3 = lcfirst($result["class"]); //returns class name with first character as lowercase
 				$classImg = $root . "/images/icons/" . lcfirst($tips3) . ".png"; 
-				if($result["townName"] == 'none'){
+				if($tips2 == NULL){
 					echo "<tr id='" . $tips . "' class='clickable' onclick=displayInfo('$name','$tips','$tips2','$tips3')>" . "<td>Lvl: " . $result["level"] . "</td><td>" . $result["character"] . "</td><td><img src='$classImg'> " . $result["class"] . "</td><td>" . $tips2 . "</td><td><input type='checkbox' form='join' name='selectedChars[]' value=" . $result["id"] . "></td></tr>";
 				}
 				else{

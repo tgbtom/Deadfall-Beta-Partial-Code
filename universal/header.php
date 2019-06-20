@@ -63,8 +63,8 @@ function newAction(target, hiddenNameId)
 	}
 }
 
-function changeChar(newChar) {
-		if (newChar.length === 0) 
+function changeChar(newCharId) {
+		if (newCharId.length === 0) 
 		{
 			return;
 		} 
@@ -77,7 +77,7 @@ function changeChar(newChar) {
 						//document.getElementById("txtHint").innerHTML = xmlhttp.responseText;
 					}
 				};
-			xmlhttp.open("GET", "../functions/changeChar.php?change="+newChar, true);
+			xmlhttp.open("GET", "../functions/changeChar.php?change="+newCharId, true);
 			xmlhttp.send();
 			window.location.reload();
 		}	
@@ -118,15 +118,10 @@ if (isset($endDay)) {
 //gets the user and current character, and stores them in local variables
 $user = $_SESSION['login'];
 $char = $_SESSION['char'];
+$charId = $_SESSION['char_id'];
 
 //Query loads the row in the characters DB that corresponds to the currently logged character
-$query1 = 'SELECT * FROM `characters` WHERE `character` = :character AND `username` = :username';
-$statement1 = $dbCon->prepare($query1);
-$statement1->bindValue(':username', $user);
-$statement1->bindValue(':character', $char);
-$statement1->execute();
-$charDetails = $statement1->fetch();
-$statement1->closeCursor();
+$charDetails = getCharDetails();
 
 $weightCapacity = $charDetails['maxItems'];
 $currentMass = $charDetails['itemsMass'];
@@ -162,11 +157,14 @@ $maxRes = $result2['maxResidents'];
 $deadRes = $result2['deadResidents'];
 $aliveRes = $maxRes - $deadRes;
 
+echo "User ID: " . $_SESSION['user_id'] . " ";
+echo "| Char ID: " . $_SESSION['char_id'];
+
 $dropAll = filter_input(INPUT_POST, 'dropAllItems');
 if (isset($dropAll)) {
 	if ($dropAll == "true") {
 		//drop all items
-		dropAllItemsExt($char);
+		dropAllItemsExt($charObject->id);
 		//Reload the header to properly clear post data so data will not be resubmitted when character is changed
 		echo '<meta http-equiv="refresh" content="0">';
 	}
@@ -185,7 +183,7 @@ if (isset($dropAll)) {
 		<div class="infoSet1"><p><?php echo '<img src="../images/icons/sword.png" title="Horde Size"> ' . $hordeSize?> | <?php echo $defenceSize . ' <img src="../images/icons/shield.png" title="Defence Amount"> '?></p></div>
 		
 		<div class="infoset2"><p><?php echo "<b>User:</b> " . htmlspecialchars($playerName)?></p></div>
-		<div class="infoset2"><p><b>Character: </b><img src="../images/leftArrow.png" onclick=changeChar('<?php echo $previousChar->character; ?>') class="headNavArrowLeft"> <?php echo htmlspecialchars($charName)?> <img src="../images/rightArrow.png" onclick=changeChar('<?php echo $nextChar->character; ?>') class="headNavArrowRight"> | 
+		<div class="infoset2"><p><b>Character: </b><img src="../images/leftArrow.png" onclick=changeChar(<?php echo $previousChar->id; ?>) class="headNavArrowLeft" title="<?php echo $previousChar->character; ?>"> <?php echo htmlspecialchars($charName)?> <img src="../images/rightArrow.png" onclick=changeChar(<?php echo $nextChar->id; ?>) title ="<?php echo $nextChar->character; ?>" class="headNavArrowRight"> | 
 		<?php echo ' Lv. ' . htmlspecialchars($charLevel)?> | 
 		<?php echo ' <img src="' . $root . '/images/icons/' . lcfirst(htmlspecialchars($charClass)) .  '.png" title="' . htmlspecialchars($charClass) . '"> ' . htmlspecialchars($charClass); ?></p></div>
 		<br>
@@ -213,6 +211,7 @@ if (isset($dropAll)) {
 			</form>
 			<!-- <button type="submit" value="" class="endButton"><span>Ready</span></button> -->
 		</div>
+		
 		<!-- Display Inventory -->
 		<div class="infoset3"><form action="" method="post" style="display: inline;"><p><?php 
 		if ($itemsHeld != NULL)
@@ -237,14 +236,14 @@ if (isset($dropAll)) {
 						}
 					}
 				}
-				echo '<input onclick="newAction(`drop`, ' . $i .')" type="submit" value="Drop">';
+				echo '<input class="act_button" onclick="newAction(`drop`, ' . $i .')" type="submit" value="Drop"><br>';
 				if (checkUsability($itemsHeldArray[$i]) == 'Eat' || checkUsability($itemsHeldArray[$i]) == 'Drink' || checkUsability($itemsHeldArray[$i]) == 'Load')
 				{
-					echo '<input onclick="newAction(`' . checkUsability($itemsHeldArray[$i]) . '`, ' . $i . ')" type="submit" value="' . checkUsability($itemsHeldArray[$i]) . '">';					
+					echo '<input class="act_button" onclick="newAction(`' . checkUsability($itemsHeldArray[$i]) . '`, ' . $i . ')" type="submit" value="' . checkUsability($itemsHeldArray[$i]) . '">';					
 				}
 				elseif (checkUsability($itemsHeldArray[$i]) == 'Attack' && strpos($loc, 'outside') !== false && !($_SESSION['x'] == 0 && $_SESSION['y'] == 0)) //function is attack and location is outside AND out of town coords
 				{
-					echo '<input onclick="newAction(`' . checkUsability($itemsHeldArray[$i]) . '`, ' . $i . ')" type="submit" value="' . checkUsability($itemsHeldArray[$i]) . '">';					
+					echo '<input class="act_button" onclick="newAction(`' . checkUsability($itemsHeldArray[$i]) . '`, ' . $i . ')" type="submit" value="' . checkUsability($itemsHeldArray[$i]) . '">';					
 				}
 				echo '</span></div>';
 			}

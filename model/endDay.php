@@ -9,11 +9,12 @@ $charName = $_SESSION['char'];
 
 //Set Variables which correspond with the character that is in session (town name, level, class, etc.)
 $charDetails = getCharDetails();
-$townName = $charDetails['townName'];
+$townId = $charDetails['town_id'];
+$townName = Towns::getTownNameById($townId);
 $charLevel = $charDetails['level'];
 $charClass = $charDetails['class'];
 
-$townDetails = getTownDetails($townName);
+$townDetails = getTownDetails($townId);
 $previousReady = $townDetails['readyResidents'];
 $maxReady = $townDetails['maxResidents'];
 $dayNumber = $townDetails['dayNumber'];
@@ -26,6 +27,7 @@ function endDay() {
     global $maxReady;
     global $dayNumber;
     global $townName;
+    global $townId;
     global $deadRes;
     global $defence;
 
@@ -34,22 +36,22 @@ function endDay() {
 
     if ($newReady >= ($maxReady - $deadRes)) {
         //If there is overrun
-        $oldHorde = getHordeSize($townName);
+        $oldHorde = getHordeSize($townID);
         if ($oldHorde > $defence) {
             $overrun = $oldHorde - $defence;
             for ($i = 0; $i < $overrun; $i++) {
                 if (mt_rand(0, 100) >= 95) { //5-6% chance of random survivor being killed
                     //Kill random Character
-                    characterLottery($townName, $newDead);
+                    characterLottery($townId, $newDead);
                 }
             }
         }
 
 
         //Remove '10' from all characters status' if they are in the town.
-        $query = 'SELECT * FROM `characters` WHERE `townName` = :townName';
+        $query = 'SELECT * FROM `characters` WHERE `town_id` = :townId ';
         $statement = $dbCon->prepare($query);
-        $statement->bindValue(':townName', $townName);
+        $statement->bindValue(':townId', $townId);
         $statement->execute();
         $result = $statement->fetchAll();
         $statement->closeCursor();
@@ -76,7 +78,7 @@ function endDay() {
                     if (!doesStatusContainExt(12, $character)) {
                         killCharacter($character, $currentUsername, $newDead);
                         $deathBulletin = "<red>" . $character . " starved to death</red>";
-                        Towns::addTownBulletin($deathBulletin, $townName);
+                        Towns::addTownBulletin($deathBulletin, $townId);
                     }
                 }
             }
@@ -92,7 +94,7 @@ function endDay() {
                 if (!doesStatusContainExt(12, $character)) {
                     killCharacter($character, $currentUsername, $newDead);
                     $deathBulletin = "<red>" . $character . " died of dehydration</red>";
-                    Towns::addTownBulletin($deathBulletin, $townName); 
+                    Towns::addTownBulletin($deathBulletin, $townId); 
                 }
             }
 
@@ -103,7 +105,7 @@ function endDay() {
                     //Character dies from camping
                     killCharacter($character, $currentUsername, $newDead);
                     $deathBulletin = "<red>" . $character . " never returned from outside of town</red>";
-                    Towns::addTownBulletin($deathBulletin, $townName);
+                    Towns::addTownBulletin($deathBulletin, $townId);
                 }
             }
         }
@@ -111,31 +113,31 @@ function endDay() {
         //finish day, increase day number
         $dayNumber++;
         if ($dayNumber >= 5) {
-            zedSpread($townName);
+            zedSpread($townId);
         }
 
         //If there was  an over run, publish results to bulletin
         if (isset($overrun)){
             $notice = "<red><strong>Horde Attack -> Night " . ($dayNumber - 1) . "</strong>: " . $overrun . " Zeds got through the defences and terrorized the citizens</red>";
-            Towns::addTownBulletin($notice, $townName);
+            Towns::addTownBulletin($notice, $townId);
             $notice = "<red>as a result " . $newDead - $deadRes . " Survivors have been killed</red>";
-            Towns::addTownBulletin($notice, $townName);
+            Towns::addTownBulletin($notice, $townId);
         }
         //otherwise, post notice that you were safe
         else{
             $notice = "<green><strong>Horde Attack</strong>: The defences successfully fended off the horde for the night</green>";
-            Towns::addTownBulletin($notice, $townName);
+            Towns::addTownBulletin($notice, $townId);
         }
 
         //increase hordesize
-        $newHorde = getHordeSize($townName);
+        $newHorde = getHordeSize($townId);
 
-        $query2 = 'UPDATE `towns` SET `readyResidents` = :newReady, `dayNumber` = :dayNumber, `hordeSize` = :newHorde WHERE `townName` = :townName';
+        $query2 = 'UPDATE `towns` SET `readyResidents` = :newReady, `dayNumber` = :dayNumber, `hordeSize` = :newHorde WHERE `town_id` = :townID';
         $statement2 = $dbCon->prepare($query2);
         $statement2->bindValue(':newReady', 0);
         $statement2->bindValue(':dayNumber', $dayNumber);
         $statement2->bindValue(':newHorde', $newHorde);
-        $statement2->bindValue(':townName', $townName);
+        $statement2->bindValue(':townId', $townId);
         $statement2->execute();
         $statement2->closeCursor();
 
@@ -143,76 +145,79 @@ function endDay() {
         //Check for any structures that perform an action over night
         
         //Add water to bank if the Reserve is Complete
-        if (isStructureBuilt('Water Reserve', $townName)) {
+        if (isStructureBuilt('Water Reserve', $townId)) {
             $amount = mt_rand(2,4);
             for ($i = 0; $i < $amount; $i++) {
-                addToBank(0, $townName);
+                addToBank(0, $townId);
                 $notice = "<blue>" . $amount . " Water Rations were collected from the Water Reserve</blue>";
-                Towns::addTownBulletin($notice, $townName);
+                Towns::addTownBulletin($notice, $townId);
             }
         }
 
         //Add bits of food to the bank if Vegetable Garden is complete
-        if (isStructureBuilt('Vegetable Garden', $townName)) {
+        if (isStructureBuilt('Vegetable Garden', $townId)) {
             $amount = mt_rand(1,4);
             for ($i = 0; $i < $amount; $i++) {
-                addToBank(1, $townName);
+                addToBank(1, $townId);
                 $notice = "<blue>" . $amount . " Bits of Food were collected from the Vegetable Garden</blue>";
-                Towns::addTownBulletin($notice, $townName);
+                Towns::addTownBulletin($notice, $townId);
             }
         }
 
     } else {
-        $query2 = 'UPDATE `towns` SET `readyResidents` = :newReady WHERE `townName` = :townName';
+        $query2 = 'UPDATE `towns` SET `readyResidents` = :newReady WHERE `town_id` = :townId';
         $statement2 = $dbCon->prepare($query2);
         $statement2->bindValue(':newReady', $newReady);
-        $statement2->bindValue(':townName', $townName);
+        $statement2->bindValue(':townId', $townId);
         $statement2->execute();
         $statement2->closeCursor();
     }
 }
 
-function killCharacter($character, $username, &$newDead) {
+function killCharacter($characterId, $username, &$newDead) {
     
     global $townName;
+    global $townId;
     global $dbCon;
+
+    $charObject = new Character($characterId);
     
     $newDead++;
 
-    $query = 'UPDATE `towns` SET `deadResidents` = :newDead WHERE `townName` = :townName';
+    $query = 'UPDATE `towns` SET `deadResidents` = :newDead WHERE `town_id` = :townId';
     $statement = $dbCon->prepare($query);
-    $statement->bindValue(':townName', $townName);
+    $statement->bindValue(':townId', $townId);
     $statement->bindValue(':newDead', $newDead);
     $statement->execute();
     $statement->closeCursor();
 
-    addStatusExt(12, $character, $username);
-    replaceStatusExt(11, 10, $character, $username);
+    addStatusExt(12, $characterId, $username);
+    replaceStatusExt(11, 10, $characterId, $username);
 
     //This function kills the character on the database end
-    dropAllItemsExt($character);
+    dropAllItemsExt($characterId);
 
     //Add a notice of their death to the bulletin
-    $notice = "<red>" . $character . "[" . $username . "] Has died from zeds</red>";
-    Towns::addTownBulletin($notice, $townName);
+    $notice = "<red>" . $charObject->character . "[" . $username . "] Has died from zeds</red>";
+    Towns::addTownBulletin($notice, $townId);
 
     //Check if any chars are left alive in this town, otherwise needs to end town
-    if (charsAlive($townName) == 0) {
+    if (charsAlive($townId) == 0) {
         //All characters are dead
-        closeTheTown($townName);
+        closeTheTown($townId);
     }
 }
 
-function characterLottery($townName, &$newDead){
+function characterLottery($townId, &$newDead){
     
     global $dbCon;
     
     //establish the empty array so arrays can be pushed into it (becomes multi-dimensional)
     $lotteryPool = array();
     
-    $query = "SELECT * FROM `characters` WHERE `townName` = :townName";
+    $query = "SELECT * FROM `characters` WHERE `town_id` = :townId";
     $statement = $dbCon->prepare($query);
-    $statement->bindValue(":townName", $townName);
+    $statement->bindValue(":townId", $townId);
     $statement->execute();
     $results = $statement->fetchAll();
     $statement->closeCursor();

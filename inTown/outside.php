@@ -7,6 +7,7 @@ Include("../data/items.php");
 
 
 $dir = filter_input(INPUT_GET, 'dir');
+$loc = $_SERVER['REQUEST_URI'];
 
 	
 /*////////////////////////////////////////////
@@ -23,6 +24,7 @@ WAREHOUSE ITEMS ARE STORED ON MAP AT CO_ORDS 0,0.
 
 $playerName = $_SESSION['login'];
 $charName = $_SESSION['char'];
+$charId = $_SESSION['char_id'];
 
 
 //Set Variables which correspond with the character that is in session (town name, level, class, etc.)
@@ -122,7 +124,7 @@ $query2 = mysqli_query($con, $query1);
 					$listedChar = explode(".", $row['charactersHere']);
 					for ($i = 0; $i < count($listedChar); $i++)
 					{
-						if ($listedChar[$i] != $charName)
+						if ($listedChar[$i] != $charId)
 						{
 							if ($updatedOldZone != NULL && $updatedOldZone != '')
 							{
@@ -147,11 +149,11 @@ $query2 = mysqli_query($con, $query1);
 				{
 					if ($row["charactersHere"] != NULL && $row["charactersHere"] != '')
 					{
-						$updatedNewZone = $row["charactersHere"] . "." . $charName;
+						$updatedNewZone = $row["charactersHere"] . "." . $charId;
 					}
 					else
 					{
-						$updatedNewZone = $charName;
+						$updatedNewZone = $charId;
 					}
 				}
 				$updateNew = "UPDATE `" . $townName . "` SET `charactersHere`='" . $updatedNewZone ."' WHERE `x`='" . $newX . "' AND `y`='" . $newY . "'";
@@ -172,7 +174,7 @@ $query2 = mysqli_query($con, $query1);
 					$listedChar = explode(".", $row['charactersHere']);
 					for ($i = 0; $i < count($listedChar); $i++)
 					{
-						if ($listedChar[$i] != $charName)
+						if ($listedChar[$i] != $charId)
 						{
 							if ($updatedOldZone != NULL && $updatedOldZone != '')
 							{
@@ -197,11 +199,11 @@ $query2 = mysqli_query($con, $query1);
 				{
 					if ($row["charactersHere"] != NULL && $row["charactersHere"] != '')
 					{
-						$updatedNewZone = $row["charactersHere"] . "." . $charName;
+						$updatedNewZone = $row["charactersHere"] . "." . $charId;
 					}
 					else
 					{
-						$updatedNewZone = $charName;
+						$updatedNewZone = $charId;
 					}
 				}
 				$updateNew = "UPDATE `" . $townName . "` SET `charactersHere`='" . $updatedNewZone ."' WHERE `x`='" . $newX . "' AND `y`='" . $newY . "'";
@@ -223,7 +225,7 @@ $query2 = mysqli_query($con, $query1);
 					$listedChar = explode(".", $row['charactersHere']);
 					for ($i = 0; $i < count($listedChar); $i++)
 					{
-						if ($listedChar[$i] != $charName)
+						if ($listedChar[$i] != $charId)
 						{
 							if ($updatedOldZone != NULL && $updatedOldZone != '')
 							{
@@ -248,11 +250,11 @@ $query2 = mysqli_query($con, $query1);
 				{
 					if ($row["charactersHere"] != NULL && $row["charactersHere"] != '')
 					{
-						$updatedNewZone = $row["charactersHere"] . "." . $charName;
+						$updatedNewZone = $row["charactersHere"] . "." . $charId;
 					}
 					else
 					{
-						$updatedNewZone = $charName;
+						$updatedNewZone = $charId;
 					}
 				}
 				$updateNew = "UPDATE `" . $townName . "` SET `charactersHere`='" . $updatedNewZone ."' WHERE `x`='" . $newX . "' AND `y`='" . $newY . "'";
@@ -274,7 +276,7 @@ $query2 = mysqli_query($con, $query1);
 					$listedChar = explode(".", $row['charactersHere']);
 					for ($i = 0; $i < count($listedChar); $i++)
 					{
-						if ($listedChar[$i] != $charName)
+						if ($listedChar[$i] != $charId)
 						{
 							if ($updatedOldZone != NULL && $updatedOldZone != '')
 							{
@@ -299,11 +301,11 @@ $query2 = mysqli_query($con, $query1);
 				{
 					if ($row["charactersHere"] != NULL && $row["charactersHere"] != '')
 					{
-						$updatedNewZone = $row["charactersHere"] . "." . $charName;
+						$updatedNewZone = $row["charactersHere"] . "." . $charId;
 					}
 					else
 					{
-						$updatedNewZone = $charName;
+						$updatedNewZone = $charId;
 					}
 				}
 				$updateNew = "UPDATE `" . $townName . "` SET `charactersHere`='" . $updatedNewZone ."' WHERE `x`='" . $newX . "' AND `y`='" . $newY . "'";
@@ -321,11 +323,11 @@ $query2 = mysqli_query($con, $query1);
 	{
 		global $dbCon;
 		global $playerName;
-		global $charName;
-		$query = 'SELECT * FROM `characters` WHERE `username` = :user AND `character` = :char';
+		global $charId;
+		$query = 'SELECT * FROM `characters` WHERE `username` = :user AND `id` = :id';
 		$statement = $dbCon->prepare($query);
 		$statement->bindValue(':user', $playerName);
-		$statement->bindValue(':char', $charName);
+		$statement->bindValue(':id', $charId);
 		$statement->execute();
 		$result = $statement->fetch();
 		$statement->closeCursor();
@@ -342,15 +344,15 @@ $query2 = mysqli_query($con, $query1);
 	{
 		global $dbCon;
 		global $playerName;
-		global $charName;
+		global $charId;
 		global $currentAp;
 		
 		$newAp = $currentAp - $amountToReduce;
-		$query = 'UPDATE `characters` SET `currentAp` = :newAp WHERE `username` = :user AND `character` = :char';
+		$query = 'UPDATE `characters` SET `currentAp` = :newAp WHERE `username` = :user AND `id` = :id';
 		$statement = $dbCon->prepare($query);
 		$statement->bindValue(':newAp', $newAp);
 		$statement->bindValue(':user', $playerName);
-		$statement->bindValue(':char', $charName);
+		$statement->bindValue(':id', $charId);
 		$statement->execute();
 		$statement->closeCursor();
 	}
@@ -369,7 +371,7 @@ $query2 = mysqli_query($con, $query1);
 	
 	<title>Outside Map</title>
 	<script type='text/javascript'>
-	
+
 	function moveCharacter()
 	{
 		var xhttp = new XMLHttpRequest();
@@ -396,6 +398,9 @@ $query2 = mysqli_query($con, $query1);
 			document.getElementById("xco").innerHTML = Co;
 			document.getElementById("yco").innerHTML = Co2;
 			document.getElementById("lootability").innerHTML = Dep;
+
+			var root = "<?php echo $root ?>";
+			var loc = "<?php echo $loc ?>";
                         
 			//Note: Arguments[0 - 2] come before the groundItems
 			document.getElementById("itemsDiv").innerHTML = "";
@@ -415,16 +420,37 @@ $query2 = mysqli_query($con, $query1);
 									var itemNameNow = itemsInfo[arguments[i]][0];
 									var itemDescNow = itemsInfo[arguments[i]][1];
 									var itemMassNow = itemsInfo[arguments[i]][2];
-									document.getElementById("itemsDiv").innerHTML = document.getElementById("itemsDiv").innerHTML + '<img onclick="displayItem(`' + itemNameNow + '`,`' + itemDescNow + '`,`' + itemMassNow + '`); this.className = `selected`" title="' + itemNameNow + '" src="../images/items/' + itemNameNow + '.png">';
-                    			}
-				}
+
+									// <table class="itemInfo">
+									// <form action="/functions/pickUpItem.php" method="post">
+									// <tr style="height:25px;"><td id="itemName" class="data"></td></tr>
+									// <input type="hidden" name="location" value="/deadfall/outside.php">
+									// <input type="hidden" value="none" name="itemName2" id="itemName2">
+									// <tr class="lightRow"><td id="itemDesc" style="padding-left:5px;" class ="data2"></td></tr>
+									// <tr class="lightRow"><td id="itemDescMass" style="padding-left:5px;" class ="data3"></td></tr>
+									// <tr style="height:15%;"><td><input type="submit" id="PickUp" disabled value="Select an Item ->" style="width: 100%;"></form></td></tr>
+									// </table>
+
+
+
+									document.getElementById("itemsDiv").innerHTML = document.getElementById("itemsDiv").innerHTML +
+									'<form action="../functions/pickUpItem.php" method="post" style="display: inline-block;">' + 
+									'<input type="hidden" name="location" value="/deadfall/outside.php"><input type="hidden" value="' + itemNameNow + '" name="itemName2" id="itemName2">' +
+									'<div class="popup" onclick="popUpMenuA(`popUpA' + i + '`)"><img src="../images/items/' + itemNameNow + '.png" class="item"><img src="../images/rarity/' + getRarityString(arguments[i]) + '.png" title="' + itemNameNow + '" class="rarityBanner">' + 
+									'<span class="popuptexta" style="visibility:hidden;" id="popUpA' + i + '">' +
+									'<p><u>' + itemNameNow + '</u></p><p class="rarity">' + getRarityString(arguments[i]) + '</p><p class="weight">' + getItemMass(arguments[i]) + '</p>' +
+									'<input type="submit" class="act_button" value="Pick Up">' +
+									'</span></div></form>'; 
+                    				}
+								}
                             }
-			}
+						}
                                                 
                         if (Dep <= 0){
                             document.getElementById("lootWarning").innerHTML = "This Zone is Depleted";
                         }
 		}
+		
 		function remoteDisplay(Z, Co, Co2, Dep)
 		{
 			document.getElementById("remoteZedCount").innerHTML = Z;
@@ -434,28 +460,94 @@ $query2 = mysqli_query($con, $query1);
                         
 			//Note: Arguments[0 - 2] come before the groundItems
 			document.getElementById("remoteItemsDiv").innerHTML = "";
-                        if ((Co == "0" && Co2 == "0")){
-                            document.getElementById("remoteItemsDiv").innerHTML = "<b><i>Click on a Zone to see the last known information</i></b>";
-                        }
-                        else if (arguments.length <= 4){
-                            document.getElementById("remoteItemsDiv").innerHTML = "<b><i>Nothing seen at The zone.</i></b>";
-                        }
-                        else{
-                            for (i = 0; i < arguments.length; i++)
-                            {
-				// > 3 to ensure it skips past coordinates and Zed Count AND depletion amount
-				if (i > 3)
-				{
-                    if (arguments[i] != "-1")
-                    {
-					var itemNameNow = itemsInfo[arguments[i]][0];
-					var itemDescNow = itemsInfo[arguments[i]][1];
-					document.getElementById("remoteItemsDiv").innerHTML = document.getElementById("remoteItemsDiv").innerHTML + '<img title="' + itemNameNow + '" src="../images/items/' + itemNameNow + '.png">';
-                                    }
+				if ((Co == "0" && Co2 == "0")){
+					document.getElementById("remoteItemsDiv").innerHTML = "<b><i>Click on a Zone to see the last known information</i></b>";
 				}
-                            }
+				else if (arguments.length <= 4){
+					document.getElementById("remoteItemsDiv").innerHTML = "<b><i>Nothing seen at The zone.</i></b>";
+				}
+				else{
+					for (i = 0; i < arguments.length; i++)
+					{
+						// > 3 to ensure it skips past coordinates and Zed Count AND depletion amount
+						if (i > 3)
+						{
+							if (arguments[i] != "-1")
+							{
+							var itemNameNow = itemsInfo[arguments[i]][0];
+							var itemDescNow = itemsInfo[arguments[i]][1];
+							document.getElementById("remoteItemsDiv").innerHTML = document.getElementById("remoteItemsDiv").innerHTML + '<img title="' + itemNameNow + '" src="../images/items/' + itemNameNow + '.png">';
+							}
+						}
+					}
 			}
 		}
+
+		function popUpMenuA(x)
+{   
+	var popup = document.getElementById(x);
+	if (popup.style.visibility === 'visible'){
+            var wasUp = true;
+	}
+	else{
+            var wasUp = false;
+	}
+        
+	var popuptext = document.getElementsByClassName('popuptexta');
+	for (var i = 0; i < popuptext.length; i++){
+		popuptext[i].style.visibility = 'hidden';
+	}
+        
+        if (!wasUp){
+		popup.style.visibility = 'visible';
+	}
+
+}
+
+		itemsList = [];
+		<?php 
+			foreach ($itemsMaster as $current){
+				echo "itemsList.push(['" . $current[0] . "', '" . $current[1]  . "', " . $current[2]  . ", " . $current[3]  . "]);";
+			}
+		?>
+
+	function getRarityString(itemId){
+
+		var returnVal = itemsList[itemId][3];
+		switch (returnVal){
+
+		case 0:
+		return 'Common';
+		break;
+		
+		case 1:
+		return 'Uncommon';
+		break;
+		
+		case 2:
+		return 'Rare';
+		break;
+		
+		case 3:
+		return 'Ultra-Rare';
+		break;
+		
+		case 4:
+		return 'Legendary';
+		break;
+
+		case 5:
+		return 'Scrap';
+		break;
+		
+		default: return 'Common';
+		}
+	}
+
+	function getItemMass(itemId){
+		return itemsList[itemId][2];
+	}
+
 	</script>
 	</head>
 	<body>
@@ -517,7 +609,8 @@ $query2 = mysqli_query($con, $query1);
 				}
 				else
 				{
-					$chars2 = $chars2 . '&#13;' . $charactersList[$i];
+					$rowToAdd = Character::getCharacterById($charactersList[$i]);
+					$chars2 = $chars2 . '&#13;' . $rowToAdd["character"];
 				}
 			}
 			
@@ -582,7 +675,7 @@ $query2 = mysqli_query($con, $query1);
 			{
 				if ($charactersList[0] != NULL && $charactersList[0] != '')
 				{
-					if(in_array($charName, $charactersList)) 
+					if(in_array($charId, $charactersList)) 
 					{
 						$drawHere2 = '<circle onclick="top.display(' . $zeds . ',' . $realX . ',' . $realY . ',' . $lootability . ',' . $groundSplit . ')" r="3" cx="' . ($x + 8) . '" cy="' . ($y + 8) . '" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(155,155,155)"><title>' . $chars2 . '</title></circle>';
 						echo $drawHere2;
@@ -610,7 +703,7 @@ $query2 = mysqli_query($con, $query1);
                 <?php 
                 if (!($tempX == 0 && $tempY == 0)) //active loot button only if character isn't in town
                 {
-                    echo '<p id="lootWarning"></p><form action=".?locat=outside" method="post" id="lootForm"><button class="lootButton" id="lootButton" type="submit" name="loot" value="Loot"><span>Loot | 2 AP</span></button></form>';
+                    echo '<p id="lootWarning" style="text-align: center;"></p><form action=".?locat=outside" method="post" id="lootForm"><button class="lootButton" id="lootButton" type="submit" name="loot" value="Loot"><span>Loot | 2 AP</span></button></form>';
                 }
                 else
                 {
@@ -639,15 +732,15 @@ $query2 = mysqli_query($con, $query1);
 	
 	<br>
 	
-	<table class="itemInfo">
-	<form action="<?php echo $root; ?>/functions/pickUpItem.php" method="post">
+	 <!-- <table class="itemInfo">
+	<form action="/functions/pickUpItem.php" method="post">
 	<tr style="height:25px;"><td id="itemName" class="data"></td></tr>
 	<input type="hidden" name="location" value="/deadfall/outside.php">
 	<input type="hidden" value="none" name="itemName2" id="itemName2">
     <tr class="lightRow"><td id="itemDesc" style="padding-left:5px;" class ="data2"></td></tr>
 	<tr class="lightRow"><td id="itemDescMass" style="padding-left:5px;" class ="data3"></td></tr>
 	<tr style="height:15%;"><td><input type="submit" id="PickUp" disabled value="Select an Item ->" style="width: 100%;"></form></td></tr>
-	</table>
+	</table> -->
         
         <?php
 	

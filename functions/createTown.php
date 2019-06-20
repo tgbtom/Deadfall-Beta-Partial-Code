@@ -143,7 +143,7 @@ function createSettlement($settlementName, $mapSize)
 		$hordeSize = getHordeSize($newTown);
 		$query = "UPDATE `towns` SET `hordeSize` = '" . $hordeSize . "' WHERE `townName` = '" . $newTown . "'";
 		Database::sendQuery($query);
-		$location = '/inTown/?locat=join&tempChar=' . $_SESSION['char'];	
+		$location = '/inTown/?locat=join&selectedChar=' . $_SESSION['char_id'] . '&tempChar=' . $_SESSION['char'];	
         echo '<script>window.location = "' . $root . $location .'";</script>';
 	}
 	//mysql_query($con2, $compilation);

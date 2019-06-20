@@ -22,6 +22,7 @@ if (isset($errorMessage))
 
 $playerName = $_SESSION['login'];
 $charName = $_SESSION['char'];
+$charId = $_SESSION['char_id'];
 
 
 //Set Variables which correspond with the character that is in session (town name, level, class, etc.)
@@ -69,7 +70,7 @@ $query2 = mysqli_query($con, $query1);
 	</style>
 	
 	<script>
-		function changeChar(newChar) {
+		function changeChar(newCharId) {
 		if (newChar.length === 0) 
 		{
 			return;
@@ -83,7 +84,7 @@ $query2 = mysqli_query($con, $query1);
 						//document.getElementById("txtHint").innerHTML = xmlhttp.responseText;
 					}
 				};
-			xmlhttp.open("GET", "../functions/changeChar.php?change="+newChar, true);
+			xmlhttp.open("GET", "../functions/changeChar.php?change="+newCharId, true);
 			xmlhttp.send();
 			window.location.reload();
     	}	
@@ -113,12 +114,12 @@ $query2 = mysqli_query($con, $query1);
 		{
 			$charRow = $row['character'];
 			$userRow = $row['username'];
+			$currentCharId = $row['id'];
 			
 			//Query loads the row in the characters DB that corresponds to the character being checked
-			$query1 = 'SELECT * FROM `characters` WHERE `character` = :character AND `username` = :username';
+			$query1 = 'SELECT * FROM `characters` WHERE `id` = :id';
 			$statement1 = $dbCon->prepare($query1);
-			$statement1->bindValue(':username', $userRow);
-			$statement1->bindValue(':character', $charRow);
+			$statement1->bindValue(':id', $currentCharId);
 			$statement1->execute();
 			$charDetails = $statement1->fetch();
 			$statement1->closeCursor();
@@ -131,15 +132,15 @@ $query2 = mysqli_query($con, $query1);
 			$classImg = "../images/icons/" . lcfirst($row['class']) . ".png";
 			if ($row['username'] == $playerName)
 			{
-                                if ($charName == $charRow)
+                                if ($charId == $currentCharId)
                                 {
                                     echo "<tr class='sameChar'>";
-                                    echo "<td><p>" . $row['username'] . "</p></td>" . "<td class='sameChar' onclick='changeChar(`" . $charRow . "`)'><p class='sameChar2'>" . $row['character'] . "</p>";
+                                    echo "<td><p>" . $row['username'] . "</p></td>" . "<td class='sameChar' onclick='changeChar(`" . $currentCharId . "`)'><p class='sameChar2'>" . $row['character'] . "</p>";
                                 }
                                 else 
                                 {
                                     echo "<tr>";
-                                    echo "<td><p>" . $row['username'] . "</p></td>" . "<td class='samePlayer' onclick='changeChar(`" . $charRow . "`)'><p class='samePlayer2'>" . $row['character'] . "</p>";
+                                    echo "<td><p>" . $row['username'] . "</p></td>" . "<td class='samePlayer' onclick='changeChar(`" . $currentCharId . "`)'><p class='samePlayer2'>" . $row['character'] . "</p>";
                                 }
 		
 				if (doesStatusContainExt(12, $charRow)) //character is dead

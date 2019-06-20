@@ -25,7 +25,8 @@ $query2 = mysqli_query($con, $query1);
 
 	while ($row = mysqli_fetch_assoc($query2))
 	{
-		$townName = $row['townName'];
+		$townId = $row['town_id'];
+		$townName = Towns::getTownNameById($townId);
 		$charLevel = $row['level'];
 		$charClass = $row['class'];
 	}	
