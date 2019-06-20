@@ -52,3 +52,64 @@ window.onload = function(){
     colourizeRarity();
     colourizeMass();
 }
+
+function popUpMenu(x)
+{   
+	var popup = document.getElementById(x);
+	if (popup.style.visibility === 'visible'){
+            var wasUp = true;
+	}
+	else{
+            var wasUp = false;
+	}
+        
+	var popuptext = document.getElementsByClassName('popuptext');
+	for (var i = 0; i < popuptext.length; i++){
+		popuptext[i].style.visibility = 'hidden';
+	}
+        
+        if (!wasUp){
+		popup.style.visibility = 'visible';
+	}
+
+}
+
+function newAction(target, hiddenNameId)
+{
+	if (target === 'drop')
+	{	
+		document.sendItemData.action = "../functions/dropItem.php?nameTagId=" + hiddenNameId;
+	}
+	else if (target === 'Eat' || target === 'Drink' || target === 'Load')
+	{
+		document.sendItemData.action = "../functions/consume.php?nameTagId=" + hiddenNameId;
+	}
+	else if (target === 'Attack')
+	{
+		document.sendItemData.action = "../functions/consume.php?nameTagId=" + hiddenNameId;
+	}
+	else
+	{
+		document.sendItemData.action = "../inTown/?locat=warehouse";
+	}
+}
+
+function changeChar(newChar) {
+		if (newChar.length === 0) 
+		{
+			return;
+		} 
+		else
+		{
+			var xmlhttp = new XMLHttpRequest();
+				xmlhttp.onreadystatechange = function() {
+					if (xmlhttp.readyState === 4 && xmlhttp.status === 200) 
+					{
+						//document.getElementById("txtHint").innerHTML = xmlhttp.responseText;
+					}
+				};
+			xmlhttp.open("GET", "../functions/changeChar.php?change="+newChar, true);
+			xmlhttp.send();
+			window.location.reload();
+		}	
+	}
