@@ -8,6 +8,7 @@ require_once ("../model/weapons.php");
 //gets the user and current character, and stores them in local variables
 $user = $_SESSION['login'];
 $char = $_SESSION['char'];
+$charId = $_SESSION['char_id'];
 $x = $_SESSION['x'];
 $y = $_SESSION['y'];
 
@@ -32,10 +33,10 @@ $location = filter_input(INPUT_POST, 'location');
 	}
 	
 //Check if Character is still holding the item being dropped
-$query1 = 'SELECT * FROM `characters` WHERE `username` = :username AND `character` = :character';
+$query1 = 'SELECT * FROM `characters` WHERE `username` = :username AND `id` = :id';
 $statement1 = $dbCon->prepare($query1);
 $statement1->bindValue(':username', $user);
-$statement1->bindValue(':character', $char);
+$statement1->bindValue(':id', $charId);
 $statement1->execute();
 $result1 = $statement1->fetch();
 $statement1->closeCursor();
@@ -88,12 +89,12 @@ if ($foundItem)
 	if ($itemFunction == 'Eat')
 	{
 		//Removes the item and decreases used weight capacity in the DB
-		$query2 = 'UPDATE `characters` SET `items` = :newItems , `itemsMass` = :newMass WHERE `username` = :username AND `character` = :character';
+		$query2 = 'UPDATE `characters` SET `items` = :newItems , `itemsMass` = :newMass WHERE `username` = :username AND `id` = :id';
 		$statement2 = $dbCon->prepare($query2);
 		$statement2->bindValue(':newItems', $newItems);
 		$statement2->bindValue(':newMass', $newMass);
 		$statement2->bindValue(':username', $user);
-		$statement2->bindValue(':character', $char);
+		$statement2->bindValue(':id', $charId);
 		$statement2->execute();
 		$statement2->closeCursor();
 		
@@ -120,11 +121,11 @@ if ($foundItem)
 			else
 			{$newAp = $currentAp + ($apToGain * $maxAp);}
 	
-			$query5 = 'UPDATE `characters` SET `currentAP` = :newAp WHERE `username` = :username AND `character` = :character';
+			$query5 = 'UPDATE `characters` SET `currentAP` = :newAp WHERE `username` = :username AND `id` = :id';
 			$statement5 = $dbCon->prepare($query5);
 			$statement5->bindValue(':newAp', $newAp);
 			$statement5->bindValue(':username', $user);
-			$statement5->bindValue(':character', $char);
+			$statement5->bindValue(':id', $charId);
 			$statement5->execute();
 			$statement5->closeCursor();
 		
@@ -134,12 +135,12 @@ if ($foundItem)
 	elseif ($itemFunction == 'Drink')
 	{
 		//Removes the item and decreases used weight capacity in the DB
-		$query2 = 'UPDATE `characters` SET `items` = :newItems , `itemsMass` = :newMass WHERE `username` = :username AND `character` = :character';
+		$query2 = 'UPDATE `characters` SET `items` = :newItems , `itemsMass` = :newMass WHERE `username` = :username AND `id` = :id';
 		$statement2 = $dbCon->prepare($query2);
 		$statement2->bindValue(':newItems', $newItems);
 		$statement2->bindValue(':newMass', $newMass);
 		$statement2->bindValue(':username', $user);
-		$statement2->bindValue(':character', $char);
+		$statement2->bindValue(':id', $charId);
 		$statement2->execute();
 		$statement2->closeCursor();
 		
@@ -172,11 +173,11 @@ if ($foundItem)
 			else
 			{$newAp = $currentAp + ($apToGain * $maxAp);}
 	
-			$query5 = 'UPDATE `characters` SET `currentAP` = :newAp WHERE `username` = :username AND `character` = :character';
+			$query5 = 'UPDATE `characters` SET `currentAP` = :newAp WHERE `username` = :username AND `id` = :id';
 			$statement5 = $dbCon->prepare($query5);
 			$statement5->bindValue(':newAp', $newAp);
 			$statement5->bindValue(':username', $user);
-			$statement5->bindValue(':character', $char);
+			$statement5->bindValue(':id', $charId);
 			$statement5->execute();
 			$statement5->closeCursor();
 		
@@ -240,11 +241,11 @@ if ($foundItem)
 				{
 					//Consumes the required AP
 					$newAp = $currentAp - $apUse;
-					$query5 = 'UPDATE `characters` SET `currentAP` = :newAp WHERE `username` = :username AND `character` = :character';
+					$query5 = 'UPDATE `characters` SET `currentAP` = :newAp WHERE `username` = :username AND `id` = :id';
 					$statement5 = $dbCon->prepare($query5);
 					$statement5->bindValue(':newAp', $newAp);
 					$statement5->bindValue(':username', $user);
-					$statement5->bindValue(':character', $char);
+					$statement5->bindValue(':id', $charId);
 					$statement5->execute();
 					$statement5->closeCursor();
 		

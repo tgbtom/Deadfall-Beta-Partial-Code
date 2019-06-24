@@ -32,31 +32,18 @@ $charDetails = getCharDetails();
 
 $townId = $charDetails['town_id'];
 $townName = Towns::getTownNameById($townId);
+$townTableName = Towns::getTownTableName($townId);
 $charLevel = $charDetails['level'];
 $charClass = $charDetails['class'];
 $currentAp = $charDetails['currentAP'];
 $itemsMass = $charDetails['itemsMass'];
 $maxItems = $charDetails['maxItems'];
 $capacityLeft = $maxItems - $itemsMass;
-
-
-/*$query1 = "SELECT * FROM `characters` WHERE `character` = '$charName' AND `username` = '$playerName'";
-$query2 = mysqli_query($con, $query1);
-
-	while ($row = mysqli_fetch_assoc($query2))
-	{
-		$townName = $row['townName'];
-		$charLevel = $row['level'];
-		$charClass = $row['class'];
-		$currentAp = $row['currentAP'];
-	}	*/
 	
 	$tempX = $_SESSION['x'];
 	$tempY = $_SESSION['y'];
 	
-	$danger = getDangerLevel($tempX, $tempY, $townName);
-	//zedSpread($townName);
-	
+	$danger = getDangerLevel($tempX, $tempY, $townId);
 	
 	$loot = filter_input(INPUT_POST, 'loot');
 	if (isset($loot))
@@ -118,7 +105,7 @@ $query2 = mysqli_query($con, $query1);
 			if($_SESSION['y'] < 5)
 			{
 				// Code Below removes the character from the zone it is leaving, then adds them to the new zone respectively
-				$findChar = "SELECT * FROM `" . $townName . "` WHERE `x`='" . $oldX . "' AND `y`='" . $oldY . "'";
+				$findChar = "SELECT * FROM `" . $townTableName . "` WHERE `x`='" . $oldX . "' AND `y`='" . $oldY . "'";
 				$findChar2 = mysqli_query($con, $findChar);
 				while ($row = mysqli_fetch_assoc($findChar2))
 				{
@@ -137,14 +124,14 @@ $query2 = mysqli_query($con, $query1);
 							}
 						}
 					}
-					$updateOld = "UPDATE `" . $townName . "` SET `charactersHere`='" . $updatedOldZone ."' WHERE `x`='" . $oldX . "' AND `y`='" . $oldY . "'";
+					$updateOld = "UPDATE `" . $townTableName . "` SET `charactersHere`='" . $updatedOldZone ."' WHERE `x`='" . $oldX . "' AND `y`='" . $oldY . "'";
 					mysqli_query($con, $updateOld);
 				}
 				$_SESSION['y']++;
 				
 				$newX = $_SESSION['x'];
 				$newY = $_SESSION['y'];
-				$findLoc = "SELECT * FROM `" . $townName . "` WHERE `x`='" . $newX . "' AND `y`='" . $newY . "'";
+				$findLoc = "SELECT * FROM `" . $townTableName . "` WHERE `x`='" . $newX . "' AND `y`='" . $newY . "'";
 				$findLoc2 = mysqli_query($con, $findLoc);
 				while ($row = mysqli_fetch_assoc($findLoc2))
 				{
@@ -157,7 +144,7 @@ $query2 = mysqli_query($con, $query1);
 						$updatedNewZone = $charId;
 					}
 				}
-				$updateNew = "UPDATE `" . $townName . "` SET `charactersHere`='" . $updatedNewZone ."' WHERE `x`='" . $newX . "' AND `y`='" . $newY . "'";
+				$updateNew = "UPDATE `" . $townTableName . "` SET `charactersHere`='" . $updatedNewZone ."' WHERE `x`='" . $newX . "' AND `y`='" . $newY . "'";
 				mysqli_query($con, $updateNew);
 				echo "<script>window.location.href='.?locat=outside'</script>";
 			}
@@ -168,7 +155,7 @@ $query2 = mysqli_query($con, $query1);
 			if($_SESSION['x'] < 5)
 			{
 				// Code Below removes the character from the zone it is leaving, then adds them to the new zone respectively
-				$findChar = "SELECT * FROM `" . $townName . "` WHERE `x`='" . $oldX . "' AND `y`='" . $oldY . "'";
+				$findChar = "SELECT * FROM `" . $townTableName . "` WHERE `x`='" . $oldX . "' AND `y`='" . $oldY . "'";
 				$findChar2 = mysqli_query($con, $findChar);
 				while ($row = mysqli_fetch_assoc($findChar2))
 				{
@@ -187,14 +174,14 @@ $query2 = mysqli_query($con, $query1);
 							}
 						}
 					}
-					$updateOld = "UPDATE `" . $townName . "` SET `charactersHere`='" . $updatedOldZone ."' WHERE `x`='" . $oldX . "' AND `y`='" . $oldY . "'";
+					$updateOld = "UPDATE `" . $townTableName . "` SET `charactersHere`='" . $updatedOldZone ."' WHERE `x`='" . $oldX . "' AND `y`='" . $oldY . "'";
 					mysqli_query($con, $updateOld);
 				}
 				$_SESSION['x']++;
 				
 				$newX = $_SESSION['x'];
 				$newY = $_SESSION['y'];
-				$findLoc = "SELECT * FROM `" . $townName . "` WHERE `x`='" . $newX . "' AND `y`='" . $newY . "'";
+				$findLoc = "SELECT * FROM `" . $townTableName . "` WHERE `x`='" . $newX . "' AND `y`='" . $newY . "'";
 				$findLoc2 = mysqli_query($con, $findLoc);
 				while ($row = mysqli_fetch_assoc($findLoc2))
 				{
@@ -207,7 +194,7 @@ $query2 = mysqli_query($con, $query1);
 						$updatedNewZone = $charId;
 					}
 				}
-				$updateNew = "UPDATE `" . $townName . "` SET `charactersHere`='" . $updatedNewZone ."' WHERE `x`='" . $newX . "' AND `y`='" . $newY . "'";
+				$updateNew = "UPDATE `" . $townTableName . "` SET `charactersHere`='" . $updatedNewZone ."' WHERE `x`='" . $newX . "' AND `y`='" . $newY . "'";
 				mysqli_query($con, $updateNew);
 				echo "<script>window.location.href='.?locat=outside'</script>";
 			}
@@ -219,7 +206,7 @@ $query2 = mysqli_query($con, $query1);
 			if($_SESSION['y'] > -5)
 			{
 				// Code Below removes the character from the zone it is leaving, then adds them to the new zone respectively
-				$findChar = "SELECT * FROM `" . $townName . "` WHERE `x`='" . $oldX . "' AND `y`='" . $oldY . "'";
+				$findChar = "SELECT * FROM `" . $townTableName . "` WHERE `x`='" . $oldX . "' AND `y`='" . $oldY . "'";
 				$findChar2 = mysqli_query($con, $findChar);
 				while ($row = mysqli_fetch_assoc($findChar2))
 				{
@@ -238,14 +225,14 @@ $query2 = mysqli_query($con, $query1);
 							}
 						}
 					}
-					$updateOld = "UPDATE `" . $townName . "` SET `charactersHere`='" . $updatedOldZone ."' WHERE `x`='" . $oldX . "' AND `y`='" . $oldY . "'";
+					$updateOld = "UPDATE `" . $townTableName . "` SET `charactersHere`='" . $updatedOldZone ."' WHERE `x`='" . $oldX . "' AND `y`='" . $oldY . "'";
 					mysqli_query($con, $updateOld);
 				}
 				$_SESSION['y']--;
 				
 				$newX = $_SESSION['x'];
 				$newY = $_SESSION['y'];
-				$findLoc = "SELECT * FROM `" . $townName . "` WHERE `x`='" . $newX . "' AND `y`='" . $newY . "'";
+				$findLoc = "SELECT * FROM `" . $townTableName . "` WHERE `x`='" . $newX . "' AND `y`='" . $newY . "'";
 				$findLoc2 = mysqli_query($con, $findLoc);
 				while ($row = mysqli_fetch_assoc($findLoc2))
 				{
@@ -258,7 +245,7 @@ $query2 = mysqli_query($con, $query1);
 						$updatedNewZone = $charId;
 					}
 				}
-				$updateNew = "UPDATE `" . $townName . "` SET `charactersHere`='" . $updatedNewZone ."' WHERE `x`='" . $newX . "' AND `y`='" . $newY . "'";
+				$updateNew = "UPDATE `" . $townTableName . "` SET `charactersHere`='" . $updatedNewZone ."' WHERE `x`='" . $newX . "' AND `y`='" . $newY . "'";
 				mysqli_query($con, $updateNew);
 				echo "<script>window.location.href='.?locat=outside'</script>";
 			}
@@ -270,7 +257,7 @@ $query2 = mysqli_query($con, $query1);
 			if($_SESSION['x'] > -5)
 			{
 				// Code Below removes the character from the zone it is leaving, then adds them to the new zone respectively
-				$findChar = "SELECT * FROM `" . $townName . "` WHERE `x`='" . $oldX . "' AND `y`='" . $oldY . "'";
+				$findChar = "SELECT * FROM `" . $townTableName . "` WHERE `x`='" . $oldX . "' AND `y`='" . $oldY . "'";
 				$findChar2 = mysqli_query($con, $findChar);
 				while ($row = mysqli_fetch_assoc($findChar2))
 				{
@@ -289,14 +276,14 @@ $query2 = mysqli_query($con, $query1);
 							}
 						}
 					}
-					$updateOld = "UPDATE `" . $townName . "` SET `charactersHere`='" . $updatedOldZone ."' WHERE `x`='" . $oldX . "' AND `y`='" . $oldY . "'";
+					$updateOld = "UPDATE `" . $townTableName . "` SET `charactersHere`='" . $updatedOldZone ."' WHERE `x`='" . $oldX . "' AND `y`='" . $oldY . "'";
 					mysqli_query($con, $updateOld);
 				}
 				$_SESSION['x']--;
 				
 				$newX = $_SESSION['x'];
 				$newY = $_SESSION['y'];
-				$findLoc = "SELECT * FROM `" . $townName . "` WHERE `x`='" . $newX . "' AND `y`='" . $newY . "'";
+				$findLoc = "SELECT * FROM `" . $townTableName . "` WHERE `x`='" . $newX . "' AND `y`='" . $newY . "'";
 				$findLoc2 = mysqli_query($con, $findLoc);
 				while ($row = mysqli_fetch_assoc($findLoc2))
 				{
@@ -309,7 +296,7 @@ $query2 = mysqli_query($con, $query1);
 						$updatedNewZone = $charId;
 					}
 				}
-				$updateNew = "UPDATE `" . $townName . "` SET `charactersHere`='" . $updatedNewZone ."' WHERE `x`='" . $newX . "' AND `y`='" . $newY . "'";
+				$updateNew = "UPDATE `" . $townTableName . "` SET `charactersHere`='" . $updatedNewZone ."' WHERE `x`='" . $newX . "' AND `y`='" . $newY . "'";
 				mysqli_query($con, $updateNew);
 				echo "<script>window.location.href='.?locat=outside'</script>";
 			}
@@ -421,18 +408,6 @@ $query2 = mysqli_query($con, $query1);
 									var itemNameNow = itemsInfo[arguments[i]][0];
 									var itemDescNow = itemsInfo[arguments[i]][1];
 									var itemMassNow = itemsInfo[arguments[i]][2];
-
-									// <table class="itemInfo">
-									// <form action="/functions/pickUpItem.php" method="post">
-									// <tr style="height:25px;"><td id="itemName" class="data"></td></tr>
-									// <input type="hidden" name="location" value="/deadfall/outside.php">
-									// <input type="hidden" value="none" name="itemName2" id="itemName2">
-									// <tr class="lightRow"><td id="itemDesc" style="padding-left:5px;" class ="data2"></td></tr>
-									// <tr class="lightRow"><td id="itemDescMass" style="padding-left:5px;" class ="data3"></td></tr>
-									// <tr style="height:15%;"><td><input type="submit" id="PickUp" disabled value="Select an Item ->" style="width: 100%;"></form></td></tr>
-									// </table>
-
-
 
 									document.getElementById("itemsDiv").innerHTML = document.getElementById("itemsDiv").innerHTML +
 									'<form action="../functions/pickUpItem.php" method="post" style="display: inline-block;">' + 
@@ -568,7 +543,8 @@ $query2 = mysqli_query($con, $query1);
 			die('Connection Failed'.mysql_error());
 			print('Couldnt Connect');
 		}
-		$query3 = "SELECT *	FROM " . $townName;
+
+		$query3 = "SELECT *	FROM " . $townTableName;
 		$completeQuery = mysqli_query($con, $query3);
 		
 		echo '<a href=".?locat=outside&dir=4"><img src="../images/leftArrow.png" class="Arrow" id="leftArrow"></a>'; 
@@ -749,7 +725,7 @@ $query2 = mysqli_query($con, $query1);
 		$curY = $_SESSION['y'];
 		
 		//determine zone details
-		$query1 = 'SELECT * from `' . $townName . '` WHERE `x` = :x AND `y` = :y';
+		$query1 = 'SELECT * from `' . $townTableName . '` WHERE `x` = :x AND `y` = :y';
 		$statement1 = $dbCon->prepare($query1);
 		$statement1->bindValue(':x', $curX);
 		$statement1->bindValue(':y', $curY);

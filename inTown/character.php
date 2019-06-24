@@ -18,7 +18,8 @@ $charName = $_SESSION['char'];
 
 //Set Variables which correspond with the character that is in session (town name, level, class, etc.)
 $charDetails = getCharDetails();
-$townName = $charDetails['townName'];
+$townId = $charDetails['town_id'];
+$townName = Towns::getTownNameById($townId);
 $charLevel = $charDetails['level'];
 $charClass = $charDetails['class'];
 

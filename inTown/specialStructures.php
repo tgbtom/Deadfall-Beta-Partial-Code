@@ -25,15 +25,17 @@ if (isset($errorMessage))
 
 $playerName = $_SESSION['login'];
 $charName = $_SESSION['char'];
+$charId = $_SESSION['char_id'];
 
 
 //Set Variables which correspond with the character that is in session (town name, level, class, etc.)
-$query1 = "SELECT * FROM `characters` WHERE `character` = '$charName' AND `username` = '$playerName'";
+$query1 = "SELECT * FROM `characters` WHERE `id` = '$charId' AND `username` = '$playerName'";
 $query2 = mysqli_query($con, $query1);
 
 	while ($row = mysqli_fetch_assoc($query2))
 	{
-		$townName = $row['townName'];
+		$townId = $row['town_id'];
+		$townName = Towns::getTownNameById($townId);
 		$charLevel = $row['level'];
 		$charClass = $row['class'];
 	}	
@@ -43,44 +45,44 @@ $query2 = mysqli_query($con, $query1);
 		switch($specialFunction){
 
 			case 'convertWoodToMetal':
-			if (TownBankDB::getItemAmount(2, $townName) >= 3){
-				TownBankDB::removeItem(2, 3, $townName);
-				TownBankDB::addItem(3, 1, $townName);
+			if (TownBankDB::getItemAmount(2, $townId) >= 3){
+				TownBankDB::removeItem(2, 3, $townId);
+				TownBankDB::addItem(3, 1, $townId);
 			}
 			break;
 
 			case 'convertWoodToBrick':
-			if (TownBankDB::getItemAmount(2, $townName) >= 3){
-				TownBankDB::removeItem(2, 3, $townName);
-				TownBankDB::addItem(10, 1, $townName);
+			if (TownBankDB::getItemAmount(2, $townId) >= 3){
+				TownBankDB::removeItem(2, 3, $townId);
+				TownBankDB::addItem(10, 1, $townId);
 			}
 			break;
 
 			case 'convertMetalToWood':
-			if (TownBankDB::getItemAmount(3, $townName) >= 3){
-				TownBankDB::removeItem(3, 3, $townName);
-				TownBankDB::addItem(2, 1, $townName);
+			if (TownBankDB::getItemAmount(3, $townId) >= 3){
+				TownBankDB::removeItem(3, 3, $townId);
+				TownBankDB::addItem(2, 1, $townId);
 			}
 			break;
 
 			case 'convertMetalToBrick':
-			if (TownBankDB::getItemAmount(3, $townName) >= 3){
-				TownBankDB::removeItem(3, 3, $townName);
-				TownBankDB::addItem(10, 1, $townName);
+			if (TownBankDB::getItemAmount(3, $townId) >= 3){
+				TownBankDB::removeItem(3, 3, $townId);
+				TownBankDB::addItem(10, 1, $townId);
 			}
 			break;
 
 			case 'convertBrickToWood':
-			if (TownBankDB::getItemAmount(10, $townName) >= 3){
-				TownBankDB::removeItem(10, 3, $townName);
-				TownBankDB::addItem(2, 1, $townName);
+			if (TownBankDB::getItemAmount(10, $townId) >= 3){
+				TownBankDB::removeItem(10, 3, $townId);
+				TownBankDB::addItem(2, 1, $townId);
 			}
 			break;
 
 			case 'convertBrickToMetal':
-			if (TownBankDB::getItemAmount(10, $townName) >= 3){
-				TownBankDB::removeItem(10, 3, $townName);
-				TownBankDB::addItem(3, 1, $townName);
+			if (TownBankDB::getItemAmount(10, $townId) >= 3){
+				TownBankDB::removeItem(10, 3, $townId);
+				TownBankDB::addItem(3, 1, $townId);
 			}
 			break;
 	
@@ -106,7 +108,7 @@ $query2 = mysqli_query($con, $query1);
 		<!-- Here we Check for Structures with Special Functionality -->
 
         <?php
-        $specialStructures = SpecialStructures::specialStructuresStatus($townName);
+        $specialStructures = SpecialStructures::specialStructuresStatus($townId);
 
         if(empty($specialStructures)){
             echo "<h2>There Are Currently No Special Structures Built</h2>";
@@ -115,7 +117,7 @@ $query2 = mysqli_query($con, $query1);
             //Will Do the loop for each Special Structure that is atleast built to 1 level
             foreach ($specialStructures as $current){
                 echo "<div class='specialStructure'><h4><u>" . $current . "</u></h4>";
-				$htmlContent = SpecialStructures::getHtmlContent($current, $townName);
+				$htmlContent = SpecialStructures::getHtmlContent($current, $townId);
 				echo $htmlContent;
                 echo "</div><hr style='border-color:black;'>";
             }    

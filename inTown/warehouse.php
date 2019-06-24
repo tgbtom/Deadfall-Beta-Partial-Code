@@ -2,6 +2,7 @@
 require_once ("../connect.php");
 require_once ("../functions/verifyLogin.php");
 require_once ("../data/items.php");
+require_once ("../functions/queryFunctions.php");
 
 $errorMessage = FILTER_INPUT(INPUT_GET, 'e');
 if ($_SESSION['x'] != 0 || $_SESSION['y'] != 0)
@@ -34,33 +35,18 @@ WAREHOUSE ITEMS ARE STORED ON MAP AT CO_ORDS 0,0.
 
 $playerName = $_SESSION['login'];
 $charName = $_SESSION['char'];
+$charId = $_SESSION['char_id'];
 
-$query1 = 'SELECT * FROM `characters` WHERE `username` = :username AND `character = :character';
-$statement1 = $dbCon->prepare($query1);
-$statement1->bindValue(':username', $playerName);
-$statement1->bindValue(':character', $charName);
-$statement1->execute();
-$result1 = $statement1->fetch();
-$statement1->closeCursor();
+$charObject = new Character($charId);
 
-$townName = $result1['townName'];
-$charLevel = $result1['level'];
-$charClass = $result1['class'];
-
-
-//Set Variables which correspond with the character that is in session (town name, level, class, etc.)
-$query1 = "SELECT * FROM `characters` WHERE `character` = '$charName' AND `username` = '$playerName'";
-$query2 = mysqli_query($con, $query1);
-
-	while ($row = mysqli_fetch_assoc($query2))
-	{
-		$townName = $row['townName'];
-		$charLevel = $row['level'];
-		$charClass = $row['class'];
-	}	
+$townId = $charObject->townId;
+$townName = Towns::getTownNameById($townId);
+$townTableName = Towns::getTownTableName($townId);
+$charLevel = $charObject->level;
+$charClass = $charObject->class;
 	
-	$consumables = array();
-	$resources = array ();
+$consumables = array();
+$resources = array ();
 ?>
 </head>
 
@@ -74,7 +60,7 @@ $query2 = mysqli_query($con, $query1);
 
 	<!-- Checks the database for what items are in the town bank, then categorizes them into different arrays to be displayed in the correct location -->
 	<?php
-	$query2 = 'SELECT * FROM `' . $townName . '` WHERE `x` = 0 AND `y` = 0';
+	$query2 = 'SELECT * FROM `' . $townTableName . '` WHERE `x` = 0 AND `y` = 0';
 	$statement2 = $dbCon->prepare($query2);
 	$statement2->execute();
 	$result2 = $statement2->fetch();

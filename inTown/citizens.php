@@ -24,17 +24,14 @@ $playerName = $_SESSION['login'];
 $charName = $_SESSION['char'];
 $charId = $_SESSION['char_id'];
 
+$charObject = new Character($charId);
 
-//Set Variables which correspond with the character that is in session (town name, level, class, etc.)
-$query1 = "SELECT * FROM `characters` WHERE `character` = '$charName' AND `username` = '$playerName'";
-$query2 = mysqli_query($con, $query1);
+$townId = $charObject->townId;
+$townName = Towns::getTownNameById($townId);
+$townTableName = Towns::getTownTableName($townId);
+$charLevel = $charObject->level;
+$charClass = $charObject->class;
 
-	while ($row = mysqli_fetch_assoc($query2))
-	{
-		$townName = $row['townName'];
-		$charLevel = $row['level'];
-		$charClass = $row['class'];
-	}	
 ?>
 
 
@@ -105,7 +102,7 @@ $query2 = mysqli_query($con, $query1);
 		
 		<?php
 		
-		$Query3 = "SELECT * FROM `characters` WHERE `townName` = '$townName'";
+		$Query3 = "SELECT * FROM `characters` WHERE `town_id` = '$townId'";
 		$Query4 = mysqli_query($con, $Query3);
 		
 		

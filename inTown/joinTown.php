@@ -76,10 +76,11 @@ require_once ("../model/database.php");
 		if ($row['town_id'] != NULL)
 		{
 		$townName = Towns::getTownNameById($row['town_id']);
+		$townTableName = Towns::getTownTableName($row['town_id']);
 
 			//***SET SESSION for the character's current location ***ALSO add this code to 'addToTown.php' for players that join a new town
 			//First we search every zone to figure out where the current character is ($con = settlements DB)
-			$querySelect = "SELECT * FROM `" . $townName . "`";
+			$querySelect = "SELECT * FROM `" . $townTableName . "`";
 			$querySelect2 = mysqli_query($con,$querySelect);
 			while ($row = mysqli_fetch_assoc($querySelect2))
 			{

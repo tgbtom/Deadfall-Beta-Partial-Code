@@ -2,14 +2,16 @@
 
 require_once ("model/database.php");
 
-$townName = filter_input(INPUT_GET, "town");
+$townId = filter_input(INPUT_GET, "town");
+$townName = Towns::getTownNameById($townId);
+$townTableName = Towns::getTownTableName($townId);
 
-function getTownHistory($townName){
+function getTownHistory($townId){
 
     $dbCon = Database::getDB();
-    $query = "SELECT * FROM `towns` WHERE `townName` = :townName";
+    $query = "SELECT * FROM `towns` WHERE `town_id` = :townId";
     $statement = $dbCon->prepare($query);
-    $statement->bindValue(":townName", $townName);
+    $statement->bindValue(':townId', $townId);
     $statement->execute();
     $result = $statement->fetch();
     $statement->closeCursor();
@@ -17,7 +19,7 @@ function getTownHistory($townName){
     return $result;
 }
 
-$townHistory = getTownHistory($townName);
+$townHistory = getTownHistory($townId);
 
 ?>
 
@@ -28,11 +30,11 @@ $townHistory = getTownHistory($townName);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" type="text/css" href="mainDesign.css">
-    <title><?php echo htmlspecialchars($townName); ?></title>
+    <title><?php echo htmlspecialchars($townName) . " [#" . htmlspecialchars($townId) . "]" ; ?></title>
 </head>
 <body>
     <div class="container" style="text-align: center;">
-        <h1><u>Town Summary for: <?php echo htmlspecialchars($townName); ?></u></h1>
+        <h1><u>Town Summary for: <?php echo htmlspecialchars($townName) . " [#" . htmlspecialchars($townId) . "]" ; ?></u></h1>
 
         <!-- Days Survived -->
         <h2>Game Over! :(</h2>

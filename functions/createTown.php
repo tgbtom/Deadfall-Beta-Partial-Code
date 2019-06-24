@@ -15,13 +15,13 @@ $validName = preg_match($validPattern, $newTown);
 
 if ((isset($newTown) && $newTown != NULL && $newTown != '') && $validName)
 {
-    if (!(Towns::isTownCreated($newTown))){
-        createSettlement($newTown, 11);
-    }
-    else{
-        $location = '/inTown/?locat=join&tempChar=' . $_SESSION['char'] . '&e=Settlement Name is already in use';	
-        echo '<script>window.location = "' . $root . $location .'";</script>';
-    }
+    // if (!(Towns::isTownCreated($newTown))){
+    createSettlement($newTown, 11);
+    //}
+    // else{
+    //     $location = '/inTown/?locat=join&tempChar=' . $_SESSION['char'] . '&e=Settlement Name is already in use';	
+    //     echo '<script>window.location = "' . $root . $location .'";</script>';
+    // }
 }
 else{
     	$location = '/inTown/?locat=join&tempChar=' . $_SESSION['char'] . '&e=Settlement Name is Not Valid';	
@@ -36,8 +36,35 @@ $cName = filter_input(INPUT_POST, 'cName');
 function createSettlement($settlementName, $mapSize)
 {
 	global $newTown;
-	global $dbCon;	global $con;		global $root;	
-	$sql = "CREATE TABLE `" . $newTown . "` (
+	global $dbCon;	
+	global $con;		
+	global $root;
+	
+		
+	$defaultBuildingsString = "Defence.0.1:Perimeter Fence.0.0:Wooden Wall.0.0:Inner Wall.0.0:Trenches.0.0:Spike Pits.0.0:Wooden Support.0.0:Metal Patching.0.0:Sentry Tower.0.0:MG Nest.0.0:Supply.0.1:Water Reserve.0.0:Vegetable Garden.0.0:Production.0.1:Fabrikator Workshop.0.0";
+	
+	//add details of town to `towns` table
+	$query = 'INSERT INTO `towns` 
+	(`townName`, `amountResidents`, `maxResidents`, `readyResidents`, `deadResidents`, `townFull`, `buildings`, `bulletin`, `hordeSize`, `defenceSize`, `dayNumber`)
+	VALUES
+	(:newTown, "0", "10", "0", "0", "0", :buildings, :bulletin, "300", "350", "1")';
+	$statement = $dbCon->prepare($query);
+	$statement->bindValue(':newTown', $newTown);
+	$statement->bindValue(':bulletin', $newTown . ' has been created!');
+	$statement->bindValue(':buildings', $defaultBuildingsString);
+	$statement->execute();
+	$statement->closeCursor();
+
+	//Save the ID of the town that was just created. This  will be used for town table
+	$addedId = $dbCon->lastInsertId();
+	
+	$x = -4;
+	$y = 5;
+	$zedSpawn = rand(5,10);
+
+	$newTownTableName = "" . $addedId . "_" . $settlementName;
+
+	$sql = "CREATE TABLE `" . $newTownTableName . "` (
 	`id` int(11) NOT NULL,
 	`x` int(11) NOT NULL,
 	`y` int(11) NOT NULL,
@@ -59,27 +86,10 @@ function createSettlement($settlementName, $mapSize)
 	{
 		//error creating the table
 	}
-	
-	$defaultBuildingsString = "Defence.0.1:Perimeter Fence.0.0:Wooden Wall.0.0:Inner Wall.0.0:Trenches.0.0:Spike Pits.0.0:Wooden Support.0.0:Metal Patching.0.0:Sentry Tower.0.0:MG Nest.0.0:Supply.0.1:Water Reserve.0.0:Vegetable Garden.0.0:Production.0.1:Fabrikator Workshop.0.0";
-	
-	//add details of town to `towns` table
-	$query = 'INSERT INTO `towns` 
-	(`townName`, `amountResidents`, `maxResidents`, `readyResidents`, `deadResidents`, `townFull`, `buildings`, `bulletin`, `hordeSize`, `defenceSize`, `dayNumber`)
-	VALUES
-	(:newTown, "0", "10", "0", "0", "0", :buildings, :bulletin, "300", "350", "1")';
-	$statement = $dbCon->prepare($query);
-	$statement->bindValue(':newTown', $newTown);
-	$statement->bindValue(':bulletin', $newTown . ' has been created!');
-	$statement->bindValue(':buildings', $defaultBuildingsString);
-	$statement->execute();
-	$statement->closeCursor();
-	
-	$x = -4;
-	$y = 5;
-	$zedSpawn = rand(5,10);
+
 	//groundItems default is -1, representing no particular item
 	//OLD  $compilation = "INSERT INTO `" . $settlementName . "` (`id`, `coords`, `specialStructure`, `lootability`, `groundItems`, `zeds`, `lastKnownZed`, `charactersHere`) VALUES ('0', '-5,5', '', '10', '-1', '$zedSpawn', '0', '')";
-	$compilation = "INSERT INTO `" . $settlementName . "` (`id`, `x`, `y`, `specialStructure`, `lootability`, `groundItems`, `zeds`, `lastKnownZed`, `charactersHere`, `bulletin`) VALUES ('0', '-5', '5', '', '10', NULL, '$zedSpawn', '0', '', NULL)";
+	$compilation = "INSERT INTO `" . $newTownTableName . "` (`id`, `x`, `y`, `specialStructure`, `lootability`, `groundItems`, `zeds`, `lastKnownZed`, `charactersHere`, `bulletin`) VALUES ('0', '-5', '5', '', '10', NULL, '$zedSpawn', '0', '', NULL)";
 
 	$loopAmt = $mapSize * $mapSize;
 	for ($index = 1; $index < $loopAmt; $index++) 		
@@ -141,7 +151,7 @@ function createSettlement($settlementName, $mapSize)
 	if ($con->query($compilation) === TRUE) 
 	{
 		$hordeSize = getHordeSize($newTown);
-		$query = "UPDATE `towns` SET `hordeSize` = '" . $hordeSize . "' WHERE `townName` = '" . $newTown . "'";
+		$query = "UPDATE `towns` SET `hordeSize` = '" . $hordeSize . "' WHERE `town_id` = '" . $addedId . "'";
 		Database::sendQuery($query);
 		$location = '/inTown/?locat=join&selectedChar=' . $_SESSION['char_id'] . '&tempChar=' . $_SESSION['char'];	
         echo '<script>window.location = "' . $root . $location .'";</script>';

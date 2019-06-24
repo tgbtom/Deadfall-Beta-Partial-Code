@@ -53,22 +53,21 @@ function getCharDetails()
 	return $result;
 }
 
-
 //get char status to be used in status functions below
 $charDetails = getCharDetails();
 $statusString = $charDetails['status'];
 $statusArray = explode('.', $statusString);
 $townId = $charDetails['town_id'];
 $townName = Towns::getTownNameById($townId);
+$townTableName = Towns::getTownTableName($townId);
 
-
-function getTownDetails($townName)
+function getTownDetails($townId)
 {
 	global $dbCon;
 	
-	$query = 'SELECT * FROM `towns` WHERE `townName` = :townName';
+	$query = 'SELECT * FROM `towns` WHERE `town_id` = :townId';
 	$statement = $dbCon->prepare($query);
-	$statement->bindValue(':townName', $townName);
+	$statement->bindValue(':townId', $townId);
 	$statement->execute();
 	$result = $statement->fetch();
 	$statement->closeCursor();
@@ -77,11 +76,12 @@ function getTownDetails($townName)
 
 }
 
-function getWarehouseItems($townName)
+function getWarehouseItems($townId)
 {
 	global $dbCon;
+	$townTableName = Towns::getTownTableName($townId);
 	
-	$query = 'SELECT * FROM`' . $townName . '` WHERE `x` = 0 AND `y` = 0';
+	$query = "SELECT * FROM `" . $townTableName . "` WHERE `x` = 0 AND `y` = 0";
 	$statement = $dbCon->prepare($query);
 	$statement->execute();
 	$result = $statement->fetch();
@@ -104,7 +104,7 @@ function doesStatusContain($statusId)
 	}
 }
 
-function doesStatusContainExt($statusId, $charName, $user = null)
+function doesStatusContainExt($statusId, $charId, $user = null)
 {
 	global $dbCon;
 	if ($user === NULL)
@@ -112,10 +112,10 @@ function doesStatusContainExt($statusId, $charName, $user = null)
 		global $user;
 	}
 	
-	$query = 'SELECT * FROM `characters` WHERE `username` = :user AND `character` = :char';
+	$query = 'SELECT * FROM `characters` WHERE `username` = :user AND `id` = :id';
 	$statement = $dbCon->prepare($query);
 	$statement->bindValue(':user', $user);
-	$statement->bindValue(':char', $charName);
+	$statement->bindValue(':id', $charId);
 	$statement->execute();
 	$result = $statement->fetch();
 	$statement->closeCursor();
@@ -137,7 +137,7 @@ function replaceStatus($oldStat, $newStat) //Replace one status with another one
 	global $statusArray;
 	global $dbCon;
 	global $user;
-	global $char;
+	global $charId;
 	
 	$statFound = false;
 	
@@ -170,18 +170,18 @@ function replaceStatus($oldStat, $newStat) //Replace one status with another one
 		}
 	}
 	
-	$query3 = 'UPDATE `characters` SET `status` = :newStatus WHERE `username` = :username AND `character` = :character';
+	$query3 = 'UPDATE `characters` SET `status` = :newStatus WHERE `username` = :username AND `id` = :id';
 	$statement3 = $dbCon->prepare($query3);
 	$statement3->bindValue(':newStatus', $newStatus);
 	$statement3->bindValue(':username', $user);
-	$statement3->bindValue(':character', $char);
+	$statement3->bindValue(':id', $charId);
 	$statement3->execute();
 	$statement3->closeCursor();
 
 }
 
 //When Second Argument is NULL, function will only remove the status specified by the first argument
-function replaceStatusExt($oldStat, $newStat, $charName, $user = null) //Function to replace status effects from characters that are not logged into the current session
+function replaceStatusExt($oldStat, $newStat, $charId, $user = null) //Function to replace status effects from characters that are not logged into the current session
 {
 	
 	global $dbCon;
@@ -189,10 +189,10 @@ function replaceStatusExt($oldStat, $newStat, $charName, $user = null) //Functio
           global $user;  
         }
 
-	$query = 'SELECT * FROM `characters` WHERE `username` = :user AND `character` = :char';
+	$query = 'SELECT * FROM `characters` WHERE `username` = :user AND `id` = :id';
 	$statement = $dbCon->prepare($query);
 	$statement->bindValue(':user', $user);
-	$statement->bindValue(':char', $charName);
+	$statement->bindValue(':id', $charId);
 	$statement->execute();
 	$result = $statement->fetch();
 	$statement->closeCursor();
@@ -230,11 +230,11 @@ function replaceStatusExt($oldStat, $newStat, $charName, $user = null) //Functio
 		}
 	}
 	
-	$query3 = 'UPDATE `characters` SET `status` = :newStatus WHERE `username` = :username AND `character` = :character';
+	$query3 = 'UPDATE `characters` SET `status` = :newStatus WHERE `username` = :username AND `id` = :id';
 	$statement3 = $dbCon->prepare($query3);
 	$statement3->bindValue(':newStatus', $newStatus);
 	$statement3->bindValue(':username', $user);
-	$statement3->bindValue(':character', $charName);
+	$statement3->bindValue(':id', $charId);
 	$statement3->execute();
 	$statement3->closeCursor();	
 
@@ -244,12 +244,12 @@ function addStatus($newStat)
 {
 	global $dbCon;
 	global $user;
-	global $char;
+	global $charId;
 	
-	$query1TEMP = 'SELECT * FROM `characters` WHERE `username` = :username AND `character` = :character';
+	$query1TEMP = 'SELECT * FROM `characters` WHERE `username` = :username AND `id` = :id';
 	$statement1TEMP = $dbCon->prepare($query1TEMP);
 	$statement1TEMP->bindValue(':username', $user);
-	$statement1TEMP->bindValue(':character', $char);
+	$statement1TEMP->bindValue(':id', $charId);
 	$statement1TEMP->execute();
 	$result1TEMP = $statement1TEMP->fetch();
 	$statement1TEMP->closeCursor();
@@ -258,26 +258,26 @@ function addStatus($newStat)
 	
 		$newStatus = $statusStringTEMP . '.' . $newStat;
 				
-		$query4 = 'UPDATE `characters` SET `status` = :newStatus WHERE `username` = :username AND `character` = :character';
+		$query4 = 'UPDATE `characters` SET `status` = :newStatus WHERE `username` = :username AND `id` = :id';
 		$statement4 = $dbCon->prepare($query4);
 		$statement4->bindValue(':newStatus', $newStatus);
 		$statement4->bindValue(':username', $user);
-		$statement4->bindValue(':character', $char);
+		$statement4->bindValue(':id', $charId);
 		$statement4->execute();
 		$statement4->closeCursor();
 }
 
-function addStatusExt($newStat, $charName, $user = null)
+function addStatusExt($newStat, $charId, $user = null)
 {
 	global $dbCon;
         if ($user == null){
            global $user; 
         }
 	
-	$query1TEMP = 'SELECT * FROM `characters` WHERE `username` = :username AND `character` = :character';
+	$query1TEMP = 'SELECT * FROM `characters` WHERE `username` = :username AND `id` = :id';
 	$statement1TEMP = $dbCon->prepare($query1TEMP);
 	$statement1TEMP->bindValue(':username', $user);
-	$statement1TEMP->bindValue(':character', $charName);
+	$statement1TEMP->bindValue(':id', $charId);
 	$statement1TEMP->execute();
 	$result1TEMP = $statement1TEMP->fetch();
 	$statement1TEMP->closeCursor();
@@ -286,21 +286,22 @@ function addStatusExt($newStat, $charName, $user = null)
 	
 		$newStatus = $statusStringTEMP . '.' . $newStat;
 				
-		$query4 = 'UPDATE `characters` SET `status` = :newStatus WHERE `username` = :username AND `character` = :character';
+		$query4 = 'UPDATE `characters` SET `status` = :newStatus WHERE `username` = :username AND `id` = :id';
 		$statement4 = $dbCon->prepare($query4);
 		$statement4->bindValue(':newStatus', $newStatus);
 		$statement4->bindValue(':username', $user);
-		$statement4->bindValue(':character', $charName);
+		$statement4->bindValue(':id', $charId);
 		$statement4->execute();
 		$statement4->closeCursor();
 }
 
-function getHordeSize($town)
+function getHordeSize($townId)
 {
 	global $dbCon;
+	$townTableName = Towns::getTownTableName($townId);
 	
 	//determine the current amount of zombies spawned on the ENTIRE MAP	
-	$query = 'SELECT zeds FROM ' . $town;
+	$query = 'SELECT zeds FROM ' . $townTableName;
 	$statement = $dbCon->prepare($query);
 	$statement->execute();
 	$result = $statement->fetchAll();
@@ -315,14 +316,15 @@ function getHordeSize($town)
 	return $horde;
 }
 
-function getDangerLevel($zoneX, $zoneY, $townName)
+function getDangerLevel($zoneX, $zoneY, $townId)
 {
 	global $dbCon;
+	$townTableName = Towns::getTownTableName($townId);
 	$dangerLevel = 0;
 	
 	//zone above: if y is >= 5 set y to 5, otherwise increase it by 1
 	$newY = ($zoneY >= 5) ? 5 : $zoneY + 1;
-	$query1 = 'SELECT zeds FROM ' . $townName . ' WHERE `x` = :x AND `y` = :y';
+	$query1 = 'SELECT zeds FROM ' . $townTableName . ' WHERE `x` = :x AND `y` = :y';
 	$statement1 = $dbCon->prepare($query1);
 	$statement1->bindValue(':x', $zoneX);
 	$statement1->bindValue(':y', $newY);
@@ -334,7 +336,7 @@ function getDangerLevel($zoneX, $zoneY, $townName)
 	
 	//zone to the right
 	$newX = ($zoneX >= 5) ? 5 : $zoneX + 1;
-	$query2 = 'SELECT zeds FROM ' . $townName . ' WHERE `x` = :x AND `y` = :y';
+	$query2 = 'SELECT zeds FROM ' . $townTableName . ' WHERE `x` = :x AND `y` = :y';
 	$statement2 = $dbCon->prepare($query2);
 	$statement2->bindValue(':x', $newX);
 	$statement2->bindValue(':y', $zoneY);
@@ -346,7 +348,7 @@ function getDangerLevel($zoneX, $zoneY, $townName)
 	
 	//zone below
 	$newY = ($zoneY <= -5) ? -5 : $zoneY - 1;
-	$query3 = 'SELECT zeds FROM ' . $townName . ' WHERE `x` = :x AND `y` = :y';
+	$query3 = 'SELECT zeds FROM ' . $townTableName . ' WHERE `x` = :x AND `y` = :y';
 	$statement3 = $dbCon->prepare($query3);
 	$statement3->bindValue(':x', $zoneX);
 	$statement3->bindValue(':y', $newY);
@@ -358,7 +360,7 @@ function getDangerLevel($zoneX, $zoneY, $townName)
 	
 	//zone to the left
 	$newX = ($zoneX <= -5) ? -5 : $zoneX - 1;
-	$query4 = 'SELECT zeds FROM ' . $townName . ' WHERE `x` = :x AND `y` = :y';
+	$query4 = 'SELECT zeds FROM ' . $townTableName . ' WHERE `x` = :x AND `y` = :y';
 	$statement4 = $dbCon->prepare($query4);
 	$statement4->bindValue(':x', $newX);
 	$statement4->bindValue(':y', $zoneY);
@@ -369,7 +371,7 @@ function getDangerLevel($zoneX, $zoneY, $townName)
 	$dangerLevel += $result4['zeds'];
 	
 	//current zone
-	$query5 = 'SELECT zeds FROM ' . $townName . ' WHERE `x` = :x AND `y` = :y';
+	$query5 = 'SELECT zeds FROM ' . $townTableName . ' WHERE `x` = :x AND `y` = :y';
 	$statement5 = $dbCon->prepare($query5);
 	$statement5->bindValue(':x', $zoneX);
 	$statement5->bindValue(':y', $zoneY);
@@ -382,11 +384,12 @@ function getDangerLevel($zoneX, $zoneY, $townName)
 	return $dangerLevel;
 }
 
-function zedSpread($townName)
+function zedSpread($townId)
 {
 	global $dbCon;
+	$townTableName = Towns::getTownTableName($townId);
 	
-	$query = 'SELECT * FROM ' . $townName;
+	$query = 'SELECT * FROM ' . $townTableName;
 	$statement = $dbCon->prepare($query);
 	$statement->execute();
 	$result = $statement->fetchAll();
@@ -397,7 +400,7 @@ function zedSpread($townName)
 	foreach ($result as $now)
 	{
 		//$now[0] is the current zed count min the zone
-		array_push($mapArray, getDangerLevel($now['x'], $now['y'], $townName));
+		array_push($mapArray, getDangerLevel($now['x'], $now['y'], $townId));
 	}
 	
 	for ($i = 0; $i < sizeOf($mapArray); $i++)
@@ -407,7 +410,7 @@ function zedSpread($townName)
 		$minZeds = $maxZeds * 0.2;
 		$addZeds = mt_rand($minZeds, $maxZeds);
 		
-		$query1 = 'SELECT * FROM ' . $townName . ' WHERE `id` = :id';
+		$query1 = 'SELECT * FROM ' . $townTableName . ' WHERE `id` = :id';
 		$statement1 = $dbCon->prepare($query1);
 		$statement1->bindValue(':id', $i);
 		$statement1->execute();
@@ -429,7 +432,7 @@ function zedSpread($townName)
 		}
 
 		
-		$query2 = 'UPDATE ' . $townName . ' SET `zeds` = :newZeds WHERE `id` = :id';
+		$query2 = 'UPDATE ' . $townTableName . ' SET `zeds` = :newZeds WHERE `id` = :id';
 		$statement2 = $dbCon->prepare($query2);
 		$statement2->bindValue(':newZeds', $newZedCount);
 		$statement2->bindValue(':id', $i);
@@ -444,13 +447,13 @@ function lootItem()
 	global $y;
 	global $itemsMaster;
 	global $dbCon;
-	global $townName;
+	global $townTableName;
 	global $char;
 	
 	$rarityArray = array();
 	
 	//check if zone is depleted? ****************************************
-	$query = 'SELECT * FROM ' . $townName . ' WHERE `x` = :x AND `y` = :y';
+	$query = 'SELECT * FROM ' . $townTableName . ' WHERE `x` = :x AND `y` = :y';
 	$statement = $dbCon->prepare($query);
 	$statement->bindValue(':x', $x);
 	$statement->bindValue(':y', $y);
@@ -572,7 +575,7 @@ function lootItem()
 	
 	
 	
-	$query = 'UPDATE ' . $townName . ' SET `lootability` = :lootability, `bulletin` = :newBulletin WHERE `x` = :x AND `y` = :y';
+	$query = 'UPDATE ' . $townTableName . ' SET `lootability` = :lootability, `bulletin` = :newBulletin WHERE `x` = :x AND `y` = :y';
 	$statement = $dbCon->prepare($query);
 	$statement->bindValue(':lootability', $depletion);
 	$statement->bindValue(':newBulletin', $newBulletin);
@@ -589,13 +592,13 @@ function pickUpItem($itemId, $itemWeight)
 {
 	global $dbCon;
 	global $user;
-	global $char;
+	global $charId;
 	
 	//get the current string of items held
-	$query = 'SELECT * FROM `characters` WHERE `username` = :user AND `character` = :char';
+	$query = 'SELECT * FROM `characters` WHERE `username` = :user AND `id` = :charId';
 	$statement = $dbCon->prepare($query);
 	$statement->bindValue(':user', $user);
-	$statement->bindValue(':char', $char);
+	$statement->bindValue(':charId', $charId);
 	$statement->execute();
 	$result = $statement->fetch();
 	$statement->closeCursor();
@@ -613,12 +616,12 @@ function pickUpItem($itemId, $itemWeight)
 	}
 	
 	//update the items string with the new item
-	$query2 = 'UPDATE `characters` SET `items` = :newItems, `itemsMass` = :newMass WHERE `username` = :user AND `character` = :char';
+	$query2 = 'UPDATE `characters` SET `items` = :newItems, `itemsMass` = :newMass WHERE `username` = :user AND `id` = :id';
 	$statement2 = $dbCon->prepare($query2);
 	$statement2->bindValue(':newItems', $newItems);
 	$statement2->bindValue(':newMass', $newMass);
 	$statement2->bindValue(':user', $user);
-	$statement2->bindValue(':char', $char);
+	$statement2->bindValue(':id', $charId);
 	$statement2->execute();
 	$statement2->closeCursor();
 
@@ -628,11 +631,12 @@ function dropItem($itemId)
 {
 	global $dbCon;
 	global $townName;
+	global $townTableName;
 	global $x;
 	global $y;	
 
 	
-	$query = 'SELECT * FROM ' . $townName . ' WHERE `x` = :x AND `y` = :y';
+	$query = 'SELECT * FROM ' . $townTableName . ' WHERE `x` = :x AND `y` = :y';
 	$statement = $dbCon->prepare($query);
 	$statement->bindValue(':x', $x);
 	$statement->bindValue(':y', $y);
@@ -650,7 +654,7 @@ function dropItem($itemId)
 		$newItems = $items . ',' . $itemId;
 	}
 	
-	$query = 'UPDATE ' . $townName . ' SET `groundItems` = :newItems WHERE `x` = :x AND `y` = :y';
+	$query = 'UPDATE ' . $townTableName . ' SET `groundItems` = :newItems WHERE `x` = :x AND `y` = :y';
 	$statement = $dbCon->prepare($query);
 	$statement->bindValue(':newItems', $newItems);
 	$statement->bindValue(':x', $x);
@@ -663,8 +667,9 @@ function dropItemExt($itemId, $charX, $charY){
 
 	global $dbCon;
 	global $townName;
+	global $townTableName;
 	
-	$query = 'SELECT * FROM ' . $townName . ' WHERE `x` = :x AND `y` = :y';
+	$query = 'SELECT * FROM ' . $townTableName . ' WHERE `x` = :x AND `y` = :y';
 	$statement = $dbCon->prepare($query);
 	$statement->bindValue(':x', $charX);
 	$statement->bindValue(':y', $charY);
@@ -682,7 +687,7 @@ function dropItemExt($itemId, $charX, $charY){
 		$newItems = $items . ',' . $itemId;
 	}
 	
-	$query = 'UPDATE ' . $townName . ' SET `groundItems` = :newItems WHERE `x` = :x AND `y` = :y';
+	$query = 'UPDATE ' . $townTableName . ' SET `groundItems` = :newItems WHERE `x` = :x AND `y` = :y';
 	$statement = $dbCon->prepare($query);
 	$statement->bindValue(':newItems', $newItems);
 	$statement->bindValue(':x', $charX);
@@ -738,13 +743,13 @@ function checkUsability($arg1) //arg1 should be a number representing the item I
 function characterIsHolding($itemId) //Checks if the current session's character has the item specified
 {	
 	global $dbCon;
-	global $char;
+	global $charId;
 	global $user;
 	
-	$query = 'SELECT items FROM `characters` WHERE `username` = :user AND `character` = :char';
+	$query = 'SELECT items FROM `characters` WHERE `username` = :user AND `id` = :id';
 	$statement = $dbCon->prepare($query);
 	$statement->bindValue(':user', $user);
-	$statement->bindValue(':char', $char);
+	$statement->bindValue(':id', $charId);
 	$statement->execute();
 	$result = $statement->fetch();
 	$statement->closeCursor();
@@ -765,16 +770,16 @@ function removeItem($itemId)
 {
 	global $dbCon;
 	global $user;
-	global $char;
+	global $charId;
 	global $itemsMaster;
 	
 	$itemWeight = $itemsMaster[$itemId][2];
 	
 	//Check if Character is still holding the item being dropped
-	$query1 = 'SELECT * FROM `characters` WHERE `username` = :username AND `character` = :character';
+	$query1 = 'SELECT * FROM `characters` WHERE `username` = :username AND `id` = :id';
 	$statement1 = $dbCon->prepare($query1);
 	$statement1->bindValue(':username', $user);
-	$statement1->bindValue(':character', $char);
+	$statement1->bindValue(':id', $charId);
 	$statement1->execute();
 	$result1 = $statement1->fetch();
 	$statement1->closeCursor();
@@ -812,12 +817,12 @@ function removeItem($itemId)
 	if ($foundItem)
 	{
 		//Removes the item and decreases used weight capacity in the DB
-		$query2 = 'UPDATE `characters` SET `items` = :newItems , `itemsMass` = :newMass WHERE `username` = :username AND `character` = :character';
+		$query2 = 'UPDATE `characters` SET `items` = :newItems , `itemsMass` = :newMass WHERE `username` = :username AND `id` = :id';
 		$statement2 = $dbCon->prepare($query2);
 		$statement2->bindValue(':newItems', $newItems);
 		$statement2->bindValue(':newMass', $newMass);
 		$statement2->bindValue(':username', $user);
-		$statement2->bindValue(':character', $char);
+		$statement2->bindValue(':id', $charId);
 		$statement2->execute();
 		$statement2->closeCursor();
 	}		
@@ -828,8 +833,9 @@ function getCharCoordsExt($characterId) //Return example => 0 => 5, 1=> -5  (Bot
 {
 	global $dbCon;
 	global $townName;
+	global $townTableName;
 	
-	$query = 'SELECT * FROM ' . $townName;
+	$query = 'SELECT * FROM ' . $townTableName;
 	$statement = $dbCon->prepare($query);
 	$statement->execute();
 	$result = $statement->fetchAll();
@@ -856,6 +862,7 @@ function dropAllItemsExt($characterId, $user = NULL)
 	}
 	global $dbCon;
 	global $townName;
+	global $townTableName;
 	
 	$query = 'SELECT items FROM `characters` WHERE `id` = :id AND `username` = :user';
 	$statement = $dbCon->prepare($query);
@@ -879,7 +886,7 @@ function dropAllItemsExt($characterId, $user = NULL)
 			$itemId = $oldItems[$i2];
 			
 			//Find what items are in the town
-			$query3 = 'SELECT * FROM `' . $townName . '` WHERE `x` = "0" AND `y` = "0"';
+			$query3 = "SELECT * FROM `" . $townTableName . "` WHERE `x` = '0' AND `y` = '0'";
 			$statement3 = $dbCon->prepare($query3);
 			$statement3->execute();
 			$result3 = $statement3->fetch();
@@ -934,7 +941,7 @@ function dropAllItemsExt($characterId, $user = NULL)
 				}
 			}
 				//Update the bank items
-				$query4 = 'UPDATE `' . $townName . '` SET `groundItems` = :newGroundItems WHERE `x` = "0" AND `y` = "0"';
+				$query4 = 'UPDATE `' . $townTableName . '` SET `groundItems` = :newGroundItems WHERE `x` = "0" AND `y` = "0"';
 				$statement4 = $dbCon->prepare($query4);
 				$statement4->bindValue(':newGroundItems', $newGroundItems);
 				$statement4->execute();
@@ -994,13 +1001,13 @@ function getRarityString($itemId)
 	
 }
 
-function charsAlive($townName)
+function charsAlive($townId)
 {
 	global $dbCon;
 	
-	$query = 'SELECT * FROM `characters` WHERE `townName` = :townName';
+	$query = 'SELECT * FROM `characters` WHERE `town_id` = :townId';
 	$statement = $dbCon->prepare($query);
-	$statement->bindValue(':townName', $townName);
+	$statement->bindValue(':townId', $townId);
 	$statement->execute();
 	$result = $statement->fetchAll();
 	$statement->closeCursor();
@@ -1008,8 +1015,8 @@ function charsAlive($townName)
 	
 	foreach ($result as $current)
 	{
-		$character = $current['character'];
-		if (doesStatusContainExt(12, $character))
+		$characterId = $current['id'];
+		if (doesStatusContainExt(12, $characterId))
 		{
 			//Character is Dead
 		}
@@ -1022,14 +1029,14 @@ function charsAlive($townName)
 	return $aliveCount;
 }
 
-function closeTheTown($townName) //Officially ends the town, database table is left for legacy records
+function closeTheTown($townId) //Officially ends the town, database table is left for legacy records
 {
 	global $dbCon;
 	global $root;
 	// All chars from the town must be reset to 'none'
-	$query = 'SELECT * FROM `characters` WHERE `townName` = :townName';
+	$query = 'SELECT * FROM `characters` WHERE `town_id` = :townId';
 	$statement = $dbCon->prepare($query);
-	$statement->bindValue(':townName', $townName);
+	$statement->bindValue(':townId', $townId);
 	$statement->execute();
 	$result = $statement->fetchAll();
 	$statement->closeCursor();
@@ -1038,7 +1045,7 @@ function closeTheTown($townName) //Officially ends the town, database table is l
 	{
 		$characterId = $current['id'];
 		
-		$query = 'UPDATE `characters` SET `townName` = "none", `status` = "3.7.11" WHERE `id` = :id';
+		$query = 'UPDATE `characters` SET `town_id` = NULL, `status` = "3.7.11" WHERE `id` = :id';
 		$statement = $dbCon->prepare($query);
 		$statement->bindValue(':id', $characterId);
 		$statement->execute();
@@ -1046,9 +1053,9 @@ function closeTheTown($townName) //Officially ends the town, database table is l
 	}
 	
 	//Set 'TownFull' to 2 -> meaning the town has completed
-	$query = 'UPDATE `towns` SET `townFull` = "2" WHERE `townName` = :townName';
+	$query = 'UPDATE `towns` SET `townFull` = "2" WHERE `town_id` = :townId';
 	$statement = $dbCon->prepare($query);
-	$statement->bindValue(':townName', $townName);
+	$statement->bindValue(':townId', $townId);
 	$statement->execute();
 	$statement->closeCursor();
 	
@@ -1056,18 +1063,19 @@ function closeTheTown($townName) //Officially ends the town, database table is l
 	$_SESSION['x'] = NULL;
 	$_SESSION['y'] = NULL;
 	$_SESSION['char'] = '';
+	$_SESSION['char_id'] = NULL;
 	
-	echo '<script>window.location = "' . $root . '/summary.php?town=' . $townName . '";</script>';
+	echo '<script>window.location = "' . $root . '/summary.php?town=' . $townId . '";</script>';
 }
 
-function isStructureBuilt($structure, $townName)
+function isStructureBuilt($structure, $townId)
 {
 	global $dbCon;
 	global $buildingsInfo;
 	
-	$query = 'SELECT buildings FROM `towns` WHERE `townName` = :townName';
+	$query = 'SELECT buildings FROM `towns` WHERE `town_id` = :townId';
 	$statement = $dbCon->prepare($query);
-	$statement->bindValue(':townName', $townName);
+	$statement->bindValue(':townId', $townId);
 	$statement->execute();
 	$result = $statement->fetch();
 	$statement->closeCursor();
@@ -1103,11 +1111,12 @@ function isStructureBuilt($structure, $townName)
 	}
 }
 
-function addToBank($itemId, $townName)
+function addToBank($itemId, $townId)
 {
 	global $dbCon;
+	$townTableName = Towns::getTownTableName($townId);
 	
-	$query = 'SELECT * FROM `' . $townName . '` WHERE `x` = :x AND `y` = :y';
+	$query = 'SELECT * FROM `' . $townTableName . '` WHERE `x` = :x AND `y` = :y';
 	$statement = $dbCon->prepare($query);
 	$statement->bindValue(':x', 0);
 	$statement->bindValue(':y', 0);
@@ -1171,7 +1180,7 @@ function addToBank($itemId, $townName)
 	}
 	
 	//Update the ground in the current zone with the item being dropped
-	$query4 = 'UPDATE `' . $townName . '` SET `groundItems` = :newGroundItems WHERE `x` = :x AND `y` = :y';
+	$query4 = 'UPDATE `' . $townTableName . '` SET `groundItems` = :newGroundItems WHERE `x` = :x AND `y` = :y';
 	$statement4 = $dbCon->prepare($query4);
 	$statement4->bindValue(':newGroundItems', $newGroundItems);
 	$statement4->bindValue(':x', 0);

@@ -34,7 +34,8 @@ require_once("../model/database.php");
         $apNotice = "";
         
         $charDetails = getCharDetails();
-        $townName = $charDetails['townName'];
+        $townId = $charDetails['town_id'];
+        $townName = Towns::getTownNameById($townId);
         $charLevel = $charDetails['level'];
         $charClass = $charDetails['class'];
         $charAp = $charDetails['currentAP'];
@@ -44,7 +45,7 @@ require_once("../model/database.php");
             $apNotice = "<small> 2x</small>";
         }
         
-        $bank = getWarehouseItems($townName);
+        $bank = getWarehouseItems($townId);
         $townBank = explode(',', $bank);
         ?>
         
@@ -75,8 +76,8 @@ require_once("../model/database.php");
                              
                             //Get Details for the current Building we are checking      
                             $currentBuilding = new Structure($buildingsInfo[$i][0], $buildingsInfo[$i][1], $buildingsInfo[$i][2], $buildingsInfo[$i][3], $buildingsInfo[$i][4], $buildingsInfo[$i][5], $buildingsInfo[$i][6], $buildingsInfo[$i][7], $buildingsInfo[$i][8]);
-                            $builtDetails = StructuresDB::getBuiltDetails($currentBuilding->getName(), $townName);
-                            $builtDetailsRequired = StructuresDB::getBuiltDetails($currentBuilding->getRequirement(), $townName);
+                            $builtDetails = StructuresDB::getBuiltDetails($currentBuilding->getName(), $townId);
+                            $builtDetailsRequired = StructuresDB::getBuiltDetails($currentBuilding->getRequirement(), $townId);
                             $defString = '';
                             $resourceCostsString = '';
                             $indent = ($buildingsInfo[$i][8] == '0') ? '' : $buildingsInfo[$i][8];
@@ -88,7 +89,7 @@ require_once("../model/database.php");
                                 $itemIdNeeded = $value->getItemId();
                                 $itemName = $itemsMaster[$itemIdNeeded][0];
                                 $itemAmountNeeded = $value->getItemAmount();
-                                $resourceCostsString .= "  <img src='../images/items/" . $itemName . ".png' title='" . $itemName . "'>" . TownBankDB::getItemAmount($itemIdNeeded, $townName) . "/" . $itemAmountNeeded;
+                                $resourceCostsString .= "  <img src='../images/items/" . $itemName . ".png' title='" . $itemName . "'>" . TownBankDB::getItemAmount($itemIdNeeded, $townId) . "/" . $itemAmountNeeded;
                             }
                             //This code repeats for every building that exists in the configuration
                             
@@ -136,7 +137,7 @@ require_once("../model/database.php");
                                 else
                                 {
                                     //Check if structure upgrade is affordable
-                                    if (StructuresDB::isStructureAffordable($currentBuilding, $townName))
+                                    if (StructuresDB::isStructureAffordable($currentBuilding, $townId))
                                     {
                                         $tableRow = "<form action='../functions/build.php' method='post'><tr>"
                                                 . "<td>" . $builtDetails['Level'] . "/"  . $currentBuilding->getMaxLevel() . "</td>"
@@ -177,7 +178,7 @@ require_once("../model/database.php");
                                 if ($builtDetailsRequired["Level"] >= 1)
                                 {
                                     //Required Building is atleast level 1
-                                    if (StructuresDB::isStructureAffordable($currentBuilding, $townName))
+                                    if (StructuresDB::isStructureAffordable($currentBuilding, $townId))
                                     {
                                         //Structure is affordable, and construction has not begun
                                         $tableRow = "<form action='../functions/build.php' method='post'><tr>"

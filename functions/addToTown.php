@@ -28,7 +28,7 @@ foreach($multiJoin as $characterObject){
 	$result = $statement->fetch();
 	$statement->closeCursor();
 
-	if($result["townName"] == null){
+	if($result["town_id"] == null){
 		//Char still has not joined a town
 		$query = "UPDATE `characters` SET `town_id` = :newTown, `items` = :items, `itemsMass` = '0', `currentAP` = :maxAp, `status` = '3.7.11' WHERE `id` = :id AND `username` = :user";
 		$statement = $dbCon->prepare($query);
@@ -45,6 +45,7 @@ foreach($multiJoin as $characterObject){
 		Towns::addTownBulletin($content, $newTown);
 
 		$townName = Towns::getTownNameById($newTown);
+		$townTableName = Towns::getTownTableName($newTown);
 
 
 		//Modify citizen amounts in database
@@ -78,7 +79,7 @@ foreach($multiJoin as $characterObject){
 		$_SESSION['x'] = 0;
 		$_SESSION['y'] = 0;
 		
-		$query = "SELECT * FROM " . $townName . " WHERE `x` = '0' AND `y` = '0'";
+		$query = "SELECT * FROM " . $townTableName . " WHERE `x` = '0' AND `y` = '0'";
 		$statement = $dbCon->prepare($query);
 		$statement->execute();
 		$result = $statement->fetch();
@@ -92,7 +93,7 @@ foreach($multiJoin as $characterObject){
 			$charactersUpdated = $characters . '.' . $charId;
 		}
 		
-		$query = "UPDATE " . $townName . " SET `charactersHere` = :newChars WHERE `x` = '0' AND `y` = '0'";
+		$query = "UPDATE " . $townTableName . " SET `charactersHere` = :newChars WHERE `x` = '0' AND `y` = '0'";
 		$statement = $dbCon->prepare($query);
 		$statement->bindValue(':newChars', $charactersUpdated);
 		$statement->execute();

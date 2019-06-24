@@ -5,12 +5,15 @@ require_once("../model/structures.php");
 require_once("../data/buildings.php");
 require_once("../functions/queryFunctions.php");
 
-$charDetails = getCharDetails();
-$townName = $charDetails["townName"];
+$charId = $_SESSION['char_id'];
+$charObject = new Character($charId);
+$townId = $charObject->townId; 
+$townName = Towns::getTownNameById($townId);
 
 $buildName = filter_input(INPUT_POST, "buildName");
 $apToAssign = filter_input(INPUT_POST, "apToAssign");
-if($charDetails["class"] == "Builder"){
+
+if($charObject->class == "Builder"){
     $apToAssign *= 2;
 }
 
@@ -23,7 +26,7 @@ if (isset($buildName) && isset($apToAssign))
         if ($buildingsInfo[$i][0] == $buildName)
         {
            $currentBuilding = new Structure($buildingsInfo[$i][0], $buildingsInfo[$i][1], $buildingsInfo[$i][2], $buildingsInfo[$i][3], $buildingsInfo[$i][4], $buildingsInfo[$i][5], $buildingsInfo[$i][6], $buildingsInfo[$i][7], $buildingsInfo[$i][8]);
-           $builtDetails = StructuresDB::getBuiltDetails($buildName, $townName);
+           $builtDetails = StructuresDB::getBuiltDetails($buildName, $townId);
            //Ensure the building is not maxed out Level
            if ($builtDetails["Level"] >= $currentBuilding->getMaxLevel())
            {
@@ -47,10 +50,10 @@ if (isset($buildName) && isset($apToAssign))
                        $apToAssign = $apRemaining;
                    }
                    
-                    if($charDetails["class"] == "Builder" && $charDetails["currentAP"] < $apToAssign/2){
+                    if($charObject->class == "Builder" && $charObject->currentAP < $apToAssign/2){
                         echo "<script>window.location.href='../inTown/?locat=construction&e=Character does not have " . $apToAssign . " Ap.'</script>";
                     }
-                    elseif ($charDetails["class"] != "Builder" && $charDetails["currentAP"] < $apToAssign)
+                    elseif ($charObject->class != "Builder" && $charObject->currentAP < $apToAssign)
                     {
                         //Return, Character does not have enough Ap
                         echo "<script>window.location.href='../inTown/?locat=construction&e=Character does not have " . $apToAssign . " Ap.'</script>";
@@ -59,19 +62,19 @@ if (isset($buildName) && isset($apToAssign))
                    {
                        //Apply the AP to the structure, REMOVE AP FROM CHAR****
                        //Builders have half the AP removed because it doubles the AP value above and we dont want to remove double AP
-                       if($charDetails["class"] == "Builder"){
-                        $newAp = $charDetails["currentAP"] - ceil($apToAssign/2);
+                       if($charObject->class == "Builder"){
+                        $newAp = $charObject->currentAP - ceil($apToAssign/2);
                        }
                        else{
-                        $newAp = $charDetails["currentAP"] - $apToAssign;
+                        $newAp = $charObject->currentAP - $apToAssign;
                        }
                        $queryString = "UPDATE characters SET `currentAP` = " . $newAp . " WHERE "
-                               . "`character` = '" . $charDetails["character"] . "' AND "
+                               . "`id` = '" . $charId . "' AND "
                                . "`username` = '" . $charDetails["username"] . "' AND "
-                               . "`townName` = '" . $townName ."'";
+                               . "`town_id` = '" . $townId ."'";
                        Database::sendQuery($queryString);
                        
-                       StructuresDB::addAp($currentBuilding, $apToAssign, $townName);
+                       StructuresDB::addAp($currentBuilding, $apToAssign, $townId);
                        echo "<script>window.location.href='../inTown/?locat=construction'</script>";
                    }
                }
@@ -79,7 +82,7 @@ if (isset($buildName) && isset($apToAssign))
                {
                    //We need to remove resources to contribute
                    //Check if the structure is still affordable
-                    if (StructuresDB::isStructureAffordable($currentBuilding, $townName))
+                    if (StructuresDB::isStructureAffordable($currentBuilding, $townId))
                    {
                        //Check character ap and ap required
                        //...Then remove items from bank.
@@ -89,7 +92,7 @@ if (isset($buildName) && isset($apToAssign))
                             $apToAssign = $apRemaining;
                         }
                         
-                        if ($charDetails["currentAP"] < $apToAssign)
+                        if ($charObject->currentAP < $apToAssign)
                         {
                             //Return, Character does not have enough Ap
                             echo "<script>window.location.href='../inTown/?locat=construction&e=Character does not have " . $apToAssign . " Ap.'</script>";
@@ -97,25 +100,25 @@ if (isset($buildName) && isset($apToAssign))
                         else
                         {
                             //Apply the AP to the structure, REMOVE AP FROM CHAR
-                            if($charDetails["class"] == "Builder"){
-                                $newAp = $charDetails["currentAP"] - ceil($apToAssign/2);
+                            if($charObject->class == "Builder"){
+                                $newAp = $charObject->currentAP - ceil($apToAssign/2);
                             }
                             else{
-                                $newAp = $charDetails["currentAP"] - $apToAssign;
+                                $newAp = $charObject->currentAP - $apToAssign;
                             }
                             $queryString = "UPDATE characters SET `currentAP` = " . $newAp . " WHERE "
-                               . "`character` = '" . $charDetails["character"] . "' AND "
+                               . "`id` = '" . $charId . "' AND "
                                . "`username` = '" . $charDetails["username"] . "' AND "
-                               . "`townName` = '" . $townName ."'";
+                               . "`town_id` = '" . $townId ."'";
                             Database::sendQuery($queryString);
                             
-                            StructuresDB::addAp($currentBuilding, $apToAssign, $townName);
+                            StructuresDB::addAp($currentBuilding, $apToAssign, $townId);
                             
                             //...then remove items from bank
                             $itemCosts = $currentBuilding->getItemCosts_objects();
                             foreach ($itemCosts->getItemCosts() as $value)
                             {
-                                TownBankDB::removeItem($value->getItemId(), $value->getItemAmount(), $townName); 
+                                TownBankDB::removeItem($value->getItemId(), $value->getItemAmount(), $townId); 
                             }
                             echo "<script>window.location.href='../inTown/?locat=construction'</script>";
                             

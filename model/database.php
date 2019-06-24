@@ -77,6 +77,19 @@ class Towns {
 
     }
 
+    public static function getTownTableName($townId){
+        $dbCon = Database::getDB();
+
+        $query = "SELECT `townName` FROM `towns` WHERE `town_id` = :townId";
+        $statement = $dbCon->prepare($query);
+        $statement->bindValue(':townId', $townId);
+        $statement->execute();
+        $result = $statement->fetch();
+        $statement->closeCursor();
+
+        return $townId . "_" . $result['townName'];
+    }
+
     public static function addTownBulletin($content, $townId){
         $dbCon = Database::getDB();
 

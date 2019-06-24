@@ -4,7 +4,7 @@
 <head>
 
 	<link rel="stylesheet" type="text/css" href="mainDesign.css">
-	<link rel="stylesheet" type="text/css" href="NewDesign.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <script type="text/javascript">
 		function validateform2()

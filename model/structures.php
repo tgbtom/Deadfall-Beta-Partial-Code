@@ -122,13 +122,13 @@ class ItemCost
 
 class StructuresDB
 {
-    public static function getTownStructures($townName)
+    public static function getTownStructures($townId)
     {
         $dbCon = Database::getDB();
         
-        $query = "SELECT buildings from `towns` WHERE `townName` = :townName";
+        $query = "SELECT buildings from `towns` WHERE `town_id` = :townId";
         $statement = $dbCon->prepare($query);
-        $statement->bindValue(':townName', $townName);
+        $statement->bindValue(':townId', $townId);
         $statement->execute();
         $result = $statement->fetch();
         $statement->closeCursor();
@@ -136,10 +136,10 @@ class StructuresDB
         return $result['buildings'];
     }
     
-    public static function getBuiltDetails($structure, $townName)
+    public static function getBuiltDetails($structure, $townId)
     {
                 
-        $builtStructures = self::getTownStructures($townName);
+        $builtStructures = self::getTownStructures($townId);
         $builtArray = explode(':', $builtStructures); //Defence.0.1  Perimeter Fence.0.0
         
         foreach ($builtArray as $value)
@@ -156,9 +156,10 @@ class StructuresDB
         }
     }
     
-    public static function addAp($structure_object, $apToAdd, $townName)
+    public static function addAp($structure_object, $apToAdd, $townId)
     {
-        $builtStructures = self::getTownStructures($townName);
+
+        $builtStructures = self::getTownStructures($townId);
         $builtArray = explode(':', $builtStructures);
         $newBuildString = "";
         
@@ -174,11 +175,11 @@ class StructuresDB
                 if ($building["Ap"] >= $structure_object->getApCost()){
                     $building["Ap"] = 0;
                     $building["Level"] += 1;
-                    self::addDefence($structure_object->getDefence(), $townName);
+                    self::addDefence($structure_object->getDefence(), $townId);
 
                     //Add this to The Bulletin --> Level X Outter Wall Has been Completed
                     $notice = "<yellow>Level " . $building["Level"] . " " . $building["Name"] . " Has been Completed</yellow>";
-                    Towns::addTownBulletin($notice, $townName);
+                    Towns::addTownBulletin($notice, $townId);
                 }
             }
             
@@ -191,11 +192,11 @@ class StructuresDB
             
         }
         
-        $queryString = "UPDATE towns SET `buildings` = '" . $newBuildString . "' WHERE `townName` = '" . $townName . "'";
+        $queryString = "UPDATE towns SET `buildings` = '" . $newBuildString . "' WHERE `town_id` = '" . $townId . "'";
         Database::sendQuery($queryString);
     }
     
-    public static function isStructureAffordable($structure_object, $townName)
+    public static function isStructureAffordable($structure_object, $townId)
     {   
         //Build an array of item cost objects        
         $itemCosts = $structure_object->getItemCosts_objects();
@@ -204,7 +205,7 @@ class StructuresDB
             $costId = $itemCost->getItemId();
             $costAmount = $itemCost->getItemAmount();
             
-            if (TownBankDB::getItemAmount($costId, $townName) < $costAmount)
+            if (TownBankDB::getItemAmount($costId, $townId) < $costAmount)
             {
                  //You do not have enough resources
                 return false;
@@ -214,12 +215,12 @@ class StructuresDB
         return true;
     }
     
-    public static function addDefence($defenceToAdd, $townName){
+    public static function addDefence($defenceToAdd, $townId){
         $dbCon = Database::getDB();
         
-        $query = "SELECT defenceSize FROM `towns` WHERE `townName` = :townName";
+        $query = "SELECT defenceSize FROM `towns` WHERE `town_id` = :townId";
         $statement = $dbCon->prepare($query);
-        $statement->bindValue(":townName", $townName);
+        $statement->bindValue(":townId", $townId);
         $statement->execute();
         $result = $statement->fetch();
         $statement->closeCursor();
@@ -227,10 +228,10 @@ class StructuresDB
         $currentDefence = $result["defenceSize"];
         $newDefence = $currentDefence + $defenceToAdd;
         
-        $query2 = "UPDATE towns SET `defenceSize` = :defenceSize WHERE `townName` = :townName";
+        $query2 = "UPDATE towns SET `defenceSize` = :defenceSize WHERE `town_id` = :townId";
         $statement2 = $dbCon->prepare($query2);
         $statement2->bindValue(":defenceSize", $newDefence);
-        $statement2->bindValue(":townName", $townName);
+        $statement2->bindValue(":townId", $townId);
         $statement2->execute();
         $statement->closeCursor();
     }
@@ -238,27 +239,27 @@ class StructuresDB
 
 class SpecialStructures 
 {
-    public static function overnightFunctions($townName){
-        $structureStatus = StructuresDB::getBuiltDetails("Mechanical Water Pump", $townName);
+    public static function overnightFunctions($townId){
+        $structureStatus = StructuresDB::getBuiltDetails("Mechanical Water Pump", $townId);
         if ($structureStatus["Level"] >= 1){
-            TownBankDB::addItem(0, 5, $townName);
+            TownBankDB::addItem(0, 5, $townId);
         }
     }
 
-    private static function getSpecialStructures($townName){
+    private static function getSpecialStructures($townId){
         $specialStructures = array(
             "Fabrikator Workshop"
         );
         return $specialStructures;
     }
 
-    public static function specialStructuresStatus($townName){
+    public static function specialStructuresStatus($townId){
         $dbCon = Database::getDB();
-        $specialStructures = self::getSpecialStructures($townName);
+        $specialStructures = self::getSpecialStructures($townId);
         $builtSpecials = array();
 
         foreach ($specialStructures as $current){
-            $currentDetails = StructuresDB::getBuiltDetails($current, $townName);
+            $currentDetails = StructuresDB::getBuiltDetails($current, $townId);
             $level = $currentDetails["Level"];
             if($level >= 1){
                 $builtSpecials[] .= $current;
@@ -267,12 +268,12 @@ class SpecialStructures
         return $builtSpecials;
     }
 
-    public static function getHtmlContent($structure, $townName){
+    public static function getHtmlContent($structure, $townId){
         if($structure == "Fabrikator Workshop"){
 
-            $woodAmount = TownBankDB::getItemAmount(2, $townName);
-            $metalAmount = TownBankDB::getItemAmount(3, $townName);
-            $brickAmount = TownBankDB::getItemAmount(10, $townName);
+            $woodAmount = TownBankDB::getItemAmount(2, $townId);
+            $metalAmount = TownBankDB::getItemAmount(3, $townId);
+            $brickAmount = TownBankDB::getItemAmount(10, $townId);
 
             $htmlContent = "<table class='specialTable'>
             <tr><th colspan='2'><img src='../images/items/Wood Board.png'> Wood (" . $woodAmount . ") <img src='../images/items/Wood Board.png'></th></tr>
@@ -294,12 +295,14 @@ class SpecialStructures
 
 class TownBankDB
 {
-    public static function getItemAmount($itemId, $townName)
+    public static function getItemAmount($itemId, $townId)
     {
         $dbCon = Database::getDB();
+        $townName = Towns::getTownNameById($townId);
+        $townTableName = $townId . "_" . $townName;
         
         //Get list of all items in bank
-        $query = "SELECT groundItems FROM `" . $townName . "` WHERE `x` = 0 AND `y` = 0";
+        $query = "SELECT groundItems FROM `" . $townTableName . "` WHERE `x` = 0 AND `y` = 0";
         $statement = $dbCon->prepare($query);
         $statement->execute();
         $result = $statement->fetch(); //0.41,1.41,2.3,.4,10.1,3.1,4.1,13.1,6.2,7.1,5.1
@@ -321,12 +324,14 @@ class TownBankDB
         return 0;
     }
     
-    public static function removeItem($itemId, $amountToRemove, $townName)
+    public static function removeItem($itemId, $amountToRemove, $townId)
     {
         $dbCon = Database::getDB();
+        $townName = Towns::getTownNameById($townId);
+        $townTableName = $townId . "_" . $townName;
         
          //Get list of all items in bank
-        $query = "SELECT groundItems FROM `" . $townName . "` WHERE `x` = 0 AND `y` = 0";
+        $query = "SELECT groundItems FROM `" . $townTableName . "` WHERE `x` = 0 AND `y` = 0";
         $statement = $dbCon->prepare($query);
         $statement->execute();
         $result = $statement->fetch(); //0.41,1.41,2.3,.4,10.1,3.1,4.1,13.1,6.2,7.1,5.1
@@ -372,16 +377,18 @@ class TownBankDB
             
         }
         
-        $queryString = "UPDATE " . $townName . " SET `groundItems` = '" . $newGroundItems . "' WHERE `x` = 0 AND `y` = 0";
+        $queryString = "UPDATE " . $townTableName . " SET `groundItems` = '" . $newGroundItems . "' WHERE `x` = 0 AND `y` = 0";
         Database::sendQuery($queryString);
         
     }
 
-    public static function addItem($itemId, $amountToAdd, $townName){
+    public static function addItem($itemId, $amountToAdd, $townId){
         $dbCon = Database::getDB();
+        $townName = Towns::getTownNameById($townId);
+        $townTableName = $townId . "_" . $townName;
 
          //Get list of all items in bank
-         $query = "SELECT groundItems FROM `" . $townName . "` WHERE `x` = 0 AND `y` = 0";
+         $query = "SELECT groundItems FROM `" . $townTableName . "` WHERE `x` = 0 AND `y` = 0";
          $statement = $dbCon->prepare($query);
          $statement->execute();
          $result = $statement->fetch(); //0.41,1.41,2.3,.4,10.1,3.1,4.1,13.1,6.2,7.1,5.1
@@ -423,7 +430,7 @@ class TownBankDB
             }
          }
          
-         $queryString = "UPDATE " . $townName . " SET `groundItems` = '" . $newGroundItems . "' WHERE `x` = 0 AND `y` = 0";
+         $queryString = "UPDATE " . $townTableName . " SET `groundItems` = '" . $newGroundItems . "' WHERE `x` = 0 AND `y` = 0";
          Database::sendQuery($queryString);
          
     }

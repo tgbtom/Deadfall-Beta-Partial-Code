@@ -6,6 +6,7 @@ require_once ("../data/items.php");
 //gets the user and current character, and stores them in local variables
 $user = $_SESSION['login'];
 $char = $_SESSION['char'];
+$charId = $_SESSION['char_id'];
 $x = $_SESSION['x'];
 $y = $_SESSION['y'];
 
@@ -24,15 +25,16 @@ for ($i = 0; $i < sizeOf($itemsMaster); $i++)
 }
 	
 //Query the Database to find Weight Capacity and current Inventory weight
-$query1 = 'SELECT * FROM `characters` WHERE `character` = :character AND `username` = :username';
+$query1 = 'SELECT * FROM `characters` WHERE `id` = :charId AND `username` = :username';
 $statement1 = $dbCon->prepare($query1);
 $statement1->bindValue(':username', $user);
-$statement1->bindValue(':character', $char);
+$statement1->bindValue(':charId', $charId);
 $statement1->execute();
 $charDetails = $statement1->fetch();
 $statement1->closeCursor();
 
-$townName = $charDetails['townName'];
+$townId = $charDetails['town_id'];
+$townName = Towns::getTownNameById($townId);
 $characterId = $charDetails['id'];
 $currentItems = $charDetails['items'];
 $weightCapacity = $charDetails['maxItems'];
