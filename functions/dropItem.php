@@ -6,6 +6,7 @@ include ("../data/items.php");
 //gets the user and current character, and stores them in local variables
 $user = $_SESSION['login'];
 $char = $_SESSION['char'];
+$charId = $_SESSION['char_id'];
 $x = $_SESSION['x'];
 $y = $_SESSION['y'];
 
@@ -41,15 +42,17 @@ else
 	}
 
 	//Check if Character is still holding the item being dropped
-	$query1 = 'SELECT * FROM `characters` WHERE `username` = :username AND `character` = :character';
+	$query1 = 'SELECT * FROM `characters` WHERE `username` = :username AND `id` = :charId';
 	$statement1 = $dbCon->prepare($query1);
 	$statement1->bindValue(':username', $user);
-	$statement1->bindValue(':character', $char);
+	$statement1->bindValue(':id', $charId);
 	$statement1->execute();
 	$result1 = $statement1->fetch();
 	$statement1->closeCursor();
 
-	$townName = $result1['townName'];
+	$townId = $result1['town_id'];
+	$townName = Towns::getTownNameById($townId);
+	$townTableName = Towns::getTownTableName($townId);
 	$oldMass = $result1['itemsMass'];
 	$newMass = $oldMass - $itemWeight;
 	$currentItemsArray = explode(',', $result1['items']);
@@ -77,17 +80,17 @@ else
 	if ($foundItem)
 	{	
 		//Removes the item and decreases used weight capacity in the DB
-		$query2 = 'UPDATE `characters` SET `items` = :newItems , `itemsMass` = :newMass WHERE `username` = :username AND `character` = :character';
+		$query2 = 'UPDATE `characters` SET `items` = :newItems , `itemsMass` = :newMass WHERE `username` = :username AND `id` = :charId';
 		$statement2 = $dbCon->prepare($query2);
 		$statement2->bindValue(':newItems', $newItems);
 		$statement2->bindValue(':newMass', $newMass);
 		$statement2->bindValue(':username', $user);
-		$statement2->bindValue(':character', $char);
+		$statement2->bindValue(':id', $charId);
 		$statement2->execute();
 		$statement2->closeCursor();
 
 		//Find what items are on the ground in the characters current zone
-		$query3 = 'SELECT * FROM `' . $townName . '` WHERE `x` = :x AND `y` = :y';
+		$query3 = 'SELECT * FROM `' . $townTableName . '` WHERE `x` = :x AND `y` = :y';
 		$statement3 = $dbCon->prepare($query3);
 		$statement3->bindValue(':x', $x);
 		$statement3->bindValue(':y', $y);
@@ -163,7 +166,7 @@ else
 			}
 		}
 			//Update the ground in the current zone with the item being dropped
-			$query4 = 'UPDATE `' . $townName . '` SET `groundItems` = :newGroundItems WHERE `x` = :x AND `y` = :y';
+			$query4 = 'UPDATE `' . $townTableName . '` SET `groundItems` = :newGroundItems WHERE `x` = :x AND `y` = :y';
 			$statement4 = $dbCon->prepare($query4);
 			$statement4->bindValue(':newGroundItems', $newGroundItems);
 			$statement4->bindValue(':x', $x);

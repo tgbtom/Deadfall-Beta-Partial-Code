@@ -85,23 +85,23 @@ function endDay() {
                 }
             }
 
-            if (doesStatusContainExt(6, $character)) { //character WAS QUENCHED
-                replaceStatusExt(6, 7, $character);
-            } elseif (doesStatusContainExt(7, $character)) { //character WAS THIRSTY
-                replaceStatusExt(7, 8, $character);
-            } elseif (doesStatusContainExt(8, $character)) { //character WAS VERY THIRSTY
-                replaceStatusExt(8, 9, $character);
-            } elseif (doesStatusContainExt(9, $character)) { //character WAS DEHYDRATED
+            if (doesStatusContainExt(6, $characterId)) { //character WAS QUENCHED
+                replaceStatusExt(6, 7, $characterId);
+            } elseif (doesStatusContainExt(7, $characterId)) { //character WAS THIRSTY
+                replaceStatusExt(7, 8, $characterId);
+            } elseif (doesStatusContainExt(8, $characterId)) { //character WAS VERY THIRSTY
+                replaceStatusExt(8, 9, $characterId);
+            } elseif (doesStatusContainExt(9, $characterId)) { //character WAS DEHYDRATED
                 //***************************CHARACTER DIES HERE*****************************************
-                if (!doesStatusContainExt(12, $character)) {
-                    killCharacter($character, $currentUsername, $newDead);
+                if (!doesStatusContainExt(12, $characterId)) {
+                    killCharacter($characterId, $currentUsername, $newDead);
                     $deathBulletin = "<red>" . $character . " died of dehydration</red>";
                     Towns::addTownBulletin($deathBulletin, $townId); 
                 }
             }
 
             //Check for death of any characters that spent the night outside (60% chance to die)
-            $charLocation = getCharCoordsExt($character);
+            $charLocation = getCharCoordsExt($characterId);
             if($charLocation[0] != 0 || $charLocation[1] != 0){
                 if(mt_rand(0, 100) < 60){
                     //Character dies from camping
@@ -231,7 +231,7 @@ function characterLottery($townId, &$newDead){
         $currentCharId = $result["id"];
         $currentUser = $result["username"];
         $charLocation = getCharCoordsExt($currentCharId);
-        if (!doesStatusContainExt(12, $currentChar, $currentUser) && ($charLocation[0] == '0' && $charLocation[1] == '0')){
+        if (!doesStatusContainExt(12, $currentCharId, $currentUser) && ($charLocation[0] == '0' && $charLocation[1] == '0')){
             //character is not dead, add him to the pool
             $currentCharCombo = array($currentUser, $currentCharId);
             array_push($lotteryPool, $currentCharCombo);

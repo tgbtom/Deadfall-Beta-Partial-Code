@@ -12,14 +12,6 @@
 
 <script>
 
-/*$(document).click(function(){
-  	var popuptext = document.getElementsByClassName('popuptext');
-	for (var i = 0; i < popuptext.length; i++)
-	{
-		popuptext[i].style.visibility = 'hidden';
-	}
-  });*/
-
 // When the user clicks on div, open the popup and close all other pop-ups
 
 function popUpMenu(x)
@@ -143,9 +135,9 @@ echo "<script>console.log('hmmada" . $nextChar->character . "')</script>";
 $loc = $_SERVER['REQUEST_URI'];
 
 //query loads the row in the towns DB that corresponds to the current town 
-$query2 = 'SELECT * FROM `towns` WHERE `townName` = :townName';
+$query2 = 'SELECT * FROM `towns` WHERE `town_id` = :townId';
 $statement2 = $dbCon->prepare($query2);
-$statement2->bindValue(':townName', $townName);
+$statement2->bindValue(':townId', $townId);
 $statement2->execute();
 $result2 = $statement2->fetch();
 $statement2->closeCursor();

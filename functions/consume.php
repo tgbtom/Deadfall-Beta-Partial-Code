@@ -45,7 +45,9 @@ $currentAp = $result1['currentAP'];
 $maxAp = $result1['maxAP'];
 $statusString = $result1['status'];
 $statusArray = explode('.', $statusString);
-$townName = $result1['townName'];
+$townId = $result1['town_id'];
+$townName = Towns::getTownNameById($townId);
+$townTableName = Towns::getTownTableName($townId);
 $oldMass = $result1['itemsMass'];
 $newMass = $oldMass - $itemWeight;
 $itemsHeldArray = explode(',', $result1['items']);
@@ -202,7 +204,7 @@ if ($foundItem)
 		
 		if ($currentAp >= $apUse)
 		{
-			$query = 'SELECT zeds, bulletin FROM ' . $townName . ' WHERE `x` = :x AND `y` = :y';
+			$query = 'SELECT zeds, bulletin FROM ' . $townTableName . ' WHERE `x` = :x AND `y` = :y';
 			$statement = $dbCon->prepare($query);
 			$statement->bindValue(':x', $x);
 			$statement->bindValue(':y', $y);
@@ -255,7 +257,7 @@ if ($foundItem)
 					$addThisBulletin = $char . ' killed ' . $kills . ' zed(s) with ' . $itemName;
 					$newBulletin = ($oldBulletin == NULL) ? $addThisBulletin : $oldBulletin . '.' . $addThisBulletin;
 					
-					$query = 'UPDATE ' . $townName . ' SET `zeds` = :newZeds, `bulletin` = :newBulletin WHERE `x` = :x AND `y` = :y';
+					$query = 'UPDATE ' . $townTableName . ' SET `zeds` = :newZeds, `bulletin` = :newBulletin WHERE `x` = :x AND `y` = :y';
 					$statement = $dbCon->prepare($query);
 					$statement->bindValue(':x', $x);
 					$statement->bindValue(':y', $y);

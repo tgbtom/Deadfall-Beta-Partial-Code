@@ -30,9 +30,10 @@ if(sizeof($results) >= 20){
     echo '<script>window.location = "' . $root . '/inTown/?locat=browseChars&e=You have exceeded the maximum amount of characters";</script>';
 }
 else{
-    $nameQuer = "SELECT * FROM `characters` WHERE `character`= :selected_char";
+    $nameQuer = "SELECT * FROM `characters` WHERE `character`= :selected_char AND `username`= :username";
     $check = $dbCon->prepare($nameQuer);
     $check->bindValue(":selected_char", $selected_name);
+    $check->bindValue(":username", $user);
     $check->execute();
     $results = $check->fetchAll();
     $check->closeCursor();

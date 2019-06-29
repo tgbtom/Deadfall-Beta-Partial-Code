@@ -159,6 +159,5 @@ function createSettlement($settlementName, $mapSize)
 	//mysql_query($con2, $compilation);
 	
 }
-//INSERT INTO `guelph` (`coords`, `specialStructure`, `lootability`, `groundItems`, `zeds`) VALUES ('-3,1', '', '10', '', '0'), ('-2,1', '', '10', '', '0');
 ?>
 </html>

@@ -140,11 +140,11 @@ $charClass = $charObject->class;
                                     echo "<td><p>" . $row['username'] . "</p></td>" . "<td class='samePlayer' onclick='changeChar(`" . $currentCharId . "`)'><p class='samePlayer2'>" . $row['character'] . "</p>";
                                 }
 		
-				if (doesStatusContainExt(12, $charRow)) //character is dead
+				if (doesStatusContainExt(12, $currentCharId)) //character is dead
 				{
 					echo "<img src='../images/status/Dead.png' title='DEAD' style='float: right;'>";
 				}
-				elseif (doesStatusContainExt(10, $charRow)) //character has ended the day
+				elseif (doesStatusContainExt(10, $currentCharId)) //character has ended the day
 				{
 					echo "<img src='../images/status/Day Ended.png' title='Finished Current Day' style='float: right;'>";
 				}
@@ -181,11 +181,11 @@ $charClass = $charObject->class;
 			{
 				echo "<tr>";
 				echo "<td><p>" . $row['username'] . "</p></td>" . "<td style='border: 1px solid #120B06;'>" . $row['character'];
-				if (doesStatusContainExt(12, $charRow, $row['username'])) //character is dead
+				if (doesStatusContainExt(12, $currentCharId, $row['username'])) //character is dead
 				{
 					echo "<img src='../images/status/Dead.png' title='DEAD' style='float: right;'>";
 				}
-				elseif (doesStatusContainExt(10, $charRow, $row['username'])) //character has ended the day
+				elseif (doesStatusContainExt(10, $currentCharId, $row['username'])) //character has ended the day
 				{
 					echo "<img src='../images/status/Day Ended.png' title='Finished Current Day' style='float: right;'>";
 				}

@@ -26,6 +26,7 @@ require_once("../model/database.php");
         //Get important session details
         $playerName = $_SESSION['login'];
         $charName = $_SESSION['char'];
+        $charId = $_SESSION['char_id'];
         $xCo = $_SESSION['x'];
         $yCo = $_SESSION['y'];
         $reqMet = false;

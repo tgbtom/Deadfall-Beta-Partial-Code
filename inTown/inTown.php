@@ -17,10 +17,11 @@ $errorMessage = FILTER_INPUT(INPUT_GET, 'e');
 
 $playerName = $_SESSION['login'];
 $charName = $_SESSION['char'];
+$charId = $_SESSION['char_id'];
 
 
 //Set Variables which correspond with th character that is in session (town name, level, class, etc.)
-$query1 = "SELECT * FROM `characters` WHERE `character` = '$charName' AND `username` = '$playerName'";
+$query1 = "SELECT * FROM `characters` WHERE `id` = '$charId' AND `username` = '$playerName'";
 $query2 = mysqli_query($con, $query1);
 
 	while ($row = mysqli_fetch_assoc($query2))
@@ -46,7 +47,7 @@ $query2 = mysqli_query($con, $query1);
 		<div>
 		<!-- Bulletin Information Is Drawn from the Database below -->
 		<?php 
-		 $Query3 = "SELECT `bulletin` FROM `towns` WHERE `townName` = '$townName'";
+		 $Query3 = "SELECT `bulletin` FROM `towns` WHERE `town_id` = '$townId'";
 		 $Query4 = mysqli_query($con, $Query3);
 		 
 		 while ($row = mysqli_fetch_assoc($Query4))

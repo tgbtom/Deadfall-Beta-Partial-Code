@@ -15,6 +15,7 @@ if (isset($errorMessage)) {
 //All information here is retrieved from database simply using the login session and character session
 $playerName = $_SESSION['login'];
 $charName = $_SESSION['char'];
+$charId = $_SESSION['char_id'];
 
 //Set Variables which correspond with the character that is in session (town name, level, class, etc.)
 $charDetails = getCharDetails();
@@ -46,7 +47,7 @@ $defence = $townDetails['defenceSize'];
             <!-- PHP draws level requirements, and checks database for current stats of character -->
 <?php
 include ("../data/levelReq.php");
-$Query3 = "SELECT * FROM `characters` WHERE `username` = '$playerName' AND `Character` = '$charName'";
+$Query3 = "SELECT * FROM `characters` WHERE `username` = '$playerName' AND `id` = '$charId'";
 $Query4 = mysqli_query($con, $Query3);
 while ($row = mysqli_fetch_assoc($Query4)) {
     $currentLevel = $row['level'];
@@ -67,15 +68,6 @@ while ($row = mysqli_fetch_assoc($Query4)) {
 			</div>";
 }
 ?>
-
-            <!-- <div class='centralBox'>
-                <form action='.?locat=character' method='post' name='end'>
-                    <input hidden value='end' name='endDay'>
-                    <input type='button' id='endButton' onclick='verify()' value='End Day'>
-                </form>
-            </div> -->
-
-
 
         </div>
             <?php

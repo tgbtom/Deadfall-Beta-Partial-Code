@@ -35,6 +35,7 @@ $statement1->closeCursor();
 
 $townId = $charDetails['town_id'];
 $townName = Towns::getTownNameById($townId);
+$townTableName = Towns::getTownTableName($townId);
 $characterId = $charDetails['id'];
 $currentItems = $charDetails['items'];
 $weightCapacity = $charDetails['maxItems'];
@@ -47,7 +48,7 @@ $newGroundItems = null;
 //Remove the Item from the Ground in the zone
 if ($itemWeight <= $remainingCapacity)
 {		
-	$query2 = 'SELECT * from `' . $townName . '` WHERE `x` = :x AND `y` = :y';
+	$query2 = 'SELECT * from `' . $townTableName . '` WHERE `x` = :x AND `y` = :y';
 	$statement2 = $dbCon->prepare($query2);
 	$statement2->bindValue(':x', $_SESSION['x']);
 	$statement2->bindValue(':y', $_SESSION['y']);
@@ -116,7 +117,7 @@ if ($itemWeight <= $remainingCapacity)
 	if($itemFound == true)
 	{
 	
-	$query3 = 'UPDATE `' . $townName . '` SET `groundItems` = :newItems WHERE `x` = :x AND `y` = :y';
+	$query3 = 'UPDATE `' . $townTableName . '` SET `groundItems` = :newItems WHERE `x` = :x AND `y` = :y';
 	$statement3 = $dbCon->prepare($query3);
 	$statement3->bindValue(':newItems', $newGroundItems);
 	$statement3->bindValue(':x', $_SESSION['x']);
