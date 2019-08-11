@@ -2,6 +2,7 @@
 require_once ("../data/buildings.php");
 require_once ("../data/items.php");
 require_once ("../functions/queryFunctions.php");
+require_once ("database.php");
 
 //All information here is retrieved from database simply using the login session and character session
 $playerName = $_SESSION['login'];
@@ -37,7 +38,7 @@ function endDay() {
 
     if ($newReady >= ($maxReady - $deadRes)) {
         //If there is overrun
-        $oldHorde = getHordeSize($townID);
+        $oldHorde = getHordeSize($townId);
         if ($oldHorde > $defence) {
             $overrun = $oldHorde - $defence;
             for ($i = 0; $i < $overrun; $i++) {
@@ -134,7 +135,7 @@ function endDay() {
         //increase hordesize
         $newHorde = getHordeSize($townId);
 
-        $query2 = 'UPDATE `towns` SET `readyResidents` = :newReady, `dayNumber` = :dayNumber, `hordeSize` = :newHorde WHERE `town_id` = :townID';
+        $query2 = 'UPDATE `towns` SET `readyResidents` = :newReady, `dayNumber` = :dayNumber, `hordeSize` = :newHorde WHERE `town_id` = :townId';
         $statement2 = $dbCon->prepare($query2);
         $statement2->bindValue(':newReady', 0);
         $statement2->bindValue(':dayNumber', $dayNumber);
@@ -143,6 +144,7 @@ function endDay() {
         $statement2->execute();
         $statement2->closeCursor();
 
+        Towns::calculateDailyDangerValues($townId);
 
         //Check for any structures that perform an action over night
         

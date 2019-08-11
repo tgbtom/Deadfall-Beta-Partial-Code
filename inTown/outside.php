@@ -2,6 +2,8 @@
 require_once ("../functions/verifyLogin.php");
 require_once ("../functions/queryFunctions.php");
 require_once ("../connect.php");
+require_once ("../model/zone.php");
+require_once ("../model/database.php");
 Include("../data/buildings.php");
 Include("../data/items.php");
 
@@ -42,8 +44,6 @@ $capacityLeft = $maxItems - $itemsMass;
 	
 	$tempX = $_SESSION['x'];
 	$tempY = $_SESSION['y'];
-	
-	$danger = getDangerLevel($tempX, $tempY, $townId);
 	
 	$loot = filter_input(INPUT_POST, 'loot');
 	if (isset($loot))
@@ -305,6 +305,14 @@ $capacityLeft = $maxItems - $itemsMass;
 		{
 			echo "<script>window.location.href='.?locat=outside&e=Not enough AP to move.'</script>";
 		}
+
+		if ($dir >= 0 && $dir <= 4 && $canMove){
+			//Character must have been moved, now reduce the danger level in the new zone
+			$controlValue = 4; //This value can be modified by weapons being carried, character class, etc.
+			$affectedZone = new Zone($townId, $newX, $newY);
+			$affectedZone->addControlPoints($controlValue);
+		}
+
 	}
 	
 	function canMove($apRequired = 1)
@@ -312,6 +320,7 @@ $capacityLeft = $maxItems - $itemsMass;
 		global $dbCon;
 		global $playerName;
 		global $charId;
+		global $tempX, $tempY;
 		$query = 'SELECT * FROM `characters` WHERE `username` = :user AND `id` = :id';
 		$statement = $dbCon->prepare($query);
 		$statement->bindValue(':user', $playerName);
@@ -320,7 +329,15 @@ $capacityLeft = $maxItems - $itemsMass;
 		$result = $statement->fetch();
 		$statement->closeCursor();
 		
-		if ($result['currentAP'] >= $apRequired){
+		$zoneObject = new Zone($result["town_id"], $tempX, $tempY);
+		$dangerValue = $zoneObject->dangerValue;
+		//Need to compare controlpoints against zeds in zone
+		$controlPoints = $zoneObject->controlPoints;
+		$zedsHere = $zoneObject->zeds;
+		//0 or negative number means zone is safe to travel through
+		$controlValue = $zedsHere - $controlPoints;
+
+		if ($result['currentAP'] >= $apRequired && $controlValue <= 0){
 			return true;
 		}
 		else{
@@ -537,7 +554,11 @@ $capacityLeft = $maxItems - $itemsMass;
 	
 		<?php 
 		//connect to, then query the settlements database to determine # of Z in each zone before drawing it, then colour determined by # of zeds
-		
+
+		$tempZone = new Zone($townId, $tempX, $tempY);
+		$zoneControl = $tempZone->zeds - $tempZone->controlPoints;
+		echo "<p>Control Value:" . (($zoneControl >= 0) ? $zoneControl : "0") . "</p>";
+
 		if(! $con)
 		{
 			die('Connection Failed'.mysql_error());

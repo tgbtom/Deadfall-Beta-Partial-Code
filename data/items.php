@@ -36,12 +36,12 @@ $itemsConsumable = array(
 
 //itemID (Primary Key), Ammo ID (-1 means none), AP Cost, Min. Kills, Max. Kills, chance to break (out of 100), chance to get injured (out of 100), chance of ammo output, ammo output ID (-1) is for none
 $itemsWeapon = array(
-		array(4, -1, 1, 0, 1, 20, 5, 0, -1), //MakeShift Spear
+		array(4, -1, 1, 1, 3, 20, 5, 0, -1), //MakeShift Spear
 		array(6, 7, 1, 0, 1, 5, 2, 40, 7), //Bow (40% chance to return an arrow to inventory)
 		array(12, -1, 0, 4, 15, 100, 10, 0, -1), //Grenade
 		array(13, 16, 0, 1, 3, 1, 1, 0, -1), //Pistol
 		array(14, 15, 1, 0, 1, 20, 5, 50, 15), //Slingshot
-		array(17, -1, 1, 1, 1, 5, 4, 0, -1), //Sharp Stick
+		array(17, -1, 1, 0, 1, 5, 4, 0, -1), //Sharp Stick
 		array(18, 21, 0, 10, 20, 1, 1, 100, 20) //Assault Rifle
 	);
 

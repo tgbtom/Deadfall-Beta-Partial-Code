@@ -242,10 +242,12 @@ body
 
 yellow{
 	color: #FFCC55;
+	text-shadow: 1px 1px #131313;
 }
 
 red{
 	color: #C33333;
+	text-shadow: 1px 1px #131313;
 }
 
 green{

@@ -81,7 +81,7 @@ require_once ("../model/database.php");
 			//***SET SESSION for the character's current location ***ALSO add this code to 'addToTown.php' for players that join a new town
 			//First we search every zone to figure out where the current character is ($con = settlements DB)
 			$querySelect = "SELECT * FROM `" . $townTableName . "`";
-			$querySelect2 = mysqli_query($con,$querySelect);
+			$querySelect2 = mysqli_query($con, $querySelect);
 			while ($row = mysqli_fetch_assoc($querySelect2))
 			{
 				$currentRow = explode('.', $row['charactersHere']);
@@ -166,11 +166,12 @@ require_once ("../model/database.php");
 
 		foreach($results as $key => $result){
 			$t = $result["townName"];
+			$tName = str_replace("_", " ", $t);
 			$townId = $result["town_id"];
 			$c = $cName;
 			//$result["maxResidents"] - $result["amountResidents"] >= $characterAmount
 			if($result["maxResidents"] - $result["amountResidents"] >= $characterAmount){
-				$availableTown = "<tr><td>" . $t . "</td><td>[" . $result["amountResidents"] . "/" . $result["maxResidents"] . "]  </td><td><form method='post' action='../functions/addToTown.php'><input type='hidden' name='newTown' value=$townId><input type='hidden' name='char' value=$c><button type='submit' value='Submit' class='joinButton'><span>Join Town</span></button></form></td></tr>";
+				$availableTown = "<tr><td>" . $tName . "</td><td>[" . $result["amountResidents"] . "/" . $result["maxResidents"] . "]  </td><td><form method='post' action='../functions/addToTown.php'><input type='hidden' name='newTown' value=$townId><input type='hidden' name='char' value=$c><button type='submit' value='Submit' class='joinButton'><span>Join Town</span></button></form></td></tr>";
 				echo $availableTown;
 			}
 		}

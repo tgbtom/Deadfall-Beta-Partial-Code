@@ -254,7 +254,7 @@ if ($foundItem)
 					//... Kill zombies based on weapon stats and perform other calculations regarding weapon statistics. Weapon Break not for first round beta
 					$kills = ($zedCount > $minKills) ? mt_rand($minKills, min($maxKills, $zedCount)) : $zedCount;
 					$newZeds = (($zedCount - $kills) < 0) ? 0 : ($zedCount - $kills);
-					$addThisBulletin = $char . ' killed ' . $kills . ' zed(s) with ' . $itemName;
+					$addThisBulletin = '<red>' . $char . ' killed ' . $kills . ' zed(s) with ' . $itemName . '</red>';
 					$newBulletin = ($oldBulletin == NULL) ? $addThisBulletin : $oldBulletin . '.' . $addThisBulletin;
 					
 					$query = 'UPDATE ' . $townTableName . ' SET `zeds` = :newZeds, `bulletin` = :newBulletin WHERE `x` = :x AND `y` = :y';

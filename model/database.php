@@ -45,6 +45,33 @@ class Database {
 }
 
 class Towns {
+
+    public $town_id, $townName, $amountResidents, $maxResidents, $readyResidents, $deadResidents, $townFull, $buildings, $bulletin, $hordeSize, $defenceSize, $dayNumber;
+
+    public function __construct($town_id){
+
+        $dbCon = Database::getDB();
+
+        $query = "SELECT * FROM `towns` WHERE `town_id` = :townId";
+        $statement = $dbCon->prepare($query);
+        $statement->bindValue(":townId", $townId);
+        $statement->execute();
+        $result = $statement->fetch();
+        $statement->closeCursor();
+
+        $this->town_id = $town_id;
+        $this->townName = $result["townName"];
+        $this->amountResidents = $result["amountResidents"];
+        $this->maxResidents = $result["maxResidents"];
+        $this->readyResidents = $result["readyResidents"];
+        $this->deadResidents = $result["deadResidents"];
+        $this->townFull = $result["townFull"];
+        $this->buildings = $result["buildings"];
+        $this->bulletin = $result["bulletin"];
+        $this->hordeSize = $result["hordeSize"];
+        $this->defenceSize = $result["defenceSize"];
+        $this->dayNumber = $result["dayNumber"];
+    }
     
     public static function isTownCreated($townId){
         $dbCon = Database::getDB();
@@ -112,6 +139,107 @@ class Towns {
         $statement2->execute();
         $statement2->closeCursor();
     }
+
+    public static function calculateDailyDangerValues($townId){
+        $dbCon = Database::getDB();
+
+        $townTableName = self::getTownTableName($townId);
+        $query = "SELECT * FROM " . $townTableName;
+        $statement = $dbCon->prepare($query);
+        $statement->execute();
+        $results = $statement->fetchAll();
+        $statement->closeCursor();
+
+        foreach ($results as $result){
+            $dangerValue = getDangerLevel($result['x'], $result['y'], $townId);
+            $dangerQuery = "UPDATE `" . $townTableName . "` SET `danger_value` = :danger WHERE `id` = :currentId";
+            $dangerStatement = $dbCon->prepare($dangerQuery);
+            $dangerStatement->bindValue(":danger", $dangerValue);
+            $dangerStatement->bindValue(":currentId", $result['id']);
+            $dangerStatement->execute();
+            $dangerStatement->closeCursor();
+        }
+    }
+
+    /*
+    public static function getDangerValue($x, $y, $townId){
+        $dbCon = Database::getDB();
+        $townTableName = self::getTownTableName($townId);
+
+        $query = "SELECT * FROM " . $townTableName . " WHERE `x` = :x AND `y` = :y";
+        $statement = $dbCon->prepare($query);
+        $statement->bindValue(':x', $x);
+        $statement->bindValue(':y', $y);
+        $statement->execute();
+        $result = $statement->fetch();
+        $statement->closeCursor();
+
+        return $result['danger_value'];
+    } 
+
+    public static function lowerDangerValue($x, $y, $townId, $amountToReduce){
+        $currentDanger = self::getDangerValue($x, $y, $townId);
+        $newDanger = $currentDanger - $amountToReduce;
+
+        $dbCon = Database::getDB();
+        $townTableName = self::getTownTableName($townId);
+
+        $query = "UPDATE " . $townTableName . " SET `danger_value` = :danger WHERE `x` = :x AND `y` = :y";
+        $statement = $dbCon->prepare($query);
+        $statement->bindValue(':danger', $newDanger);
+        $statement->bindValue(':x', $x);
+        $statement->bindValue(':y', $y);
+        $statement->execute();
+        $statement->closeCursor();
+    }
+
+    public static function increaseDangerValue($x, $y, $townId, $amountToAdd){
+        $currentDanger = self::getDangerValue($x, $y, $townId);
+        $newDanger = $currentDanger + $amountToAdd;
+
+        $dbCon = Database::getDB();
+        $townTableName = self::getTownTableName($townId);
+
+        $query = "UPDATE " . $townTableName . " SET `danger_value` = :danger WHERE `x` = :x AND `y` = :y";
+        $statement = $dbCon->prepare($query);
+        $statement->bindValue(':danger', $newDanger);
+        $statement->bindValue(':x', $x);
+        $statement->bindValue(':y', $y);
+        $statement->execute();
+        $statement->closeCursor();
+    }
+
+    
+    public static function getControlPoints($x, $y, $townId){
+        $dbCon = Database::getDB();
+        $townTableName = self::getTownTableName($townId);
+
+        $query = "SELECT * FROM " . $townTableName . " WHERE `x` = :x AND `y` = :y";
+        $statement = $dbCon->prepare($query);
+        $statement->bindValue(':x', $x);
+        $statement->bindValue(':y', $y);
+        $statement->execute();
+        $result = $statement->fetch();
+        $statement->closeCursor();
+
+        return $result['control_points'];
+    }
+
+    public static function increaseControlPoints($x, $y, $townId, $amountToAdd){
+        $currentControl = self::getControlPoints($x, $y, $townId);
+        $newControl = $currentControl + $amountToAdd;
+
+        $dbCon = Database::getDB();
+        $townTableName = self::getTownTableName($townId);
+
+        $query = "UPDATE " . $townTableName . " SET `control_points` = :control WHERE `x` = :x AND `y` = :y";
+        $statement = $dbCon->prepare($query);
+        $statement->bindValue(':control', $newControl);
+        $statement->bindValue(':x', $x);
+        $statement->bindValue(':y', $y);
+        $statement->execute();
+        $statement->closeCursor();
+    }*/
 }
 
 class Character {

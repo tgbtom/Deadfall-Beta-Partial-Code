@@ -126,6 +126,7 @@ $currentAp = $charDetails['currentAP'];
 $maxAp = $charDetails['maxAP'];
 $townId = $charDetails['town_id'];
 $townName = Towns::getTownNameById($townId);
+$convertedTownName = str_replace("_", " ", $townName);
 
 $charObject = new Character($charDetails['id']);
 $previousChar = Character::getSequentialCharacter($charObject, "prev");
@@ -171,7 +172,7 @@ if (isset($dropAll)) {
 	</div>	
 	
 	<div class="infoSet">
-		<div class="infoSet1"><p><b>Town: </b><?php echo htmlspecialchars($townName)?></p></div>
+		<div class="infoSet1"><p><b>Town: </b><?php echo htmlspecialchars($convertedTownName)?></p></div>
 		<!-- <div class="infoSet1"><p><?php echo $readyRes . '/' . $aliveRes . ' Ready'?></p></div> -->
 		<div class="infoSet1"><p><?php echo '<img src="../images/icons/sword.png" title="Horde Size"> ' . $hordeSize?> | <?php echo $defenceSize . ' <img src="../images/icons/shield.png" title="Defence Amount"> '?></p></div>
 		
@@ -236,7 +237,7 @@ if (isset($dropAll)) {
 				}
 				elseif (checkUsability($itemsHeldArray[$i]) == 'Attack' && strpos($loc, 'outside') !== false && !($_SESSION['x'] == 0 && $_SESSION['y'] == 0)) //function is attack and location is outside AND out of town coords
 				{
-					echo '<input class="act_button" onclick="newAction(`' . checkUsability($itemsHeldArray[$i]) . '`, ' . $i . ')" type="submit" value="' . checkUsability($itemsHeldArray[$i]) . '">';					
+					echo '<input class="act_button" onclick="newAction(`' . checkUsability($itemsHeldArray[$i]) . '`, ' . $i . ')" type="submit" value="' . checkUsability($itemsHeldArray[$i]) . ' (1 AP)">';					
 				}
 				echo '</span></div>';
 			}

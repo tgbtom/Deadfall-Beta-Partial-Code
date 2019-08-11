@@ -8,6 +8,9 @@ $selected_name = filter_input(INPUT_POST, 'charName');
 $selected_gender = filter_input(INPUT_POST, 'gender');
 
 
+$validPattern = "/[a-zA-Z0-9]{" . strlen($selected_name) . "}/";
+$validName = preg_match($validPattern, $selected_name);
+
 //Need to check if the user already has a character by the given name, if they do then don't allow them to create one with that name!
 if(session_status() == PHP_SESSION_NONE){
     session_start();
@@ -38,12 +41,12 @@ else{
     $results = $check->fetchAll();
     $check->closeCursor();
     
-    if (sizeof($results) <= 0)
+    if (sizeof($results) <= 0 && $validName)
     {	
         $query = "INSERT INTO characters 
-        (`username`, `character`, `class`, `gender`, `level`, `experience`, `townName`, `items`, `itemsMass`, `maxItems`, `bonusItems`, `maxBonusItems`, `currentAP`, `maxAP`, `status`) 
+        (`username`, `character`, `class`, `gender`, `level`, `experience`, `town_id`, `items`, `itemsMass`, `maxItems`, `bonusItems`, `maxBonusItems`, `currentAP`, `maxAP`, `status`) 
         VALUES 
-        (:user, :character, :class, :gender, '0', '0', 'none', NULL, '0', '20', 'none', '0', :classAp, :classAp2, '3.7.11')";
+        (:user, :character, :class, :gender, '0', '0', NULL, NULL, '0', '20', 'none', '0', :classAp, :classAp2, '3.7.11')";
     
         //Establish how much AP the character  should  have, based on Class
         switch($selected_class){
@@ -76,7 +79,7 @@ else{
     }
     else
     {	
-        echo "Character name is taken";
+        echo "Character name is taken OR invalid";
     }
 }
 

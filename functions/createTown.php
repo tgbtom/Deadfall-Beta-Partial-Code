@@ -9,8 +9,9 @@ require_once("queryFunctions.php");
 $newTown = filter_input(INPUT_POST, 'newTown');
 
 ////VALIDATE THE TOWN NAME HERE
-$validPattern = "/[a-zA-Z]{" . strlen($newTown) . "}/";
+$validPattern = "/[a-zA-Z ]{" . strlen($newTown) . "}/";
 $validName = preg_match($validPattern, $newTown);
+$newTown = str_replace(" ", "_", $newTown);
 //validate that the town name is not taken already
 
 if ((isset($newTown) && $newTown != NULL && $newTown != '') && $validName)
@@ -39,6 +40,8 @@ function createSettlement($settlementName, $mapSize)
 	global $dbCon;	
 	global $con;		
 	global $root;
+
+	$convertedTownName = str_replace("_", " ", $newTown);
 	
 		
 	$defaultBuildingsString = "Defence.0.1:Perimeter Fence.0.0:Wooden Wall.0.0:Inner Wall.0.0:Trenches.0.0:Spike Pits.0.0:Wooden Support.0.0:Metal Patching.0.0:Sentry Tower.0.0:MG Nest.0.0:Supply.0.1:Water Reserve.0.0:Vegetable Garden.0.0:Production.0.1:Fabrikator Workshop.0.0";
@@ -50,7 +53,7 @@ function createSettlement($settlementName, $mapSize)
 	(:newTown, "0", "10", "0", "0", "0", :buildings, :bulletin, "300", "350", "1")';
 	$statement = $dbCon->prepare($query);
 	$statement->bindValue(':newTown', $newTown);
-	$statement->bindValue(':bulletin', $newTown . ' has been created!');
+	$statement->bindValue(':bulletin', $convertedTownName . ' has been created!');
 	$statement->bindValue(':buildings', $defaultBuildingsString);
 	$statement->execute();
 	$statement->closeCursor();
@@ -74,6 +77,8 @@ function createSettlement($settlementName, $mapSize)
 	`zeds` int(11) NOT NULL,
 	`lastKnownZed` int(11) NOT NULL,
 	`charactersHere` text NOT NULL,
+	`danger_value` int(11) NOT NULL DEFAULT '0',
+	`control_points` int(11) NOT NULL DEFAULT '0',
 	`bulletin` varchar(4000) DEFAULT 'Zone was created!.This is a test for the bulletin',
 	PRIMARY KEY (`id`)
 	)";
@@ -87,9 +92,11 @@ function createSettlement($settlementName, $mapSize)
 		//error creating the table
 	}
 
+	$dangerValue = getDangerLevel(-5, 5, $addedId);
+
 	//groundItems default is -1, representing no particular item
 	//OLD  $compilation = "INSERT INTO `" . $settlementName . "` (`id`, `coords`, `specialStructure`, `lootability`, `groundItems`, `zeds`, `lastKnownZed`, `charactersHere`) VALUES ('0', '-5,5', '', '10', '-1', '$zedSpawn', '0', '')";
-	$compilation = "INSERT INTO `" . $newTownTableName . "` (`id`, `x`, `y`, `specialStructure`, `lootability`, `groundItems`, `zeds`, `lastKnownZed`, `charactersHere`, `bulletin`) VALUES ('0', '-5', '5', '', '10', NULL, '$zedSpawn', '0', '', NULL)";
+	$compilation = "INSERT INTO `" . $newTownTableName . "` (`id`, `x`, `y`, `specialStructure`, `lootability`, `groundItems`, `zeds`, `lastKnownZed`, `charactersHere`, `danger_value`, `bulletin`) VALUES ('0', '-5', '5', '', '10', NULL, '$zedSpawn', '0', '', '$dangerValue', NULL)";
 
 	$loopAmt = $mapSize * $mapSize;
 	for ($index = 1; $index < $loopAmt; $index++) 		
@@ -123,26 +130,26 @@ function createSettlement($settlementName, $mapSize)
 		if ($x == 0 && $y == 0)
 		{
 			//If statement check skips ahead (-1) because otherwise it writes 0,0 then skips 1,0
-			$compilation .= ", ('$index', '$x', '$y', '', '10', '0.35,1.15', '0', '0', '', NULL)";
+			$compilation .= ", ('$index', '$x', '$y', '', '10', '0.35,1.15', '0', '0', '', '0', NULL)";
 			$x++;
 			$zedSpawn = 0;
 		}
 		else if ($x == 5)
 		{
-			$compilation .= ", ('$index', '$x', '$y', '', '10', NULL, '$zedSpawn', '0', '', NULL)";
+			$compilation .= ", ('$index', '$x', '$y', '', '10', NULL, '$zedSpawn', '0', '', '0', NULL)";
 			$y--;
 			$x = -5;
 			$zedSpawn = 0;
 		}
 		else if ($index == $loopAmt - 1)
 		{
-			$compilation .= ", ('$index', '$x', '$y', '', '10', NULL, '$zedSpawn', '0', '', NULL);";
+			$compilation .= ", ('$index', '$x', '$y', '', '10', NULL, '$zedSpawn', '0', '', '0', NULL);";
 			$x++;
 			$zedSpawn = 0;
 		}
 		else
 		{
-			$compilation .= ", ('$index', '$x', '$y', '', '10', NULL, '$zedSpawn', '0', '', NULL)";
+			$compilation .= ", ('$index', '$x', '$y', '', '10', NULL, '$zedSpawn', '0', '', '0', NULL)";
 			$x++;
 			$zedSpawn = 0;
 		}
@@ -153,6 +160,9 @@ function createSettlement($settlementName, $mapSize)
 		$hordeSize = getHordeSize($newTown);
 		$query = "UPDATE `towns` SET `hordeSize` = '" . $hordeSize . "' WHERE `town_id` = '" . $addedId . "'";
 		Database::sendQuery($query);
+
+		Towns::calculateDailyDangerValues($addedId);
+
 		$location = '/inTown/?locat=join&selectedChar=' . $_SESSION['char_id'] . '&tempChar=' . $_SESSION['char'];	
         echo '<script>window.location = "' . $root . $location .'";</script>';
 	}

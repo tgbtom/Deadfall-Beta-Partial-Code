@@ -27,10 +27,11 @@ if ($result1)
 	$_SESSION['char'] = $newCharObject->character;
 
 
-	$townName = $result1['townName'];
+	$townId = $result1['town_id'];
+	$townTableName = Towns::getTownTableName($townId);
 	
 	//find new character's x and Y co-ords and update SESSIONS [X and Y]
-	$query2 = 'SELECT * FROM `' . $townName . '`';
+	$query2 = 'SELECT * FROM `' . $townTableName . '`';
 	$statement2 = $dbCon->prepare($query2);
 	$statement2->execute();
 	$result2 = $statement2->fetchAll();

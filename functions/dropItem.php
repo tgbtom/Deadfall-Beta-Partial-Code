@@ -45,7 +45,7 @@ else
 	$query1 = 'SELECT * FROM `characters` WHERE `username` = :username AND `id` = :charId';
 	$statement1 = $dbCon->prepare($query1);
 	$statement1->bindValue(':username', $user);
-	$statement1->bindValue(':id', $charId);
+	$statement1->bindValue(':charId', $charId);
 	$statement1->execute();
 	$result1 = $statement1->fetch();
 	$statement1->closeCursor();
@@ -85,7 +85,7 @@ else
 		$statement2->bindValue(':newItems', $newItems);
 		$statement2->bindValue(':newMass', $newMass);
 		$statement2->bindValue(':username', $user);
-		$statement2->bindValue(':id', $charId);
+		$statement2->bindValue(':charId', $charId);
 		$statement2->execute();
 		$statement2->closeCursor();
 

@@ -44,7 +44,7 @@ $_SESSION['y'] = '';
 	var name="charName";
 	var town="No Town";
 
-		function info()
+		function validateInfo()
 			{
 				var a=document.forms["creation"]["charName"].value;
 				var b=document.forms["creation"]["gender"].value;
@@ -64,7 +64,8 @@ $_SESSION['y'] = '';
 				document.getElementById("name").value = name;
 				document.getElementById("name2").innerHTML = name;
 				document.getElementById("name2").style.textAlign = "center";
-				document.getElementById("town").innerHTML = arg2;
+				//replace underscored with spaces for display
+				document.getElementById("town").innerHTML = arg2.replace(/_/g, " ");
 				document.getElementById("class").innerHTML = arg3;
 				document.getElementById("town2").innerHTML = "Town: ";
 				document.getElementById("class2").innerHTML = "Class: ";
@@ -175,13 +176,14 @@ $_SESSION['y'] = '';
 				$name = $result["character"];
 				$tips = $result["id"];
 				$tips2 = Towns::getTownNameById($townId);
+				$convertedTownName = str_replace("_", " ", $tips2);
 				$tips3 = lcfirst($result["class"]); //returns class name with first character as lowercase
 				$classImg = $root . "/images/icons/" . lcfirst($tips3) . ".png"; 
 				if($tips2 == NULL){
-					echo "<tr id='" . $tips . "' class='clickable' onclick=displayInfo('$name','$tips','$tips2','$tips3')>" . "<td>Lvl: " . $result["level"] . "</td><td>" . $result["character"] . "</td><td><img src='$classImg'> " . $result["class"] . "</td><td>" . $tips2 . "</td><td><input type='checkbox' form='join' name='selectedChars[]' value=" . $result["id"] . "></td></tr>";
+					echo "<tr id='" . $tips . "' class='clickable' onclick=displayInfo('$name','$tips','$tips2','$tips3')>" . "<td>Lvl: " . $result["level"] . "</td><td>" . $result["character"] . "</td><td><img src='$classImg'> " . $result["class"] . "</td><td>" . $convertedTownName . "</td><td><input type='checkbox' form='join' name='selectedChars[]' value=" . $result["id"] . "></td></tr>";
 				}
 				else{
-					echo "<tr id='" . $tips . "' class='clickable' onclick=displayInfo('$name','$tips','$tips2','$tips3')>" . "<td>Lvl: " . $result["level"] . "</td><td>" . $result["character"] . "</td><td><img src='$classImg'> " . $result["class"] . "</td><td colspan='2'>" . $tips2 . "</td></tr>";
+					echo "<tr id='" . $tips . "' class='clickable' onclick=displayInfo('$name','$tips','$tips2','$tips3')>" . "<td>Lvl: " . $result["level"] . "</td><td>" . $result["character"] . "</td><td><img src='$classImg'> " . $result["class"] . "</td><td colspan='2'>" . $convertedTownName . "</td></tr>";
 				}
 			}
 		}
@@ -219,7 +221,7 @@ $_SESSION['y'] = '';
 			
 			<b><div class="login-top"></b>
 			
-				<form name="creation" action="<?php echo $root . "/functions/createChar.php";?>" method="post" onsubmit="return validateinfo()">
+				<form name="creation" action="<?php echo $root . "/functions/createChar.php";?>" method="post" onsubmit="return validateInfo()">
                                     <input type="text" name="charName" value="" placeholder="Character Name">
 					<br>
 					<input type="radio" name="gender" value="Male" checked> MALE
