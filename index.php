@@ -33,7 +33,7 @@
 <body>
 	<div class="Container">
 		<div class="header">
-		<img src="images/DeadFallLogo2.png">
+		<img src="images/DeadfallBanner.png">
 		</div>
 		
 		<div class="news">
@@ -77,7 +77,7 @@
 					<input type="text" placeholder="Username" name="user" value="" required></br>
 					<input type="password" placeholder="Password" name="pass" value="" required></br>
 					<a href="<?php echo htmlspecialchars($root); ?>" class="forgot">Forgot your password?</a></br>
-					<input type="submit" value="Login Now!">
+					<input type="submit" value="Login">
 				</form>
 				
 			
@@ -86,7 +86,7 @@
 			<div class="login-bottom">
 			
 				<form action=".">	
-					<input type="submit" value="Register Now!" disabled>
+					<input type="submit" value="Register" disabled>
 				</form>
 			
 			</div>

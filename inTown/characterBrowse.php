@@ -6,19 +6,22 @@ $_SESSION['y'] = '';
 ?>
 
 <html>
-<title>Character Browse/Create</title>
 <head>
+<title>Character Browse/Create</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
 .data1
 {
 	border: 1px solid black;
 	background-color: #A5907E;
+	height: auto;
 }
 .data2
 {
 	border: 1px solid black; background-color:#c7966b;
 	background-color: #A5907E;
+	height: auto;
 }
 .data3
 {
@@ -27,6 +30,7 @@ $_SESSION['y'] = '';
 	padding: 1%; 
 	margin-bottom: 4%; 
 	background-color: #A5907E;
+	height: auto;
 }
 
 .clickable
@@ -36,6 +40,10 @@ $_SESSION['y'] = '';
 	border-right:1px solid black; 
 	background-color: #A08C7A;
 }
+
+ .charClass:checked + .spacer{
+	box-shadow: 0 0 1px 1px #2ecc71;
+ }
 
 </style>
 
@@ -110,8 +118,7 @@ $_SESSION['y'] = '';
 					
 				//makes second column for table become visible
 				var vis = document.getElementsByClassName("data2");
-				var i2;
-					for (i2 = 0; i2 <= vis.length; i2++)
+					for (var i2 = 0; i2 <= vis.length - 1; i2++)
 					{
 						vis[i2].style.visibility = "visible";
 					}
@@ -143,7 +150,7 @@ $_SESSION['y'] = '';
 	<div class="Container">
 	
 		<div class="header">
-		<img src="../images/DeadFallLogo2.png">
+		<img src="../images/DeadfallBanner.png">
 		</div>
 		
 		<div class="browseBlock">
@@ -152,7 +159,7 @@ $_SESSION['y'] = '';
 		
 		<ul>
 		<table style="" class="browseCharsTable" cellspacing="0">
-		<tr><td style='border: 1px solid black;'>Level</td><td style='border: 1px solid black;'>Name</td><td style='border: 1px solid black;'>Class</td><td style='border: 1px solid black;'>Town</td></tr>
+		<tr><td style='border: 1px solid black;'>Level</td><td style='border: 1px solid black;'>Name</td><td style='border: 1px solid black;'>Class</td><td style='border: 1px solid black;' colspan="2">Town</td></tr>
 		
 		<?php 
 		
@@ -224,24 +231,34 @@ $_SESSION['y'] = '';
 				<form name="creation" action="<?php echo $root . "/functions/createChar.php";?>" method="post" onsubmit="return validateInfo()">
                                     <input type="text" name="charName" value="" placeholder="Character Name">
 					<br>
-					<input type="radio" name="gender" value="Male" checked> MALE
-					<input type="radio" name="gender" value="Female" disabled> FEMALE
+					<label><input type="radio" name="gender" value="Male" checked> MALE </label>
+					<label><input type="radio" name="gender" value="Female" disabled> FEMALE </label>
 					<br><br>
-					<div class="spacer"><input type="radio" name="charClass" value="Survivor" checked><img src='../images/icons/survivor.png'> Survivor</div>
-					<div class="spacer2"><input type="radio" name="charClass" value="Builder"><img src='../images/icons/builder.png'> Builder </div>
-					<div class="spacer data3"><p class="caption">The Survivor class is an all around class. Survivors begin with 16 AP rather than 12 but have no special abilities.</p></div>
-					<div class="spacer2 data3"><p class="caption">The Builder class is for characters who want to focus on construction and building, AP is twice effective when constructing.</p></div>
-					<div class="spacer"><input type="radio" name="charClass" value="Runner" disabled><img src='../images/icons/runner.png'> Runner -- No  Effect</div>
-					<div class="spacer2"><input type="radio" name="charClass" value="Looter" disabled><img src='../images/icons/looter.png'> Looter -- No  Effect</div>
-					<div class="spacer data3"><p class="caption">The Runner class is for characters who want to focus on exploration and travelling distances from town. Runners consume less AP when moving around.</p></div>
-					<div class="spacer2 data3"><p class="caption">The Looter class is for characters who want to focus on looting and bringing helpful resources into town for constructions.</p></div>
+
+					<div class="spacerCombo">
+					<label><div class="spacer"><input type="radio" class="charClass" name="charClass" value="Survivor" checked><img src='../images/icons/survivor.png'> Survivor</div>
+					<div class="spacer2 data3" id="survivorTag"><p class="caption">The Survivor class is an all around class. Survivors begin with 16 AP rather than 12 but have no special abilities.</p></div></label>
+					</div>
+
+					<div class="spacerCombo">
+					<label><div class="spacer"><input type="radio" class="charClass" name="charClass" value="Builder"><img src='../images/icons/builder.png'> Builder </div>
+					<div class="spacer2 data3" id="builderTag"><p class="caption">The Builder class is for characters who want to focus on construction and building, AP is twice effective when constructing.</p></div></label>
+					</div>
+
+					<div class="spacerCombo">
+					<label><div class="spacer"><input type="radio" class="charClass" name="charClass" value="Runner" disabled><img src='../images/icons/runner.png'> Runner -- Coming Soon</div>
+					<div class="spacer2 data3"><p class="caption">The Runner class is for characters who want to focus on exploration and travelling distances from town. Runners consume less AP when moving around.</p></div></label>
+					</div>
+
+					<div class="spacerCombo">
+					<label><div class="spacer"><input type="radio" class="charClass" name="charClass" value="Looter" disabled><img src='../images/icons/looter.png'> Looter -- Coming Soon</div>
+					<div class="spacer2 data3"><p class="caption">The Looter class is for characters who want to focus on looting and bringing helpful resources into town for constructions.</p></div></label>
+					</div>
+					
 					<input type="submit" value="Create!">
 				</form>
 				
-			
 			</div>
-			</details>
-			
 		</div>
 		</details>
 		
