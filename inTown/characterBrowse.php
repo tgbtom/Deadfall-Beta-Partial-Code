@@ -236,12 +236,12 @@ $_SESSION['y'] = '';
 					<br><br>
 
 					<div class="spacerCombo">
-					<label><div class="spacer"><input type="radio" class="charClass" name="charClass" value="Survivor" checked><img src='../images/icons/survivor.png'> Survivor</div>
+					<label><div class="spacer"><input type="radio" class="charClass" name="charClass" value="Survivor" required><img src='../images/icons/survivor.png'> Survivor</div>
 					<div class="spacer2 data3" id="survivorTag"><p class="caption">The Survivor class is an all around class. Survivors begin with 16 AP rather than 12 but have no special abilities.</p></div></label>
 					</div>
 
 					<div class="spacerCombo">
-					<label><div class="spacer"><input type="radio" class="charClass" name="charClass" value="Builder"><img src='../images/icons/builder.png'> Builder </div>
+					<label><div class="spacer"><input type="radio" class="charClass" name="charClass" value="Builder" required><img src='../images/icons/builder.png'> Builder </div>
 					<div class="spacer2 data3" id="builderTag"><p class="caption">The Builder class is for characters who want to focus on construction and building, AP is twice effective when constructing.</p></div></label>
 					</div>
 

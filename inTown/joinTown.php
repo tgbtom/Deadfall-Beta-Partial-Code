@@ -106,6 +106,7 @@ require_once ("../model/database.php");
 <head>
 <link rel="stylesheet" type="text/css" href="../mainDesign.css">
 <link rel="stylesheet" type="text/css" href="../css/joinTown.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <!-- source below grants access to JQuery,through Microsoft network (Can download Jquery file and host it through the website too) -->
 <!-- <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.3.min.js"></script> -->
 </head>

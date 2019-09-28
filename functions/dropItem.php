@@ -2,6 +2,9 @@
 require_once ("../connect.php");
 require_once ("./verifyLogin.php");
 include ("../data/items.php");
+require_once ("../model/database.php");
+
+$dbCon = Database::getDB();
 
 //gets the user and current character, and stores them in local variables
 $user = $_SESSION['login'];

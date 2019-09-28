@@ -168,22 +168,21 @@ if (isset($dropAll)) {
 ?>
 
 	<div class="header">
-	<a href="<?php echo "../inTown/?locat=inTown"; ?>"><img src="../images/DeadFallLogo2.png"></a>
+	<a href="<?php echo "../inTown/?locat=inTown"; ?>"><img src="../images/DeadfallBanner.png"></a>
 	</div>	
 	
 	<div class="infoSet">
+		<div class="headerTop">
 		<div class="infoSet1"><p><b>Town: </b><?php echo htmlspecialchars($convertedTownName)?></p></div>
-		<!-- <div class="infoSet1"><p><?php echo $readyRes . '/' . $aliveRes . ' Ready'?></p></div> -->
 		<div class="infoSet1"><p><?php echo '<img src="../images/icons/sword.png" title="Horde Size"> ' . $hordeSize?> | <?php echo $defenceSize . ' <img src="../images/icons/shield.png" title="Defence Amount"> '?></p></div>
 		
-		<div class="infoset2"><p><?php echo "<b>User:</b> " . htmlspecialchars($playerName)?></p></div>
-		<div class="infoset2"><p><b>Character: </b><img src="../images/leftArrow.png" onclick=changeChar(<?php echo $previousChar->id; ?>) class="headNavArrowLeft" title="<?php echo $previousChar->character; ?>"> <?php echo htmlspecialchars($charName)?> <img src="../images/rightArrow.png" onclick=changeChar(<?php echo $nextChar->id; ?>) title ="<?php echo $nextChar->character; ?>" class="headNavArrowRight"> | 
+		<div class="infoSet2"><p><?php echo "<b>User:</b> " . htmlspecialchars($playerName)?></p></div>
+		<div class="infoSet2"><p><b>Character: </b><img src="../images/leftArrow.png" onclick=changeChar(<?php echo $previousChar->id; ?>) class="headNavArrowLeft" title="<?php echo $previousChar->character; ?>"> <?php echo htmlspecialchars($charName)?> <img src="../images/rightArrow.png" onclick=changeChar(<?php echo $nextChar->id; ?>) title ="<?php echo $nextChar->character; ?>" class="headNavArrowRight"> | 
 		<?php echo ' Lv. ' . htmlspecialchars($charLevel)?> | 
 		<?php echo ' <img src="' . $root . '/images/icons/' . lcfirst(htmlspecialchars($charClass)) .  '.png" title="' . htmlspecialchars($charClass) . '"> ' . htmlspecialchars($charClass); ?></p></div>
-		<br>
 
 
-		<div class="infoSet2" style="clear: both;">
+		<div class="infoSet2" >
 			<p><b>Location: </b><?php echo $_SESSION['x'] . ", " . $_SESSION['y']?>
 
 			<?php 
@@ -195,7 +194,8 @@ if (isset($dropAll)) {
 		</p></div>
 		
 		
-		<div class="infoset2"><p><?php echo $currentAp . '/' . $maxAp . '<img src="../images/icons/ap.png" title="Action Points">'?></p></div>
+		<div class="infoSet2"><p><?php echo $currentAp . '/' . $maxAp . '<img src="../images/icons/ap.png" title="Action Points">'?></p></div>
+		</div>
 
 		<div class="headerBottom">
 		<div class="infoSet3"><p><b>Day</b>  <?php echo $dayNumber . " (" . $readyRes . '/' . $aliveRes . ' Ready)'?></p>
@@ -207,7 +207,7 @@ if (isset($dropAll)) {
 		</div>
 		
 		<!-- Display Inventory -->
-		<div class="infoset3"><form action="" method="post" style="display: inline;"><p><?php 
+		<div class="infoSet3"><form action="" method="post" style="display: inline;"><p><?php 
 		if ($itemsHeld != NULL)
 		{
 			echo '<u><b>Inventory</b></u> <grp id="carryCapacity">(' . $currentMass . '/' . $weightCapacity . ')</grp> <input type="image" style="top: 2px; position: relative; display: inline;" src="../images/icons/dropIcon.png" title="Drop All Items"><input type="hidden" name="dropAllItems" value="true"></form>';
@@ -248,10 +248,10 @@ if (isset($dropAll)) {
 		?>
 		</p></div>
 		<!-- Display Status Effects -->
-		<div class="infoset3"><p><?php 
+		<div class="infoSet3"><p><?php 
 		if ($status != NULL)
 		{
-			echo '<u><b>Status</b></u><form>';
+			echo '<u><b>Status</b></u></p><p><form>';
 			for ($i = 0; $i < sizeOf($statusArray); $i++)
 			{
 				$statusName = $statusMaster[$statusArray[$i]];
@@ -263,14 +263,18 @@ if (isset($dropAll)) {
 		</div>
 	</div>
 		
-	</div>
+	</div>	
 <div class="taskBox">
-    <a href="./?locat=construction"><img src="../images/construction.png" title="Construction"></a>
-	<a href="./?locat=special"><img src="../images/special.png" title="Special Structures"></a>
-    <a href="./?locat=warehouse"><img src="../images/storage.png" title="Warehouse"></a>
-    <a href="./?locat=citizens"><img src="../images/citizens.png" title="Citizens"></a>
-    <a href="./?locat=character"><img src="../images/stats.png" title="Character Info"></a>
-    <a href="./?locat=outside"><img src="../images/outside.png" title="Outside Map"></a>
+	<div>
+		<a href="./?locat=construction"><img src="../images/construction.png" title="Construction"></a>
+		<a href="./?locat=special"><img src="../images/special.png" title="Special Structures"></a>
+		<a href="./?locat=warehouse"><img src="../images/storage.png" title="Warehouse"></a>
+	</div>
+	<div>
+    	<a href="./?locat=citizens"><img src="../images/citizens.png" title="Citizens"></a>
+    	<a href="./?locat=character"><img src="../images/stats.png" title="Character Info"></a>
+    	<a href="./?locat=outside"><img src="../images/outside.png" title="Outside Map"></a>
+	</div>
 </div>
 
 <script type="text/javascript">

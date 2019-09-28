@@ -5,20 +5,37 @@
  * @author Dingo
  */
 
+
 class Structure {
-    private $s_name, $s_category, $s_requirement, $s_ap_cost, $s_item_costs, $s_defence, $s_max_level, $s_description, $s_indentation;
+    public $s_name;
+    private $s_category, $s_requirement, $s_ap_cost, $s_item_costs, $s_defence, $s_max_level, $s_description, $s_indentation;
     
-    public function __construct($s_name, $s_category, $s_requirement, $s_ap_cost, $s_item_costs, $s_defence, $s_max_level, $s_description, $s_indentation)
+    public function __construct($s_name)
     {
+        
         $this->s_name = $s_name;
-        $this->s_category = $s_category;
-        $this->s_requirement = $s_requirement;
-        $this->s_ap_cost = $s_ap_cost;
-        $this->s_item_costs = $s_item_costs;
-        $this->s_defence = $s_defence;
-        $this->s_max_level = $s_max_level;
-        $this->s_description = $s_description;
-        $this->s_indentation = $s_indentation;
+        global $buildingsInfo;
+        foreach($buildingsInfo as $currentCheck){
+            if ($currentCheck[0] == $s_name){
+                $this->s_category = $currentCheck[1];
+                $this->s_requirement = $currentCheck[2];
+                $this->s_ap_cost = $currentCheck[3];
+                $this->s_item_costs = $currentCheck[4];
+                $this->s_defence = $currentCheck[5];
+                $this->s_max_level = $currentCheck[6];
+                $this->s_description = $currentCheck[7];
+                $this->s_indentation = $currentCheck[8];
+            }
+        }
+
+        // $this->s_category = $s_category;
+        // $this->s_requirement = $s_requirement;
+        // $this->s_ap_cost = $s_ap_cost;
+        // $this->s_item_costs = $s_item_costs;
+        // $this->s_defence = $s_defence;
+        // $this->s_max_level = $s_max_level;
+        // $this->s_description = $s_description;
+        // $this->s_indentation = $s_indentation;
     }
     
     public function getName()

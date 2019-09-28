@@ -8,6 +8,7 @@ $errorMessage = FILTER_INPUT(INPUT_GET, 'e');
 <head>
 
 <link rel="stylesheet" type="text/css" href="mainDesignTown.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <?php 
 

@@ -6,7 +6,7 @@ function colourizeRarity(){
 				elements[i].style.color = "gray";
 				break;
 			case "Uncommon":
-				elements[i].style.color = "darkgreen";
+				elements[i].style.color = "#66CD48";
 				break;
 			case "Rare":
 				elements[i].style.color = "blue";

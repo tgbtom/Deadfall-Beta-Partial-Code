@@ -7,6 +7,10 @@ and open the template in the editor.
     Created on : Dec 7, 2018, 11:17:45 PM
     Author     : Dingo
 */
+
+.testBox *{
+	margin: auto;
+}
         .lootButton {
         display: inline-block;
         border-radius: 4px;
@@ -16,7 +20,7 @@ and open the template in the editor.
         text-align: center;
         font-size: 16px;
         padding: 5px;
-        width: 150px;
+        width: 125px;
         transition: all 0.5s;
         cursor: pointer;
         margin: 5px;
@@ -76,38 +80,76 @@ and open the template in the editor.
 	.data {border-bottom:1px solid black; background-color:#6d5846;}
         .data2 {border-bottom:1px solid black;}
         .data3 {border-bottom:1px solid black;}
-	#leftArrow {position: relative; top: 10px; left: 110px;}
+	/* #leftArrow {position: relative; top: 10px; left: 110px;}
 	#rightArrow {position: relative; top: 10px; left: 231px;}
-	#upArrow {position: relative; top: -111px; left: 189px;}
-	#downArrow {position: relative; top: 121px; left: 149px;}
+	#upArrow {position: relative; top: -181px; left: 189px;}
+	#downArrow {position: relative; top: 121px; left: 149px;} */
 	.Arrow:hover {filter:brightness(0.8);}
         .bulletin {border: 1px solid black; width: 100%; height: 200px; padding: 5px; margin: 0px; overflow-y: auto; background-color:#6D5A4A; box-shadow: 7px 7px #333333; height: 20px;}
 	.bulletinHead {text-align: center; border: 1px solid black; height: 15px; padding: 5px; width: 95%; margin-top: 5px; overflow: hidden;}
-        .bulletinDiv{float: left; max-height: 200px; width: 75%; position: relative; top: 90px; margin-left: 5px; overflow-y: auto; box-shadow: 7px 7px #333333}
+        .bulletinDiv{
+                max-height: 200px; 
+                width: 75%;
+                min-width: 300px;
+                position: relative; 
+                top: 8px; 
+                overflow-y: auto; 
+                box-shadow: 5px 5px #333333}
 	.topBulletin {text-align: center; margin: 0px; padding: 0px; width: inherit;}
         #lootWarning{color: red; font-weight: bold;}
         #lootButton{margin: auto; text-align: center;}
         #lootForm{text-align: center;}
         #lootCell{text-align: center;}
         .centralBox{height: 600px;}
-        .fillerBox{border: 1px solid black; width: 25%; height: 280px; float: left; position: relative; top: 50px; background-color:#6D5A4A; box-shadow: 7px 7px #333333; margin-left: 5px; overflow-y: visible;}
+
+        .mapCanvas{
+                display: block;
+                margin: auto;
+                width: 176px;
+        }
+
+        .mapCanvasCollect{
+                width:95%;
+        }
+
+        .map{
+                box-shadow: 7px 7px #333333; 
+                /* position: relative; 
+                left: 15px; 
+                top: 75px; */
+        }
+
+        .fillerBox{ 
+                width: 100%;
+                min-width: 170px;
+                background-color:#6D5A4A; 
+                box-shadow: 7px 7px #333333; 
+                margin-left: 5px;
+                margin-right: 20%;
+                margin-top: 25px;
+                overflow-y: visible;
+                display: flow-root;
+        }
+        .fillerBox *{
+                margin:auto;
+                text-align: center;
+                padding-top: 4px;
+                padding-bottom: 4px;
+        }
 
 	.selected {border: 1px solid black;}
         .notSelected {border: 0px solid red;}
         
         .remoteInfo{
         float: right;
-	border: 1px solid black;
+        border: 1px solid black;
 	border-collapse: collapse;
-	width: 195px;
+	width: 100%;
 	height: 125px;
-	margin: 10px;
 	overflow-x: auto;
 	overflow-y: scroll;
         background-color:#6D5A4A;
-        box-shadow: 7px 7px #333333;
         clear: right;
-        position: relative;
 }
 
 /* Popup container */
@@ -136,6 +178,10 @@ and open the template in the editor.
     left: 50%;
     margin-left: -80px;
     border: 1px solid black;
+}
+
+.popuptexta :nth-child(n+2){
+        margin-top: 15px;
 }
 
 /* Popup arrow */
@@ -196,4 +242,77 @@ and open the template in the editor.
 .act_button:active {
 	position:relative;
 	top:1px;
+}
+
+.test{
+        /* border: 1px solid black; */
+}
+.test1{
+        width: 35%;
+        min-width: 248px;
+        display: inline-block;
+        margin: auto;
+        position: relative;
+        left: -16px;
+}
+.test2{
+        width:30%;
+        min-width: 150px;
+        display: inline-block;
+        margin: auto;
+        margin-bottom: 20px;
+        position: relative;
+        left: -16px;
+}
+.test3{
+        width:25%;
+        min-width: 150px;
+        text-align: center;
+        display: inline-block;
+        margin: auto;
+        position: relative;
+        left: -16px;
+}
+.test4{
+        width:100%;
+        display: inline-block;
+        margin: auto;
+}
+
+.testBox
+{
+	display: inline-block;
+	width: 85%;
+	background-color: #A5907E;
+	border: 2px solid #000000;
+	padding: 15px;
+	margin: 25px auto;
+	margin-left: 5%;
+	color: black;
+        box-shadow: 7px 7px #333333;
+        
+        display: flex;
+        flex-wrap: wrap;
+        justify-content:space-between;
+}
+
+
+.test1 table{
+        width: 100%;
+        text-align:center;
+}
+
+.zoneInfo
+{
+	border: 1px solid black;
+	border-collapse: collapse;
+        width: 150px;
+        width: 100%;
+	height: 125px;
+	margin: 10px;
+	overflow-x: auto;
+	overflow-y: scroll;
+	background-color:#6D5A4A;
+	box-shadow: 7px 7px #333333;
+
 }

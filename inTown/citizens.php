@@ -15,6 +15,7 @@ if (isset($errorMessage))
 <head>
 
 <link rel="stylesheet" type="text/css" href="mainDesignTown.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <?php 
 
@@ -40,18 +41,26 @@ $charClass = $charObject->class;
 
 	<link rel="stylesheet" type="text/css" href="mainDesignTown.css">
 	<style>
-	table {width:100%; border-collapse: collapse;}
+	table {width:95%; border-collapse: collapse; table-layout:fixed;}
 	table, tr, td {color:#120B06; padding:2px;}
 	input.number {width:40px;}
 	.data {width:150px;}
-	tr {}
+	tr, table tbody, table thead {
+		width: 95%;
+	}
+
+	table td{
+    	overflow: hidden;
+    	text-overflow: ellipsis;
+    	white-space: nowrap;
+	}
 	style1 {font-size:0.8em;}
 	.samePlayer
-	{cursor: pointer; background-color: #998574; height: 1px; border: 1px solid #120B06;}
+	{cursor: pointer; background-color: #998574; height: 1px; border: 1px solid #120B06; vertical-align: top;}
 	.samePlayer2
 	{float: left; vertical-align: text-top; height: 1%;}
 	.sameChar
-	{ background-color: #BAA28D; height: 1px; border: 1px solid #120B06;}
+	{ background-color: #BAA28D; height: 1px; border: 1px solid #120B06; vertical-align: top;}
 	.sameChar2
 	{float: left; vertical-align: text-top; height: 1%;}
 	.head

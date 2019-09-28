@@ -94,11 +94,12 @@ body
 	padding-top: 20px;
 	width: 30%;
 	margin: 5% auto;
+	margin-left: 7.5%;
 	background-color: #A5907E;
 	font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
 	color: black;
 	text-align: center;
-	float: right;
+	float: left;
 	border:2px solid black;
 	box-shadow: 7px 7px #333333;
 }
@@ -161,10 +162,9 @@ body
 {
 	padding-top: 10px;
 	width: 50%;
-	min-width: 380px;
+	min-width: 400px;
 	height: 360px;
-	margin: 5% auto;
-	margin-left: 5%; 
+	margin: 25px 7.5% 25px 0%;
 	float: left;
 	color: black;
 	background-color: #A5907E;
@@ -203,8 +203,7 @@ body
 	display: inline-block;
 	text-align: center;
 	padding-top: 30px;
-	margin: 5% auto;
-	margin-left: 5%;
+	margin: 25px 0% 25px 0%;
 	width: 35%;
 	min-width: 200px;
 	height: 200px;

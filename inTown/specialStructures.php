@@ -16,6 +16,7 @@ if (isset($errorMessage))
 
 <link rel="stylesheet" type="text/css" href="mainDesignTown.css">
 <link rel="stylesheet" type="text/css" href="../css/specialStructures.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <?php 
 

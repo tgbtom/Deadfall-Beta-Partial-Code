@@ -18,10 +18,6 @@ switch ($locat)
 	include ('construction.php');
 	break;
 	
-	case 'construction':
-	include ('construction.php');
-	break;
-	
 	case 'warehouse':
 	include ('warehouse.php');
 	break;
