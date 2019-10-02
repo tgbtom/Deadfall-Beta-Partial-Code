@@ -105,8 +105,8 @@ $resources = array ();
 	}
 	?>
 	
-	
 	<h3 align='center' style='text-decoration: underline'>Warehouse</h3>
+	<div class="storageCategory">
 	<h4 style='text-decoration: underline'>Resources</h4>
 	<?php
 	if (isset($resources))
@@ -121,10 +121,15 @@ $resources = array ();
                     echo '<input type="hidden" name="itemName2" value="' . $itemsMaster[$itemId][0] . '">';
                     echo '<input type="image" title="' . $itemsMaster[$itemId][0] . '" src="../images/items/' . $itemsMaster[$itemId][0] . '.png" alt="submit">x' . $itemAmount;
                     echo '</form>'; 
-                }
+		}
+		if(count($resources) == 0){
+			echo "<p>No <i>Resources</i> in the Warehouse</p>";
+		}
 	}
 	?>
-	<hr style='border: 1px solid black;'>
+	</div>
+
+	<div class="storageCategory">
 	<h4 style='text-decoration: underline'>Consumables</h4>
 	<?php
 	if (isset($consumables))
@@ -140,11 +145,16 @@ $resources = array ();
                     echo '<input type="hidden" name="itemName2" value="' . $itemsMaster[$itemId][0] . '">';
                     echo '<input type="image" title="' . $itemsMaster[$itemId][0] . '" src="../images/items/' . $itemsMaster[$itemId][0] . '.png" alt="submit">x' . $itemAmount . ' ';
                     echo '</form>';
-                }
+		}
+		if(count($consumables) == 0){
+			echo "<p>No <i>Consumables</i> in the Warehouse</p>";
+		}
 		
 	}
 	?>
-	<hr style='border: 1px solid black;'>
+	</div>
+
+	<div class="storageCategory">
 	<h4 style='text-decoration: underline'>Weapons/Ammo</h4>
 	<?php
 	if (isset($fight))
@@ -161,11 +171,21 @@ $resources = array ();
                     echo '</form>';
 		}
 	}
+	else{
+			echo "<p>No <i>Weapons or Ammo</i> in the Warehouse</p>";
+	}
 	?>
-	<hr style='border: 1px solid black;'>
+	</div>
+
+	<div class="storageCategory">
 	<h4 style='text-decoration: underline'>Misc.</h4>
-	<hr style='border: 1px solid black;'>
+	<?php echo "<p>No <i>Miscellaneous Items</i> in the Warehouse</p>"; ?>
+	</div>
+
+	<div class="storageCategory">
 	<h4 style='text-decoration: underline'>Special Items</h4>
+	<?php echo "<p>No <i>Special Items</i> in the Warehouse</p>"; ?>
+	</div>
 	
 	</div>
 	

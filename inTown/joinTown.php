@@ -149,10 +149,12 @@ require_once ("../model/database.php");
 			?>
 		</div>
 
+		<div class="townListContainer">
 		<table class='townList'><thead>
 		<tr>
 			<th>Town Name</th>
 			<th>Residents (Current/Max)</th>
+			<th>Created By</th>
 			<th>Join Town</th>
 		</tr>
 		</thead>
@@ -169,20 +171,22 @@ require_once ("../model/database.php");
 			$t = $result["townName"];
 			$tName = str_replace("_", " ", $t);
 			$townId = $result["town_id"];
+			$createdById = $result["created_by_user"];
+			$createdBy = User::getNameById($createdById);
 			$c = $cName;
 			//$result["maxResidents"] - $result["amountResidents"] >= $characterAmount
 			if($result["maxResidents"] - $result["amountResidents"] >= $characterAmount){
-				$availableTown = "<tr><td>" . $tName . "</td><td>[" . $result["amountResidents"] . "/" . $result["maxResidents"] . "]  </td><td><form method='post' action='../functions/addToTown.php'><input type='hidden' name='newTown' value=$townId><input type='hidden' name='char' value=$c><button type='submit' value='Submit' class='joinButton'><span>Join Town</span></button></form></td></tr>";
+				$availableTown = "<tr><td>" . $tName . "</td><td>[" . $result["amountResidents"] . "/" . $result["maxResidents"] . "]  </td><td>" . $createdBy . "</td><td><form method='post' action='../functions/addToTown.php'><input type='hidden' name='newTown' value=$townId><input type='hidden' name='char' value=$c><button type='submit' value='Submit' class='joinButton'><span>Join Town</span></button></form></td></tr>";
 				echo $availableTown;
 			}
 		}
-		echo "</table>";
+		echo "</table></div>";
 		?>
 		
 		<br><hr><br>
 			<div class="createTown">
 				<form id='create' method='post' action='../functions/createTown.php'>
-				<h3>***Note: Do NOT use any spaces in town-name***</h3>
+				<h3>***Note: Town names that include numbers will not be created successfully.***</h3>
 				<label for='townName'><i>Town Name</i></label><br>
 					<input id='townName' type='text' name='newTown' required style="margin: 5px;"><br>
 					<label for='townSize'><i>Size</i></label><br>

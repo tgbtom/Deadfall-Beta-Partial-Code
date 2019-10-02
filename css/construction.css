@@ -77,10 +77,6 @@ and open the template in the editor.
     border: 1px solid black;
 }
 
-#apAssigned{
-    /* float:right; */
-}
-
 .individualCost{
     border: 1px solid black;
     padding: 2px;
@@ -167,4 +163,20 @@ and open the template in the editor.
         float: left;
         margin-right: 15px;
         margin-bottom: 10px;
+    }
+
+    .bulletinBox{
+		display: inline-block;
+        width: 85%;
+        background-color: #A5907E;
+        border: 2px solid #000000;
+        padding: 15px;
+        margin: 25px auto;
+        margin-left: 5%;
+        color: black;
+        box-shadow: 7px 7px #333333;
+    }
+
+    .bulletinBoxTop{
+        border-bottom: 1px solid black;
     }

@@ -162,8 +162,8 @@ function endDay() {
         if (isStructureBuilt('Vegetable Garden', $townId)) {
             $amount = mt_rand(1,4);
             for ($i = 0; $i < $amount; $i++) {
-                addToBank(1, $townId);
-                $notice = "<blue>" . $amount . " Bits of Food were collected from the Vegetable Garden</blue>";
+                addToBank(23, $townId);
+                $notice = "<blue>" . $amount . " Carrots were collected from the Vegetable Garden</blue>";
                 Towns::addTownBulletin($notice, $townId);
             }
         }

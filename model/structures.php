@@ -182,12 +182,16 @@ class StructuresDB
         
         foreach ($builtArray as $key => $value)
         {
+            $firstContribution = false;
             $currentArray = explode('.', $value);
             $building["Name"] = $currentArray[0];
             $building["Ap"] = $currentArray[1];
             $building["Level"] = $currentArray[2];
             if ($building["Name"] == $structure_object->getName())
             {
+                if($building["Ap"] == 0){
+                    $firstContribution = true;
+                }
                 $building["Ap"] += $apToAdd;
                 if ($building["Ap"] >= $structure_object->getApCost()){
                     $building["Ap"] = 0;
@@ -195,7 +199,16 @@ class StructuresDB
                     self::addDefence($structure_object->getDefence(), $townId);
 
                     //Add this to The Bulletin --> Level X Outter Wall Has been Completed
-                    $notice = "<yellow>Level " . $building["Level"] . " " . $building["Name"] . " Has been Completed</yellow>";
+                    $notice = "<green><structure-complete>Level " . $building["Level"] . " <yellow>" . $building["Name"] . "</yellow> Has been Completed</structure-complete></green>";
+                    Towns::addTownBulletin($notice, $townId);
+                }
+                else{
+                    if($firstContribution == true){
+                        $notice = "<yellow><structure-contribute>Construction of Level " . ($building["Level"] + 1) . " " . $building["Name"] . " was started with " . $apToAdd . " AP</structure-contribute></yellow>";
+                    }
+                    else{
+                        $notice = "<yellow><structure-contribute> " . $apToAdd . " AP was assigned towards level " . ($building["Level"] + 1) . " " . $building["Name"] . "</structure-contribute></yellow>";
+                    }
                     Towns::addTownBulletin($notice, $townId);
                 }
             }

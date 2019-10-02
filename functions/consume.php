@@ -315,9 +315,8 @@ if ($foundItem)
 			for($i = 0; $i < $amountRemoved; $i++){
 				pickUpItem(22, 1);
 				$amountRemoved = 0;
-				echo "<script>window.location.href='../inTown/?locat=outside&e=You do not have enough ammo to load the item.'</script>";
-
 			}
+			echo "<script>window.location.href='../inTown/?locat=outside&e=You do not have enough ammo to load the item.'</script>";
 		}
 		else{
 			//Remove empty mag and Add Full mag to inventory

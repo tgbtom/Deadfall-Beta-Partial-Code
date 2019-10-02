@@ -343,3 +343,20 @@ class Character {
     }
 
 }
+
+class User {
+    public $userId, $username;
+
+    public static function getNameById($id){
+        $dbCon = Database::getDB();
+        
+        $query = "SELECT * FROM `userstable` WHERE `id` = :id";
+        $statement = $dbCon->prepare($query);
+        $statement->bindValue(":id", $id);
+        $statement->execute();
+        $result = $statement->fetch();
+        $statement->closeCursor();
+
+        return $result['username'];
+    }
+}

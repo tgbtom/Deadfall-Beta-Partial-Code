@@ -36,9 +36,14 @@ else
 	$y = $_SESSION['y'];
 }
 
-function getCharDetails()
+function getCharDetails($characterId = NULL)
 {
-	global $charId;
+	if($characterId == NULL){
+		global $charId;
+	}
+	else{
+		$charId = $characterId;
+	}
 	global $user;
 	global $dbCon;
 	
