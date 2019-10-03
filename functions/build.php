@@ -40,26 +40,24 @@ if (isset($buildName) && isset($apToAssign))
                
                $apRemaining = $currentBuilding->getApCost() - $builtDetails["Ap"];
                
+               //We need to check required AP, if apToAdd is greater than required ap, reduce apToAdd, also ensure character has enough ap still
+                if ($apToAssign > $apRemaining){
+                    $apToAssign = $apRemaining;
+                }
+               
+                if($charObject->class == "Builder" && ($charObject->currentAP < ($apToAssign / 2))){
+                    //Return, Character does not have enough Ap
+                    echo "<script>window.location.href='../inTown/?locat=construction&e=Character does not have " . ($apToAssign / 2) . " Ap.'</script>";
+                }
+                elseif ($charObject->class != "Builder" && ($charObject->currentAP < $apToAssign)){
+                    //Return, Character does not have enough Ap
+                    echo "<script>window.location.href='../inTown/?locat=construction&e=Character does not have " . $apToAssign . " Ap.'</script>";
+                }
+
                if ($builtDetails["Ap"] >= 1)
                {
                    //Structure has been started already
-                   //We need to check required AP, if apToAdd is greater than required ap, reduce apToAdd, also ensure character has enough ap still
-                   
-                   if ($apToAssign > $apRemaining)
-                   {
-                       $apToAssign = $apRemaining;
-                   }
-                   
-                    if($charObject->class == "Builder" && $charObject->currentAP < $apToAssign/2){
-                        echo "<script>window.location.href='../inTown/?locat=construction&e=Character does not have " . $apToAssign . " Ap.'</script>";
-                    }
-                    elseif ($charObject->class != "Builder" && $charObject->currentAP < $apToAssign)
-                    {
-                        //Return, Character does not have enough Ap
-                        echo "<script>window.location.href='../inTown/?locat=construction&e=Character does not have " . $apToAssign . " Ap.'</script>";
-                    }
-                   else
-                   {
+
                        //Apply the AP to the structure, REMOVE AP FROM CHAR****
                        //Builders have half the AP removed because it doubles the AP value above and we dont want to remove double AP
                        if($charObject->class == "Builder"){
@@ -76,7 +74,6 @@ if (isset($buildName) && isset($apToAssign))
                        
                        StructuresDB::addAp($currentBuilding, $apToAssign, $townId);
                        echo "<script>window.location.href='../inTown/?locat=construction'</script>";
-                   }
                }
                else
                {

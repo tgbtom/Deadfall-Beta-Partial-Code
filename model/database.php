@@ -360,3 +360,55 @@ class User {
         return $result['username'];
     }
 }
+
+Class CharStats {
+    public $charId;
+    private $zeds_killed, $times_looted, $camps_survived, $structure_contributions, $bonus_xp, $day_of_death, $current_xp;
+    
+    public function __construct($characterId){
+        $dbCon = Database::getDB();
+
+        $query = "SELECT * FROM `stats_character` WHERE `char_id` = :charId";
+        $statement = $dbCon->prepare($query);
+        $statement->bindValue(":charId", $characterId);
+        $statement->execute();
+        $result = $statement->fetch();
+        $statement->closeCursor();
+
+        $this->charId = $characterId;
+        $this->zeds_killed = $result["zeds_killed"];
+        $this->times_looted = $result["times_looted"];
+        $this->camps_survived = $result["camps_survived"];
+        $this->structure_contributions = $result["structure_contributions"];
+        $this->bonus_xp = $result["bonus_xp"];
+        $this->day_of_death = $result["day_of_death"];
+        $this->current_xp = $result["current_xp"];
+    }
+
+    /**
+     * 
+     * 
+     * BELOW FUNCTION WAS USED FOR ONE TIME
+     * 
+     * 
+     * 
+     */
+    // public static function populateCharStats(){
+    //     $dbCon = Database::getDB();
+
+    //     $query = "SELECT * FROM `characters`";
+    //     $statement = $dbCon->prepare($query);
+    //     $statement->execute();
+    //     $results = $statement->fetchAll();
+    //     $statement->closeCursor();
+
+    //     foreach($results as $result){
+    //     $queryUp = "INSERT INTO `stats_character` VALUES (:charId, '0', '0', '0', '0', '0', '0', '0')";
+    //     $statementUp = $dbCon->prepare($queryUp);
+    //     $statementUp->bindValue("charId", $result['id']);
+    //     $statementUp->execute();
+    //     $statement->closeCursor();
+    //     }
+
+    // }
+}

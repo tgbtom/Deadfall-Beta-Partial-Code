@@ -266,6 +266,10 @@ if ($foundItem)
 					$statement->execute();
 					$statement->closeCursor();
 					
+					if($kills > 0){
+						updateHordeSize($townId);
+					}
+
 					echo "<script>window.location.href='../inTown/?locat=outside'</script>";
 				}	
 			}

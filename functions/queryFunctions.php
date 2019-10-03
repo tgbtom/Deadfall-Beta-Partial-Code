@@ -321,6 +321,18 @@ function getHordeSize($townId)
 	return $horde;
 }
 
+function updateHordeSize($townId){
+	global $dbCon;
+	$currentHorde = getHordeSize($townId);
+
+	$query = "UPDATE `towns` SET `hordeSize` = :horde WHERE `town_id` = :townId";
+	$statement = $dbCon->prepare($query);
+	$statement->bindValue(":horde", $currentHorde);
+	$statement->bindValue(":townId", $townId);
+	$statement->execute();
+	$statement->closeCursor();
+}
+
 function getDangerLevel($zoneX, $zoneY, $townId)
 {
 	global $dbCon;

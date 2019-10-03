@@ -145,7 +145,7 @@ require_once("../model/database.php");
                                     
                                     else //Building is maximum level
                                     {
-                                        $tableRow = "<tr class='pointerWhite'>"
+                                        $tableRow = "<tr onclick='testAjax(`".json_encode($currentBuilding)."`, this)' class='pointer pointerWhite'>"
                                                 . "<td>" . $builtDetails['Level'] . "/"  . $currentBuilding->getMaxLevel() . "</td>"
                                                 . "<td colspan='3'>" . $indent . $currentBuilding->getName() . $defString . "</td>"
                                                 . "<td colspan='1'><small><b>Done - Structure at Max</b><small></td>"
@@ -239,15 +239,15 @@ require_once("../model/database.php");
                 
                 while ($row = mysqli_fetch_assoc($Query4))
                 {
-                    $bulletin = explode (".", $row['bulletin']);
-                    foreach ($bulletin as $cur)
-                    {
-                        /* the if statement skips index 0 of the bulletin which is always empty */
-                        if ($cur != '' && (strpos($cur, "<structure-contribute>") != FALSE || strpos($cur, "<structure-complete>") != FALSE))
+                        $bulletin = explode (".", $row['bulletin']);
+                        foreach ($bulletin as $cur)
                         {
-                        echo "<li>" . $cur . "</li>";
+                            /* the if statement skips index 0 of the bulletin which is always empty */
+                            if ($cur != '' && (strpos($cur, "<structure-contribute>") != FALSE || strpos($cur, "<structure-complete>") != FALSE))
+                            {
+                            echo "<li>" . $cur . "</li>";
+                            }
                         }
-                    }
                 }
                 ?>
             </div>
