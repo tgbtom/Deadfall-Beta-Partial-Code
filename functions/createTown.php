@@ -63,6 +63,8 @@ function createSettlement($settlementName, $mapSize)
 
 	//Save the ID of the town that was just created. This  will be used for town table
 	$addedId = $dbCon->lastInsertId();
+
+	TownStats::createNewTownStats($addedId, $newTown, $userId);
 	
 	$x = -4;
 	$y = 5;

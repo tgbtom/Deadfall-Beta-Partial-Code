@@ -651,7 +651,7 @@ function popUpMenuA(x)
 				
 				<?php
 				//Create a temporary string variable to display characters that are in the zone through the SVG title element
-				$chars2 = ' ';
+				$chars2 = '';
 				for($i = 0; $i < count($charactersList); $i++)
 				{
 					//adds a '...' and # of remaining characters after the list hits specified maximum size
@@ -663,7 +663,7 @@ function popUpMenuA(x)
 					else
 					{
 						$rowToAdd = Character::getCharacterById($charactersList[$i]);
-						$chars2 = $chars2 . '&#13;' . $rowToAdd["character"];
+						$chars2 = $chars2 . '&#13;&nbsp;' . $rowToAdd["character"];
 					}
 				}
 				

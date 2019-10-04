@@ -268,6 +268,8 @@ if ($foundItem)
 					
 					if($kills > 0){
 						updateHordeSize($townId);
+						$charStats = new CharStats($charId);
+						$charStats->modifyKilledZeds($kills);
 					}
 
 					echo "<script>window.location.href='../inTown/?locat=outside'</script>";

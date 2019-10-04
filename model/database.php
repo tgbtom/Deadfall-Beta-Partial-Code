@@ -385,30 +385,77 @@ Class CharStats {
         $this->current_xp = $result["current_xp"];
     }
 
-    /**
-     * 
-     * 
-     * BELOW FUNCTION WAS USED FOR ONE TIME
-     * 
-     * 
-     * 
-     */
-    // public static function populateCharStats(){
-    //     $dbCon = Database::getDB();
+    public static function makeNewCharStats($charId){
+        $dbCon = Database::getDB();
 
-    //     $query = "SELECT * FROM `characters`";
-    //     $statement = $dbCon->prepare($query);
-    //     $statement->execute();
-    //     $results = $statement->fetchAll();
-    //     $statement->closeCursor();
+        $queryUp = "INSERT INTO `stats_character` VALUES (:charId, '0', '0', '0', '0', '0', '0', '0')";
+        $statementUp = $dbCon->prepare($queryUp);
+        $statementUp->bindValue(":charId", $charId);
+        $statementUp->execute();
+        $statementUp->closeCursor();
 
-    //     foreach($results as $result){
-    //     $queryUp = "INSERT INTO `stats_character` VALUES (:charId, '0', '0', '0', '0', '0', '0', '0')";
-    //     $statementUp = $dbCon->prepare($queryUp);
-    //     $statementUp->bindValue("charId", $result['id']);
-    //     $statementUp->execute();
-    //     $statement->closeCursor();
-    //     }
+        $query = "INSERT INTO `stats_character_legacy` VALUES (:charId, '0', '0', '0', '0', '0', '0', '0', '0')";
+        $statement = $dbCon->prepare($query);
+        $statement->bindValue(":charId", $charId);
+        $statement->execute();
+        $statement->closeCursor();
+    } 
 
-    // }
+    private function updateDbStats($columnName, $newValue){
+        $dbCon = Database::getDB();
+        //query to update stats for this instance of class
+        $query = "UPDATE `stats_character` SET `". $columnName ."` = :newValue WHERE `char_id` = :charId";
+        $statement = $dbCon->prepare($query);
+        $statement->bindValue(":charId", $this->charId);
+        $statement->bindValue(":newValue", $newValue);
+        $statement->execute();
+        $statement->closeCursor();
+    }
+
+    public function modifyKilledZeds($kills){
+        $this->zeds_killed += $kills;
+        self::updateDbStats("zeds_killed", $this->zeds_killed);
+    }
+}
+
+
+
+Class TownStats {
+    public $town_id;
+    private $town_name, $defence_by_day, $horde_by_day, $deaths_by_day, $zeds_killed, $times_looted, $structure_levels, $created_by_user; 
+
+    public function __construct($townId){
+        $dbCon = Database::getDB();
+
+        $query = "SELECT * FROM `stats_town_legacy` WHERE `town_id` = :townId";
+        $statement = $dbCon->prepare($query);
+        $statement->bindValue(":townId", $townId);
+        $statement->execute();
+        $result = $statement->fetch();
+        $statement->closeCursor();
+
+        $this->town_id = $townId;
+        $this->town_name = $result["town_name"];
+        $this->defence_by_day = $result["defence_by_day"];
+        $this->horde_by_day = $result["horde_by_day"];
+        $this->deaths_by_day = $result["deaths_by_day"];
+        $this->zeds_killed = $result["zeds_killed"];
+        $this->times_looted = $result["times_looted"];
+        $this->structure_levels = $result["structure_levels"];
+        $this->created_by_user = $result["created_by_user"];
+    }
+
+    public static function createNewTownStats($townId, $townName, $created_by){
+        $dbCon = Database::getDB();
+
+        $queryUp = "INSERT INTO `stats_town_legacy` VALUES (:townId, :townName, '', '', '', '0', '0', '0', :createdBy)";
+        $statementUp = $dbCon->prepare($queryUp);
+        $statementUp->bindValue(":townId", $townId);
+        $statementUp->bindValue(":townName", $townName);
+        $statementUp->bindValue(":createdBy", $created_by);
+        $statementUp->execute();
+        $statementUp->closeCursor();
+    }
+
+
 }

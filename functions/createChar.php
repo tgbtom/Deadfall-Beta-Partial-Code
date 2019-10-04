@@ -70,6 +70,9 @@ else{
             $statement->execute();
     
             $statement->closeCursor();
+
+            $addedId = $dbCon->lastInsertId();
+            CharStats::makeNewCharStats($addedId);
             echo '<script>window.location = "' . $root . '/inTown/?locat=browseChars";</script>';
         }
         catch(PDOException $e){
