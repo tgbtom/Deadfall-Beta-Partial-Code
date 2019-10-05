@@ -57,7 +57,7 @@ $query2 = mysqli_query($con, $query1);
 			 foreach ($bulletin as $cur)
 			 {
 				 /* the if statement skips index 0 of the bulletin which is always empty */
-				 if ($cur != '')
+				 if ($cur != '' && strpos($cur, "<structure-contribute>") == FALSE)
 				 {
 				 echo "<li>" . $cur . "</li>";
 				 }

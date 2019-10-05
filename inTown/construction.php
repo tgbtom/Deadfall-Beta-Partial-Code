@@ -61,7 +61,7 @@ require_once("../model/database.php");
             <?php include("../universal/header.php");?>
             
 
-<!-- 
+            <!-- 
             $tableRow = "<form action='../functions/build.php' method='post'><tr onclick='testAjax(`".json_encode($currentBuilding)."`, this)' class='pointer pointerGreen'>"
             . "<td>" . $builtDetails['Level'] . "/"  . $currentBuilding->getMaxLevel() . "</td>"
             . "<td colspan='3'>" . $indent . $currentBuilding->getName() . $defString . "</td>"
@@ -145,12 +145,10 @@ require_once("../model/database.php");
                                     
                                     else //Building is maximum level
                                     {
-                                        $tableRow = "<tr class='pointerWhite'>"
+                                        $tableRow = "<tr onclick='testAjax(`".json_encode($currentBuilding)."`, this)' class='pointer pointerWhite'>"
                                                 . "<td>" . $builtDetails['Level'] . "/"  . $currentBuilding->getMaxLevel() . "</td>"
                                                 . "<td colspan='3'>" . $indent . $currentBuilding->getName() . $defString . "</td>"
                                                 . "<td colspan='1'><small><b>Done - Structure at Max</b><small></td>"
-                                                // . "<td class='apCell'></td>"
-                                                // . "<td class='buttonCell'></td>"
                                                 . "</tr>";
                                     }
                                 }
@@ -161,8 +159,6 @@ require_once("../model/database.php");
                                             . "<td>" . $builtDetails['Level'] . "/"  . $currentBuilding->getMaxLevel() . "</td>"
                                             . "<td colspan='3'>" . $indent . $currentBuilding->getName() . $defString . "</td>"
                                             . "<td colspan='1'><small>Contribute to Upgrade</small></td><input hidden type='text' name='buildName' value='" . $currentBuilding->getName() . "'>"
-                                            // . "<td class='apCell'><input type='number' placeholder='Ap' class='apInput' name='apToAssign' min=0 max='$charAp'>" . $ap . $builtDetails["Ap"] . "/" . $currentBuilding->getApCost() . " <img src='../images/icons/ap.png'></td>"
-                                            // . "<td class='buttonCell'><button type='submit' value='Submit' class='buildButton'><span>Contribute  " . $apNotice . "</span></button></td>"
                                             . "</tr></form>";
                                 }
                                 else
@@ -174,8 +170,6 @@ require_once("../model/database.php");
                                                 . "<td>" . $builtDetails['Level'] . "/"  . $currentBuilding->getMaxLevel() . "</td>"
                                                 . "<td colspan='3'>" . $indent . $currentBuilding->getName() . $defString . "</td>"
                                                 . "<td colspan='1'>" . $resourceCostsString . "</td><input hidden type='text' name='buildName' value='" . $currentBuilding->getName() . "'>"
-                                                // . "<td class='apCell'><input type='number' placeholder='Ap' class='apInput' name='apToAssign' min=0 max='$charAp'>" . $builtDetails["Ap"] . "/" . $currentBuilding->getApCost() . " <img src='../images/icons/ap.png'></td>"
-                                                // . "<td class='buttonCell'><button type='submit' value='Submit' class='buildButton'><span>Upgrade  " . $apNotice . "</span></button></td>"
                                                 . "</tr></form>";
                                     }
                                     else
@@ -185,8 +179,6 @@ require_once("../model/database.php");
                                                 . "<td>" . $builtDetails['Level'] . "/"  . $currentBuilding->getMaxLevel() . "</td>"
                                                 . "<td colspan='3'>" . $indent . $currentBuilding->getName() . $defString . "</td>"
                                                 . "<td colspan='1'>" . $resourceCostsString . "</td>"
-                                                // . "<td class='apCell'><input type='number' placeholder='Ap' class='apInput' name='apToAssign' disabled max='$charAp'>" . $builtDetails["Ap"] . "/" . $currentBuilding->getApCost() . " <img src='../images/icons/ap.png'></td>"
-                                                // . "<td class='buttonCell'>Not Enough Resources</td>"
                                                 . "</tr>";
                                     }
                                 }
@@ -199,8 +191,6 @@ require_once("../model/database.php");
                                                 . "<td>" . $builtDetails['Level'] . "/"  . $currentBuilding->getMaxLevel() . "</td>"
                                                 . "<td colspan='3'>" . $indent . $currentBuilding->getName() . $defString . "</td>"
                                                 . "<td colspan='1'><small>Started - Contribute</small></td><input hidden type='text' name='buildName' value='" . $currentBuilding->getName() . "'>"
-                                                // . "<td class='apCell'><input type='number' placeholder='Ap' class='apInput' name='apToAssign' min=0 max='$charAp'>" . $builtDetails["Ap"] . "/" . $currentBuilding->getApCost() . " <img src='../images/icons/ap.png'></td>"
-                                                // . "<td class='buttonCell'><button type='submit' value='Submit' class='buildButton'><span>Contribute " . $apNotice . "</span></button></td>"
                                                 . "</tr></form>";
                             }
                             else
@@ -216,8 +206,6 @@ require_once("../model/database.php");
                                                 . "<td>" . $builtDetails['Level'] . "/"  . $currentBuilding->getMaxLevel() . "</td>"
                                                 . "<td colspan='3'>" . $indent . $currentBuilding->getName() . $defString . "</td>"
                                                 . "<td colspan='1'>" . $resourceCostsString . "</td><input hidden type='text' name='buildName' value='" . $currentBuilding->getName() . "'>"
-                                                // . "<td class='apCell'><input type='number' placeholder='Ap' class='apInput' name='apToAssign' min=0 max='$charAp'>" . $builtDetails["Ap"] . "/" . $currentBuilding->getApCost() . " <img src='../images/icons/ap.png'></td>"
-                                                // . "<td class='buttonCell'><button type='submit' value='Submit' class='buildButton'><span>Build Now  " . $apNotice . "</span></button></td>"
                                                 . "</tr></form>";
                                     }
                                     else
@@ -227,8 +215,6 @@ require_once("../model/database.php");
                                                 . "<td>" . $builtDetails['Level'] . "/"  . $currentBuilding->getMaxLevel() . "</td>"
                                                 . "<td colspan='3'>" . $indent . $currentBuilding->getName() . $defString . "</td>"
                                                 . "<td colspan='1'>" . $resourceCostsString . "</td>"
-                                                // . "<td class='apCell'><input type='number' placeholder='Ap' class='apInput' name='apToAssign' disabled max='$charAp'>" . $builtDetails["Ap"] . "/" . $currentBuilding->getApCost() . " <img src='../images/icons/ap.png'></td>"
-                                                // . "<td class='buttonCell'>Not Enough Resources</td>"
                                                 . "</tr>";
                                     }
                                 }
@@ -239,6 +225,32 @@ require_once("../model/database.php");
                     </tbody>
                 </table>
                 
+            </div>
+
+            <div class="bulletinBox">
+            <div class="bulletinBoxTop">
+			    <h3 style="text-align:center;">Bulletin Board</h3>
+		    </div>
+            <div class="bulletinBoxBottom">
+                <!-- Bulletin Information Is Drawn from the Database below -->
+                <?php 
+                $Query3 = "SELECT `bulletin` FROM `towns` WHERE `town_id` = '$townId'";
+                $Query4 = mysqli_query($con, $Query3);
+                
+                while ($row = mysqli_fetch_assoc($Query4))
+                {
+                        $bulletin = explode (".", $row['bulletin']);
+                        foreach ($bulletin as $cur)
+                        {
+                            /* the if statement skips index 0 of the bulletin which is always empty */
+                            if ($cur != '' && (strpos($cur, "<structure-contribute>") != FALSE || strpos($cur, "<structure-complete>") != FALSE))
+                            {
+                            echo "<li>" . $cur . "</li>";
+                            }
+                        }
+                }
+                ?>
+            </div>
             </div>
         </div>
     </body>

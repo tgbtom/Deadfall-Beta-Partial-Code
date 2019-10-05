@@ -73,6 +73,7 @@ $level = $builtDetails['Level'];
 $maxLevel = $copyOfStructure->getMaxLevel();
 $currentStructureAp = $builtDetails['Ap'];
 $maxStructureAp = $copyOfStructure->getApCost();
+$defence = $copyOfStructure->getDefence();
 
 $affordable = StructuresDB::isStructureAffordable($copyOfStructure, $townId);
 
@@ -85,6 +86,7 @@ $publicArray = array('name' => $name,
 'currentAp' => $currentStructureAp,
 'affordable' => $affordable,
 'charClass' => $charClass,
+'defence' => $defence,
 'maxAp' => $maxStructureAp);
 
 $x = json_encode($publicArray);

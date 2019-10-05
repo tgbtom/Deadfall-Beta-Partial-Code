@@ -189,12 +189,13 @@ body
 .browseBlock3
 {
 	padding-top: 20px;
-	width:75%;
-	min-height: 360px;		
+	width:90%;
+	min-height: 360px;
+	min-width: 400px;		
 	margin: 25px auto;
 	color: black;
 	background-color: #A5907E;
-	overflow: auto;
+	overflow: hidden;
 	border: 2px solid #000000;
 }
 

@@ -28,7 +28,6 @@
 
 .buildButton {
     display: inline-block;
-    float: right;
     border-radius: 4px;
     background-color: #54483E;
     border: none;
@@ -77,4 +76,13 @@
     .buildButton:active
     {
     box-shadow: none;
+    }
+
+    .specialStructure{
+        padding: 5px;
+        margin: 15px;
+    }
+
+    .specialStructure h4{
+        margin: 5px;
     }

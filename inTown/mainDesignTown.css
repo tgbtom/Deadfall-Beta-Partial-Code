@@ -262,8 +262,12 @@ body
 }
 
 yellow{
-	color: #FFCC55;
+	color: #D4AF37;
 	text-shadow: 1px 1px #131313;
+}
+
+gray{
+	color: rgb(60, 60, 60);
 }
 
 red{
@@ -277,4 +281,13 @@ green{
 
 litegreen{
 	color: #3DAF3D;
+}
+
+blue{
+	color: rgb(20,75,240);
+}
+
+.storageCategory{
+	border: 1px solid black;
+	padding: 5px;
 }

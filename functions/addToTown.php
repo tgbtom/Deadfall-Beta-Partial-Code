@@ -19,6 +19,8 @@ foreach($multiJoin as $characterObject){
 	$charName = $characterObject["character"];
 	$playerName = $characterObject["username"];
 	$defaultItems = NULL;
+	$characterClassObject = new Character($charId);
+	$charClass = $characterClassObject->class;
 
 	//Check if this character is in a town
 	$query = "SELECT * FROM `characters` WHERE `id` = :id";
@@ -41,7 +43,7 @@ foreach($multiJoin as $characterObject){
 		$statement->closeCursor();
 
 		//Add the Action of the User Joining, to the bulletin board for the town they are joining
-		$content = $charName . " Has Joined the Town!";
+		$content = "<img src='%2e%2e/images/icons/" . lcfirst($charClass) . "%2epng'><blue>" . $charName . "</blue> Has Joined the Town!";
 		Towns::addTownBulletin($content, $newTown);
 
 		$townName = Towns::getTownNameById($newTown);

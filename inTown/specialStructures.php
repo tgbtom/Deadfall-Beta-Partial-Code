@@ -117,7 +117,7 @@ $query2 = mysqli_query($con, $query1);
         else{
             //Will Do the loop for each Special Structure that is atleast built to 1 level
             foreach ($specialStructures as $current){
-                echo "<div class='specialStructure'><h4><u>" . $current . "</u></h4>";
+                echo "<div class='specialStructure'><h4 style='text-align: center;'><u>" . $current . "</u></h4>";
 				$htmlContent = SpecialStructures::getHtmlContent($current, $townId);
 				echo $htmlContent;
                 echo "</div><hr style='border-color:black;'>";

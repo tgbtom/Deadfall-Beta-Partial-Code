@@ -182,12 +182,16 @@ class StructuresDB
         
         foreach ($builtArray as $key => $value)
         {
+            $firstContribution = false;
             $currentArray = explode('.', $value);
             $building["Name"] = $currentArray[0];
             $building["Ap"] = $currentArray[1];
             $building["Level"] = $currentArray[2];
             if ($building["Name"] == $structure_object->getName())
             {
+                if($building["Ap"] == 0){
+                    $firstContribution = true;
+                }
                 $building["Ap"] += $apToAdd;
                 if ($building["Ap"] >= $structure_object->getApCost()){
                     $building["Ap"] = 0;
@@ -195,7 +199,19 @@ class StructuresDB
                     self::addDefence($structure_object->getDefence(), $townId);
 
                     //Add this to The Bulletin --> Level X Outter Wall Has been Completed
-                    $notice = "<yellow>Level " . $building["Level"] . " " . $building["Name"] . " Has been Completed</yellow>";
+                    $notice = " <yellow><structure-complete>Level " . $building["Level"] . " " . $building["Name"] . "</yellow> <gray>Has been Completed</structure-complete></gray>";
+                    Towns::addTownBulletin($notice, $townId);
+
+                    $townStats = new TownStats($townId);
+                    $townStats->addStructureLevel();
+                }
+                else{
+                    if($firstContribution == true){
+                        $notice = "<gray><structure-contribute>Construction of <yellow>Level " . ($building["Level"] + 1) . " " . $building["Name"] . "</yellow> was started <green>[" . $building["Ap"] . "/" . $structure_object->getApCost() .  " AP]</green></structure-contribute></gray>";
+                    }
+                    else{
+                        $notice = "<gray><structure-contribute> <green>" . $apToAdd . " AP</green> was assigned towards <yellow>Level " . ($building["Level"] + 1) . " " . $building["Name"] . "</yellow> <green>[" . $building["Ap"] . "/" . $structure_object->getApCost() . " AP]</green></structure-contribute></gray>";
+                    }
                     Towns::addTownBulletin($notice, $townId);
                 }
             }

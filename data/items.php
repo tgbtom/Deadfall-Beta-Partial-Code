@@ -2,8 +2,8 @@
 
 //Item Name, Category, Weight, Rarity /////////////////////Rarity -> 0 = Common, 1 = Uncommon, 2 = Rare, 3 = Ultra-Rare, 4 = Legendary, 5 = SCRAP
 $itemsMaster = array(
-/*0*/	array("Water Ration", "Consume", 2, 2, "Drink this to quench your thirst."),
-		array("Bits of Food", "Consume", 1, 2, "These scraps aren't going to cut it for very long."),
+/*0*/	array("Water Ration", "Consume", 2, 2, "Drink this to quench your thirst. Fully replenishes AP if you have not drank today."),
+		array("Bits of Food", "Consume", 1, 2, "These scraps aren't going to cut it for very long. Restores 50% AP if you have not eaten today."),
 		array("Wood Board", "Resource", 2, 0, "Sturdy wooden board, could be useful for building."),
 		array("Sheet Metal", "Resource", 3, 0, "Spear handcrafted with a wooden stick and a sharp tip."),
 		array("Makeshift Spear", "Weapon", 2, 3, "Spear handcrafted with a wooden stick and a sharp tip."),
@@ -22,16 +22,18 @@ $itemsMaster = array(
 		array("Sharp Stick", "Weapon", 2, 2, "Just a stick that has been sharpened at one end."),
 		array("Assault Rifle", "Weapon", 2, 4, "Machine gun, uses medium ammo that has been packed into ammo magazines."),
 		array("Bag of Sand", "Resource", 2, 5, "Just a bag of dirt."),
-/*20*/	array("Empty Mag", "Resource", 2, 3, "Empty ammo magazine, can be filled with medium bullets."),
+/*20*/	array("Empty Mag", "Ammo", 2, 3, "Empty ammo magazine, can be filled with medium bullets."),
 		array("Full Mag", "Ammo", 3, 4, "Full ammo magazine - One time use."),
-		array("Medium Bullet", "Ammo", 1, 2, "Ammunition for medium guns.")
+		array("Medium Bullet", "Ammo", 1, 2, "Ammunition for medium guns."),
+		array("Carrot", "Consume", 2, 2, "A fresh picked Carrot. Restores 80% AP if you have not eaten today.")
 	);
 
 //itemID (Primary Key), function (0 -> Eat, 1 -> Drink, 2 -> Use), AP granted (percentage)
 $itemsConsumable = array(
-		array(0, 1, 100),
-		array(1, 0, 50),
-		array(20, 3, 0)
+		array(0, 1, 100), 	/*Water Ration*/
+		array(1, 0, 50), 	/*Bits of Food*/
+		array(20, 3, 0), 	/*Empty Mag*/
+		array(23, 0, 80) 	/*Carrot*/
 	);
 
 //itemID (Primary Key), Ammo ID (-1 means none), AP Cost, Min. Kills, Max. Kills, chance to break (out of 100), chance to get injured (out of 100), chance of ammo output, ammo output ID (-1) is for none

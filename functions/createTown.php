@@ -7,6 +7,7 @@ require_once("../model/database.php");
 require_once("queryFunctions.php");
 
 $newTown = filter_input(INPUT_POST, 'newTown');
+$userId = $_SESSION['user_id'];
 
 ////VALIDATE THE TOWN NAME HERE
 $validPattern = "/[a-zA-Z ]{" . strlen($newTown) . "}/";
@@ -25,7 +26,7 @@ if ((isset($newTown) && $newTown != NULL && $newTown != '') && $validName)
     // }
 }
 else{
-    	$location = '/inTown/?locat=join&tempChar=' . $_SESSION['char'] . '&e=Settlement Name is Not Valid';	
+		$location = '/inTown/?locat=join&selectedChar=' . $_SESSION['char_id'] . '&tempChar=' . $_SESSION['char'] . '&e=Settlement Name is Not Valid';
         echo '<script>window.location = "' . $root . $location .'";</script>';
 }
 $cName = filter_input(INPUT_POST, 'cName');
@@ -40,6 +41,7 @@ function createSettlement($settlementName, $mapSize)
 	global $dbCon;	
 	global $con;		
 	global $root;
+	global $userId;
 
 	$convertedTownName = str_replace("_", " ", $newTown);
 	
@@ -48,18 +50,21 @@ function createSettlement($settlementName, $mapSize)
 	
 	//add details of town to `towns` table
 	$query = 'INSERT INTO `towns` 
-	(`townName`, `amountResidents`, `maxResidents`, `readyResidents`, `deadResidents`, `townFull`, `buildings`, `bulletin`, `hordeSize`, `defenceSize`, `dayNumber`)
+	(`townName`, `amountResidents`, `maxResidents`, `readyResidents`, `deadResidents`, `townFull`, `buildings`, `bulletin`, `hordeSize`, `defenceSize`, `dayNumber`, `created_by_user`)
 	VALUES
-	(:newTown, "0", "10", "0", "0", "0", :buildings, :bulletin, "300", "350", "1")';
+	(:newTown, "0", "10", "0", "0", "0", :buildings, :bulletin, "300", "350", "1", :userId)';
 	$statement = $dbCon->prepare($query);
 	$statement->bindValue(':newTown', $newTown);
 	$statement->bindValue(':bulletin', $convertedTownName . ' has been created!');
 	$statement->bindValue(':buildings', $defaultBuildingsString);
+	$statement->bindValue(':userId', $userId);
 	$statement->execute();
 	$statement->closeCursor();
 
 	//Save the ID of the town that was just created. This  will be used for town table
 	$addedId = $dbCon->lastInsertId();
+
+	TownStats::createNewTownStats($addedId, $newTown, $userId);
 	
 	$x = -4;
 	$y = 5;
@@ -157,7 +162,7 @@ function createSettlement($settlementName, $mapSize)
 	}
 	if ($con->query($compilation) === TRUE) 
 	{
-		$hordeSize = getHordeSize($newTown);
+		$hordeSize = getHordeSize($addedId);
 		$query = "UPDATE `towns` SET `hordeSize` = '" . $hordeSize . "' WHERE `town_id` = '" . $addedId . "'";
 		Database::sendQuery($query);
 
