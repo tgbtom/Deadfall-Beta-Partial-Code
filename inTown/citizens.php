@@ -171,15 +171,20 @@ $charClass = $charObject->class;
 				echo "</td><td style='border: 1px solid #120B06;'>";
 				
 				//Draw all status' except for 12 and 10
+				if(!doesStatusContainExt(12, $currentCharId)){
+					foreach($statusArray as $currentStatus){
 
-				foreach($statusArray as $currentStatus){
-
-					if($currentStatus != 10 && $currentStatus != 12){
-						//draw the image
-						$statusName = $statusMaster[$currentStatus];
-						$currentImage = "<img src='../images/status/" . $statusName . ".png' alt='" . $statusName . "' title='" . $statusName . "'>";
-						echo $currentImage;
+						if($currentStatus != 10){
+							//draw the image
+							$statusName = $statusMaster[$currentStatus];
+							$currentImage = "<img src='../images/status/" . $statusName . ".png' alt='" . $statusName . "' title='" . $statusName . "'>";
+							echo $currentImage;
+						}
 					}
+				}
+				else{
+					$currentImage = "<img src='../images/status/Dead.png'>";
+					echo $currentImage;
 				}
 				
 				echo "</td>";

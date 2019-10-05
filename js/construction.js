@@ -35,7 +35,7 @@ function testAjax(buildingName, clickedElement){
                     document.getElementById("buttonSpan").innerHTML = "<button type='submit' value='Submit' class='buildButton'><span>Contribute  " + apNotice + "</span></button>";
                     document.getElementById("buttonSpan").style.marginTop = "-8px";
                     document.getElementById("costs").style.visibility = "hidden";
-                    document.getElementById("apInput").style.visibility = "hidden";
+                    document.getElementById("apInput").style.visibility = "visible";
                 }
                 else if(myJson["level"] >= myJson["maxLevel"]){
                     document.getElementById("costs").style.visibility = "hidden";

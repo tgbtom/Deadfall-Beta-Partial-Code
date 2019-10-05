@@ -1061,12 +1061,25 @@ function closeTheTown($townId) //Officially ends the town, database table is lef
 	foreach ($result as $current)
 	{
 		$characterId = $current['id'];
+
+		//compile times looted and zeds killed into the town legacy stats
+		$charStats = new CharStats($characterId);
+		$zedsKilled = $charStats->getZedsKilled();
+		$timesLooted = $charStats->getTimesLooted();
+
+		$townStats = new TownStats($townId);
+		$townStats->addZedsKilled($zedsKilled);
+		$townStats->addTimesLooted($timesLooted);
 		
+
 		$query = 'UPDATE `characters` SET `town_id` = NULL, `status` = "3.7.11" WHERE `id` = :id';
 		$statement = $dbCon->prepare($query);
 		$statement->bindValue(':id', $characterId);
 		$statement->execute();
 		$statement->closeCursor();
+		
+		$charStats = new CharStats($characterId);
+        $charStats->transferAllToLegacy();
 	}
 	
 	//Set 'TownFull' to 2 -> meaning the town has completed

@@ -342,6 +342,22 @@ class Character {
         }
     }
 
+    private function updateDbStats($columnName, $newValue){
+        $dbCon = Database::getDB();
+        //query to update stats for this instance of class
+        $query = "UPDATE `characters` SET `". $columnName ."` = :newValue WHERE `id` = :charId";
+        $statement = $dbCon->prepare($query);
+        $statement->bindValue(":charId", $this->id);
+        $statement->bindValue(":newValue", $newValue);
+        $statement->execute();
+        $statement->closeCursor();
+    }
+
+    public function refillAp(){
+        $this->currentAP = $this->maxAP;
+        self::updateDbStats("currentAP", $this->currentAP);
+    }
+
 }
 
 class User {
@@ -363,7 +379,7 @@ class User {
 
 Class CharStats {
     public $charId;
-    private $zeds_killed, $times_looted, $camps_survived, $structure_contributions, $bonus_xp, $day_of_death, $current_xp;
+    private $zeds_killed, $distance_travelled, $times_looted, $camps_survived, $structure_contributions, $bonus_xp, $day_of_death, $current_xp;
     
     public function __construct($characterId){
         $dbCon = Database::getDB();
@@ -377,6 +393,7 @@ Class CharStats {
 
         $this->charId = $characterId;
         $this->zeds_killed = $result["zeds_killed"];
+        $this->distance_travelled = $result["distance_travelled"];
         $this->times_looted = $result["times_looted"];
         $this->camps_survived = $result["camps_survived"];
         $this->structure_contributions = $result["structure_contributions"];
@@ -388,7 +405,7 @@ Class CharStats {
     public static function makeNewCharStats($charId){
         $dbCon = Database::getDB();
 
-        $queryUp = "INSERT INTO `stats_character` VALUES (:charId, '0', '0', '0', '0', '0', '0', '0')";
+        $queryUp = "INSERT INTO `stats_character` VALUES (:charId, '0', '0', '0', '0', '0', '0', '0', '0')";
         $statementUp = $dbCon->prepare($queryUp);
         $statementUp->bindValue(":charId", $charId);
         $statementUp->execute();
@@ -401,6 +418,14 @@ Class CharStats {
         $statement->closeCursor();
     } 
 
+    public function getZedsKilled(){
+        return $this->zeds_killed;
+    }
+
+    public function getTimesLooted(){
+        return $this->times_looted;
+    }
+
     private function updateDbStats($columnName, $newValue){
         $dbCon = Database::getDB();
         //query to update stats for this instance of class
@@ -412,9 +437,64 @@ Class CharStats {
         $statement->closeCursor();
     }
 
+    /**Transfer all character temporary stats to the legacy table and clear the temporary stats to '0'.
+     * Allow recounting of stats when the character joins a new town
+     */
+    public function transferAllToLegacy(){
+        $dbCon = Database::getDB();
+
+        $query = "SELECT * FROM `stats_character` WHERE `char_id` = :charId";
+        $statement = $dbCon->prepare($query);
+        $statement->bindValue(":charId", $this->charId);
+        $statement->execute();
+        $result = $statement->fetch();
+        $statement->closeCursor();
+
+        $queryLegacy = "SELECT * FROM `stats_character_legacy` WHERE `char_id` = :charId";
+        $statement = $dbCon->prepare($queryLegacy);
+        $statement->bindValue(":charId", $this->charId);
+        $statement->execute();
+        $resultLegacy = $statement->fetch();
+        $statement->closeCursor();
+
+        $query = "UPDATE `stats_character_legacy` SET ('zeds_killed', 'distance_travelled', 'times_looted', 'structure_contributions', 'camps_survived') VALUES (?, ?, ?, ?, ?)";
+        $statement->bindValue(1, $resultLegacy["zeds_killed"] + $result["zeds_killed"]);
+        $statement->bindValue(2, $resultLegacy["distance_travelled"] + $result["distance_travelled"]);
+        $statement->bindValue(3, $resultLegacy["times_looted"] + $result["times_looted"]);
+        $statement->bindValue(4, $resultLegacy["structure_contributions"] + $result["structure_contributions"]);
+        $statement->bindValue(5, $resultLegacy["camps_survived"] + $result["camps_survived"]);
+        $statement->execute();
+        $statement->closeCursor();
+    }
+
     public function modifyKilledZeds($kills){
         $this->zeds_killed += $kills;
         self::updateDbStats("zeds_killed", $this->zeds_killed);
+    }
+
+    public function  modifyTimesLooted($loots){
+        $this->times_looted += $loots;
+        self::updateDbStats("times_looted", $this->times_looted);
+    }
+
+    public function modifyStructureContributions($amountContributed){
+        $this->structure_contributions += $amountContributed;
+        self::updateDbStats("structure_contributions", $this->structure_contributions);
+    }
+
+    public function setDayOfDeath($dayNum){
+        $this->day_of_death = $dayNum;
+        self::updateDbStats("day_of_death", $this->day_of_death);
+    }
+
+    public function addCampSurvived(){
+        $this->camps_survived += 1;
+        self::updateDbStats("camps_survived", $this->camps_survived);
+    }
+
+    public function addDistanceTravelled(){
+        $this->distance_travelled += 1;
+        self::updateDbStats("distance_travelled", $this->distance_travelled);
     }
 }
 
@@ -457,5 +537,46 @@ Class TownStats {
         $statementUp->closeCursor();
     }
 
+    private function updateDbStats($columnName, $newValue){
+        $dbCon = Database::getDB();
+        //query to update stats for this instance of class
+        $query = "UPDATE `stats_town_legacy` SET `". $columnName ."` = :newValue WHERE `town_id` = :townId";
+        $statement = $dbCon->prepare($query);
+        $statement->bindValue(":townId", $this->town_id);
+        $statement->bindValue(":newValue", $newValue);
+        $statement->execute();
+        $statement->closeCursor();
+    }
 
+    //Add defence, deaths, and horde size to daily amounts. Compiles all to a list to allow creation of charts with data
+    public function addDayStats($defenceToday, $hordeToday, $deathsToday){
+        if($this->defence_by_day == ""){
+            $concat = "";
+        } else{
+            $concat = ".";
+        }
+        $this->defence_by_day .= $concat . $defenceToday;
+        $this->horde_by_day .= $concat . $hordeToday;
+        $this->deaths_by_day .= $concat . $deathsToday;
+
+        self::updateDbStats("defence_by_day", $this->defence_by_day);
+        self::updateDbStats("horde_by_day", $this->horde_by_day);
+        self::updateDbStats("deaths_by_day", $this->deaths_by_day);
+    }
+
+    /**Add 1 to the town stat for 'built structure levels */
+    public function addStructureLevel(){
+        $this->structure_levels += 1;
+        self::updateDbStats("structure_levels", $this->structure_levels);
+    }
+
+    public function addZedsKilled($amount){
+        $this->zeds_killed += $amount;
+        self::updateDbStats("zeds_killed", $this->zeds_killed);
+    }
+
+    public function addTimesLooted($amount){
+        $this->times_looted += $amount;
+        self::updateDbStats("times_looted", $this->times_looted);
+    }
 }

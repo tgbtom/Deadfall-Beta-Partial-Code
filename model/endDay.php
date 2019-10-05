@@ -104,14 +104,30 @@ function endDay() {
             //Check for death of any characters that spent the night outside (60% chance to die)
             $charLocation = getCharCoordsExt($characterId);
             if($charLocation[0] != 0 || $charLocation[1] != 0){
-                if(mt_rand(0, 100) < 60){
+                if(mt_rand(0, 100) < 60 && !doesStatusContainExt(12, $characterId)){
                     //Character dies from camping
                     killCharacter($characterId, $currentUsername, $newDead);
                     $deathBulletin = "<red>" . $character . " never returned from outside of town</red>";
                     Towns::addTownBulletin($deathBulletin, $townId);
                 }
+                else{
+                    //track stats that you survived a night camping
+                    $charStats = new CharStats($characterId);
+                    $charStats->addCampSurvived();
+                }
+            }
+
+            //replenish AP to full if they are still alive
+            if(!doesStatusContainExt(12, $characterId)){
+                $characterObject = new Character($characterId);
+                $characterObject->refillAp();
             }
         }
+
+
+        //add running values to town stats for defence, horde, and deaths
+        $townStats = new TownStats($townId);
+        $townStats->addDayStats($defence, $oldHorde, ($newDead - $deadRes));
 
         //finish day, increase day number
         $dayNumber++;
@@ -123,7 +139,7 @@ function endDay() {
         if (isset($overrun)){
             $notice = "<red><strong>Horde Attack -> Night " . ($dayNumber - 1) . "</strong>: " . $overrun . " Zeds got through the defences and terrorized the citizens</red>";
             Towns::addTownBulletin($notice, $townId);
-            $notice = "<red>as a result " . $newDead - $deadRes . " Survivors have been killed</red>";
+            $notice = "<red>as a result " . ($newDead - $deadRes) . " Survivors have been killed</red>";
             Towns::addTownBulletin($notice, $townId);
         }
         //otherwise, post notice that you were safe
@@ -153,9 +169,9 @@ function endDay() {
             $amount = mt_rand(2,4);
             for ($i = 0; $i < $amount; $i++) {
                 addToBank(0, $townId);
-                $notice = "<blue>" . $amount . " Water Rations were collected from the Water Reserve</blue>";
-                Towns::addTownBulletin($notice, $townId);
             }
+            $notice = "<blue>" . $amount . " Water Rations were collected from the Water Reserve</blue>";
+            Towns::addTownBulletin($notice, $townId);
         }
 
         //Add bits of food to the bank if Vegetable Garden is complete
@@ -163,9 +179,9 @@ function endDay() {
             $amount = mt_rand(1,4);
             for ($i = 0; $i < $amount; $i++) {
                 addToBank(23, $townId);
-                $notice = "<blue>" . $amount . " Carrots were collected from the Vegetable Garden</blue>";
-                Towns::addTownBulletin($notice, $townId);
             }
+            $notice = "<blue>" . $amount . " Carrots were collected from the Vegetable Garden</blue>";
+            Towns::addTownBulletin($notice, $townId);
         }
 
     } else {
@@ -183,6 +199,7 @@ function killCharacter($characterId, $username, &$newDead) {
     global $townName;
     global $townId;
     global $dbCon;
+    global $dayNumber;
 
     $charObject = new Character($characterId);
     
@@ -202,8 +219,11 @@ function killCharacter($characterId, $username, &$newDead) {
     dropAllItemsExt($characterId);
 
     //Add a notice of their death to the bulletin
-    $notice = "<red>" . $charObject->character . "[" . $username . "] Has died from zeds</red>";
-    Towns::addTownBulletin($notice, $townId);
+    // $notice = "<red>" . $charObject->character . "[" . $username . "] Has died from zeds</red>";
+    // Towns::addTownBulletin($notice, $townId);
+
+    $charStats = new CharStats($characterId);
+    $charStats->setDayOfDeath($dayNumber);
 
     //Check if any chars are left alive in this town, otherwise needs to end town
     if (charsAlive($townId) == 0) {
@@ -215,6 +235,7 @@ function killCharacter($characterId, $username, &$newDead) {
 function characterLottery($townId, &$newDead){
     
     global $dbCon;
+    global $dayNumber;
     
     //establish the empty array so arrays can be pushed into it (becomes multi-dimensional)
     $lotteryPool = array();
@@ -246,7 +267,6 @@ function characterLottery($townId, &$newDead){
     $charToKill = $lotteryPool[$lotteryDraw][1];
 
     killCharacter($charToKill, $userToKill, $newDead);
-
 }
 
 ?>

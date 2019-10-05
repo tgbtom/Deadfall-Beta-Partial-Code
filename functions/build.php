@@ -73,6 +73,9 @@ if (isset($buildName) && isset($apToAssign))
                        Database::sendQuery($queryString);
                        
                        StructuresDB::addAp($currentBuilding, $apToAssign, $townId);
+                       $charStats = new CharStats($charId);
+                       $charStats->modifyStructureContributions($apToAssign);
+
                        echo "<script>window.location.href='../inTown/?locat=construction'</script>";
                }
                else
@@ -110,6 +113,8 @@ if (isset($buildName) && isset($apToAssign))
                             Database::sendQuery($queryString);
                             
                             StructuresDB::addAp($currentBuilding, $apToAssign, $townId);
+                            $charStats = new CharStats($charId);
+                            $charStats->modifyStructureContributions($apToAssign);
                             
                             //...then remove items from bank
                             $itemCosts = $currentBuilding->getItemCosts_objects();

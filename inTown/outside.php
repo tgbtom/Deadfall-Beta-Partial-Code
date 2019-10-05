@@ -55,6 +55,8 @@ $capacityLeft = $maxItems - $itemsMass;
 				if (canMove(2, true))
 				{
 					reduceAp(2);
+					$charStats = new CharStats($charId);
+					$charStats->modifyTimesLooted(1);
 					$itemToLoot = lootItem();
 					for ($i = 0; $i < sizeOf($itemsMaster); $i++)
 					{
@@ -102,6 +104,8 @@ $capacityLeft = $maxItems - $itemsMass;
 		if($dir == 1 && $canMove) //UP
 		{
 			reduceAp();
+			$charStats = new CharStats($charId);
+            $charStats->addDistanceTravelled();
 			if($_SESSION['y'] < 5)
 			{
 				// Code Below removes the character from the zone it is leaving, then adds them to the new zone respectively
@@ -152,6 +156,8 @@ $capacityLeft = $maxItems - $itemsMass;
 		elseif($dir == 2 && $canMove) //RIGHT
 		{
 			reduceAp();
+			$charStats = new CharStats($charId);
+            $charStats->addDistanceTravelled();
 			if($_SESSION['x'] < 5)
 			{
 				// Code Below removes the character from the zone it is leaving, then adds them to the new zone respectively
@@ -203,6 +209,8 @@ $capacityLeft = $maxItems - $itemsMass;
 		elseif($dir == 3 && $canMove) //DOWN
 		{
 			reduceAp();
+			$charStats = new CharStats($charId);
+            $charStats->addDistanceTravelled();
 			if($_SESSION['y'] > -5)
 			{
 				// Code Below removes the character from the zone it is leaving, then adds them to the new zone respectively
@@ -254,6 +262,8 @@ $capacityLeft = $maxItems - $itemsMass;
 		elseif($dir == 4 && $canMove) //LEFT
 		{
 			reduceAp();
+			$charStats = new CharStats($charId);
+            $charStats->addDistanceTravelled();
 			if($_SESSION['x'] > -5)
 			{
 				// Code Below removes the character from the zone it is leaving, then adds them to the new zone respectively

@@ -201,6 +201,9 @@ class StructuresDB
                     //Add this to The Bulletin --> Level X Outter Wall Has been Completed
                     $notice = " <yellow><structure-complete>Level " . $building["Level"] . " " . $building["Name"] . "</yellow> <gray>Has been Completed</structure-complete></gray>";
                     Towns::addTownBulletin($notice, $townId);
+
+                    $townStats = new TownStats($townId);
+                    $townStats->addStructureLevel();
                 }
                 else{
                     if($firstContribution == true){
