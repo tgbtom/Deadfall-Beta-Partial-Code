@@ -244,7 +244,7 @@ class Towns {
 
 class Character {
 
-    public $id, $username, $character, $class, $gender, $level, $exp, $townId, $items, $itemsMass, $bonusItems, $maxBonusItems, $currentAP, $maxAP, $status;
+    public $id, $username, $character, $class, $gender, $level, $exp, $townId, $items, $itemsMass, $bonusItems, $maxBonusItems, $currentAP, $maxAP, $status, $skills;
     
     public function __construct($characterId){
         $this->id = $characterId;
@@ -271,6 +271,7 @@ class Character {
         $this->currentAP = $result["currentAP"];
         $this->maxAP = $result["maxAP"];
         $this->status = $result["status"];
+        $this->skills = $result["skills"];
     }
 
     public static function getCharacterById($id){
@@ -358,10 +359,131 @@ class Character {
         self::updateDbStats("currentAP", $this->currentAP);
     }
 
+    /** Returns an array of Skill objects that are on the character, or NULL if no skills are active */
+    public function getActiveSkills(){
+        $returnArray = array();
+        if($this->skills != NULL){
+            $explodeSkills = explode(".", $this->skills);
+            foreach($explodeSkills as $current){
+                if($current != 0){
+                    $returnArray[] = new Skill($current);
+                }
+            }
+            return $returnArray;
+        }
+        else{
+            return NULL;
+        }
+    }
+
+    public function getUsedSkillPoints(){
+        $activeSkills = $this->getActiveSkills();
+        $usedSkillPoints = 0;
+        if($activeSkills != NULL){
+            foreach ($activeSkills as $current){
+                $usedSkillPoints += $current->getCost();
+            }
+        }
+        return $usedSkillPoints;
+    }
+
+    public function isSkillActive($skillId){
+        $activeSkills = $this->getActiveSkills();
+        if($activeSkills != NULL){
+            foreach($activeSkills as $current){
+                if($current->id == $skillId){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public function addSkill($skillId){
+        $array1 = explode(".", $this->skills);
+        $newSkills = "";
+        $added = false;
+        foreach ($array1 as $key => $current){
+            if($key == 0 && $current != '0'){
+                $newSkills = $current;
+            }
+            elseif($key == 0 && $current == '0' && !$added){
+                $newSkills = $skillId;
+                $added = true;
+            }
+            elseif($current != '0'){
+                $newSkills .= "." . $current;
+            }
+            else{
+                if(!$added){
+                    $newSkills .= "." . $skillId;
+                    $added = true;
+                }
+                else{
+                    $newSkills .= ".0";
+                }
+            }
+        }
+        $this->skills = $newSkills;
+        self::updateDbStats("skills", $this->skills);
+    }
+
+    /** Performs action of removing skill, and returns which slot # the skill was in */
+    public function removeSkill($skillId){
+        $activeSkills = $this->getActiveSkills();
+        $newSkills = "";
+        if($activeSkills != NULL){
+            foreach ($activeSkills as $key => $current){
+                if($current->getId() != $skillId){
+                    if($newSkills == ""){
+                        $newSkills = $current->getId();
+                    }
+                    else{
+                        $newSkills .= "." . $current->getId();
+                    }
+                }
+                else{
+                    $slotEmptied = $key;
+                }
+            }
+            $newSize = count(explode(".", $newSkills));
+            
+            while($newSize < 5){
+                if($newSize == 0){
+                    $newSkills = "0";
+                }
+                else{
+                    $newSkills .= ".0";
+                }
+                $newSize++;
+            }
+            
+            $this->skills = $newSkills;
+            self::updateDbStats("skills", $newSkills);
+            return $slotEmptied;
+        }
+    }
+
 }
 
 class User {
     public $userId, $username;
+    private $skillsUnlocked;
+
+    public function __construct($user_id){
+        $dbCon = Database::getDB();
+
+        $query = "SELECT * FROM `userstable` WHERE `id` = :id";
+        $statement = $dbCon->prepare($query);
+        $statement->bindValue(":id", $user_id);
+        $statement->execute();
+        $result = $statement->fetch();
+        $statement->closeCursor();
+
+        $this->userId = $user_id;
+        $this->username = $result["username"];
+        $this->skillsUnlocked = $result["skillsUnlocked"];
+    }
 
     public static function getNameById($id){
         $dbCon = Database::getDB();
@@ -374,6 +496,19 @@ class User {
         $statement->closeCursor();
 
         return $result['username'];
+    }
+
+    public function getListOfSkills(){
+        $arrayOfSkills = explode(".", $this->skillsUnlocked);
+        return $arrayOfSkills;
+    }
+
+    public function isSkillUnlocked($skillId){
+        $skillsArray = $this->getListofSkills();
+        if(in_array($skillId, $skillsArray)){
+            return true;
+        }
+        return false;
     }
 }
 
@@ -426,6 +561,10 @@ Class CharStats {
         return $this->times_looted;
     }
 
+    public function getBonusXp(){
+        return $this->current_xp;
+    }
+
     private function updateDbStats($columnName, $newValue){
         $dbCon = Database::getDB();
         //query to update stats for this instance of class
@@ -467,12 +606,38 @@ Class CharStats {
         $statement->closeCursor();
     }
 
+    public function getLevel(){
+        $dbCon = Database::getDB();
+
+        $queryLegacy = "SELECT * FROM `stats_character_legacy` WHERE `char_id` = :charId";
+        $statement = $dbCon->prepare($queryLegacy);
+        $statement->bindValue(":charId", $this->charId);
+        $statement->execute();
+        $resultLegacy = $statement->fetch();
+        $statement->closeCursor();
+
+        return $resultLegacy["level"];
+    }
+
+    public function getLegacyXp(){
+        $dbCon = Database::getDB();
+
+        $queryLegacy = "SELECT * FROM `stats_character_legacy` WHERE `char_id` = :charId";
+        $statement = $dbCon->prepare($queryLegacy);
+        $statement->bindValue(":charId", $this->charId);
+        $statement->execute();
+        $resultLegacy = $statement->fetch();
+        $statement->closeCursor();
+
+        return $resultLegacy["current_xp"];
+    }
+
     public function modifyKilledZeds($kills){
         $this->zeds_killed += $kills;
         self::updateDbStats("zeds_killed", $this->zeds_killed);
     }
 
-    public function  modifyTimesLooted($loots){
+    public function modifyTimesLooted($loots){
         $this->times_looted += $loots;
         self::updateDbStats("times_looted", $this->times_looted);
     }
@@ -578,5 +743,41 @@ Class TownStats {
     public function addTimesLooted($amount){
         $this->times_looted += $amount;
         self::updateDbStats("times_looted", $this->times_looted);
+    }
+}
+
+Class Skill {
+    public $id;
+    private $name, $description, $cost;
+    public function __construct($skillId){
+        $dbCon = Database::getDB();
+
+        $query = "SELECT * FROM `skills` WHERE `id` = :id";
+        $statement = $dbCon->prepare($query);
+        $statement->bindValue(":id", $skillId);
+        $statement->execute();
+        $result = $statement->fetch();
+        $statement->closeCursor();
+
+        $this->id = $result["id"];
+        $this->name = $result["name"];
+        $this->description = $result["description"];
+        $this->cost = $result["cost"];
+    }
+
+    public function getId(){
+        return $this->id;
+    }
+
+    public function getName(){
+        return $this->name;
+    }
+
+    public function getDescription(){
+        return $this->description;
+    }
+
+    public function getCost(){
+        return $this->cost;
     }
 }

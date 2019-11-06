@@ -107,11 +107,11 @@ if ($foundItem)
 		}
 		else if (doesStatusContain(4))
 		{
-			replaceStatus(4, 3);
+			replaceStatus(4, 2);
 		}
 		else if (doesStatusContain(5))
 		{
-			replaceStatus(5, 4);
+			replaceStatus(5, 2);
 		}
 
 		if (!(doesStatusContain(0))) 
@@ -147,26 +147,20 @@ if ($foundItem)
 		$statement2->closeCursor();
 		
 		//6,7,8,9 -> Quenched to Dehydrated
-		if (doesStatusContain(6))
-		{/*Character is already Quenched*/}
-		else if (doesStatusContain(7))
+		if (doesStatusContain(7))
 		{
 			replaceStatus(7, 6);
 		}
 		else if (doesStatusContain(8))
 		{
-			replaceStatus(8, 7);
+			replaceStatus(8, 6);
 		}
 		else if (doesStatusContain(9))
 		{
-			replaceStatus(9, 8);
+			replaceStatus(9, 7);
 		}
 
-		if (doesStatusContain(1))  //if character has drank today: only decrease thirst level
-		{
-			//Character has already DRANK TODAY
-		}
-		else  //else, if the character has NOT Drank today: Add 1 to his status array AND UPDATE AP accordingly
+		if (!(doesStatusContain(1)))  //if character has drank today: only decrease thirst level
 		{
 			addStatus(1);
 			$apToGain = getApForItemId($itemId)/100;

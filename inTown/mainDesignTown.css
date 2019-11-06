@@ -108,7 +108,7 @@ body
 .centralBox
 {
 	display: inline-block;
-	width: 85%;
+	width: 95%;
 	background-color: #A5907E;
 	border: 2px solid #000000;
 	padding: 15px;
@@ -291,3 +291,320 @@ blue{
 	border: 1px solid black;
 	padding: 5px;
 }
+
+.skillsBox{
+	display: flex;
+    /* flex-wrap: wrap; */
+	justify-content: space-between;
+	width: 100%;
+}
+
+.skillsUnlocked{
+	width: 30%;
+	min-width: 100px;
+	/* border: 1px solid black; */
+	margin-top: 25px;
+	max-height: 400px;
+	border-bottom: 1px solid black;
+	border-top: 1px solid black;
+	overflow: auto;
+}
+
+.skillsSelected{
+	width: 30%;
+	min-width:100px;
+	border: 1px solid black;
+	margin-top: 25px;
+	max-height: 400px;
+	border-bottom: 1px solid black;
+	border-top: 1px solid black;
+	overflow: auto;
+}
+
+.middleSkills{
+	width: 40%;
+	min-width:113px;
+	border: 1px solid black;
+	margin-top: 25px;
+	padding: 10px;
+	text-align: center;
+	background-color: rgb(145, 142, 140);
+	max-height: 400px;
+	border-bottom: 1px solid black;
+	border-top: 1px solid black;
+	overflow: auto;
+}
+
+	table.cinereousTable {
+	border: 6px solid #5a5a5a;
+	background-color: rgb(145, 142, 140);
+	width: 100%;
+	text-align: center;
+  }
+  table.cinereousTable td, table.cinereousTable th {
+	border: 1px solid #5a5a5a;
+	padding: 4px 4px;
+  }
+  table.cinereousTable tbody td {
+	font-size: 13px;
+  }
+  table.cinereousTable tr:nth-child(even) {
+	background: #948473;
+  }
+  table.cinereousTable thead {
+	background: #948473;
+	background: -moz-linear-gradient(top, #afa396 0%, #9e9081 66%, #948473 100%);
+	background: -webkit-linear-gradient(top, #afa396 0%, #9e9081 66%, #948473 100%);
+	background: linear-gradient(to bottom, #afa396 0%, #9e9081 66%, #948473 100%);
+  }
+  table.cinereousTable thead th {
+	font-size: 17px;
+	font-weight: bold;
+	color: rgb(39, 39, 39);
+	text-align: center;
+	border-left: 2px solid #5a5a5a;
+  }
+  table.cinereousTable thead th:first-child {
+	border-left: none;
+  }
+  
+  table.cinereousTable tfoot {
+	font-size: 16px;
+	font-weight: bold;
+	color: #F0F0F0;
+	background: #948473;
+	background: -moz-linear-gradient(top, #afa396 0%, #9e9081 66%, #948473 100%);
+	background: -webkit-linear-gradient(top, #afa396 0%, #9e9081 66%, #948473 100%);
+	background: linear-gradient(to bottom, #afa396 0%, #9e9081 66%, #948473 100%);
+  }
+  table.cinereousTable tfoot td {
+	font-size: 16px;
+  }
+
+.pointer{
+	cursor: pointer;
+}        
+
+.pointerWhite{
+	background: rgba(255, 255, 255, 0.15);
+}
+
+.pointerGreen{
+	background: rgba(55, 219, 55, 0.15);
+}
+
+.pointerRed{
+	background: rgba(255, 89, 153, 0.15);
+}
+
+.pointerBlue{
+	background: rgba(55, 132, 219, 0.15);
+	border: 1px solid black;
+}
+.pointerBlack{
+	background: rgba(0, 0, 0, 0.274);
+	border: 1px solid black;
+}
+
+.skillDescription :nth-child(2){
+	margin-top: 6px;
+}
+
+.skill_button {
+	-moz-box-shadow:inset 0px 1px 0px 0px #caefab;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #caefab;
+	box-shadow:inset 0px 1px 0px 0px #caefab;
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #77d42a), color-stop(1, #5cb811));
+	background:-moz-linear-gradient(top, #77d42a 5%, #5cb811 100%);
+	background:-webkit-linear-gradient(top, #77d42a 5%, #5cb811 100%);
+	background:-o-linear-gradient(top, #77d42a 5%, #5cb811 100%);
+	background:-ms-linear-gradient(top, #77d42a 5%, #5cb811 100%);
+	background:linear-gradient(to bottom, #77d42a 5%, #5cb811 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#77d42a', endColorstr='#5cb811',GradientType=0);
+	background-color:#77d42a;
+	-moz-border-radius:6px;
+	-webkit-border-radius:6px;
+	border-radius:6px;
+	border:1px solid #268a16;
+	display:inline-block;
+	cursor:pointer;
+	color:#306108;
+	font-family:Arial;
+	font-size:15px;
+	font-weight:bold;
+	padding:6px 24px;
+	text-decoration:none;
+    text-shadow:0px 1px 0px #aade7c;
+    margin-bottom: 4px;
+}
+.skill_button:hover {
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #5cb811), color-stop(1, #77d42a));
+	background:-moz-linear-gradient(top, #5cb811 5%, #77d42a 100%);
+	background:-webkit-linear-gradient(top, #5cb811 5%, #77d42a 100%);
+	background:-o-linear-gradient(top, #5cb811 5%, #77d42a 100%);
+	background:-ms-linear-gradient(top, #5cb811 5%, #77d42a 100%);
+	background:linear-gradient(to bottom, #5cb811 5%, #77d42a 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#5cb811', endColorstr='#77d42a',GradientType=0);
+	background-color:#5cb811;
+}
+.skill_button:active {
+	position:relative;
+	top:1px;
+}
+
+.skill_button_remove {
+	-moz-box-shadow:inset 0px 1px 0px 0px #caefab;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #caefab;
+	box-shadow:inset 0px 1px 0px 0px #751A1A;
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #891717), color-stop(1, #91372B));
+	background:-moz-linear-gradient(top, #891717 5%, #91372B 100%);
+	background:-webkit-linear-gradient(top, #891717 5%, #91372B 100%);
+	background:-o-linear-gradient(top, #891717 5%, #91372B 100%);
+	background:-ms-linear-gradient(top, #891717 5%, #91372B 100%);
+	background:linear-gradient(to bottom, #891717 5%, #91372B 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#891717', endColorstr='#91372B',GradientType=0);
+	background-color:#891717;
+	-moz-border-radius:6px;
+	-webkit-border-radius:6px;
+	border-radius:6px;
+	border:1px solid #752C23;
+	display:inline-block;
+	cursor:pointer;
+	color: #ecca78;
+	font-family:Arial;
+	font-size:15px;
+	font-weight:bold;
+	padding:6px 24px;
+	text-decoration:none;
+    text-shadow:0px 1px 0px #6b5242;
+    margin-bottom: 4px;
+}
+.skill_button_remove:hover {
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #91372B), color-stop(1, #891717));
+	background:-moz-linear-gradient(top, #91372B 5%, #891717 100%);
+	background:-webkit-linear-gradient(top, #91372B 5%, #891717 100%);
+	background:-o-linear-gradient(top, #91372B 5%, #891717 100%);
+	background:-ms-linear-gradient(top, #91372B 5%, #891717 100%);
+	background:linear-gradient(to bottom, #91372B 5%, #891717 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#91372B', endColorstr='#891717',GradientType=0);
+	background-color:#891717;
+}
+.skill_button_remove:active {
+	position:relative;
+	top:1px;
+}
+
+#skillDescription{
+	margin-bottom: 10px;
+}
+
+.numberCircle{
+	display: inline-block;
+    border-radius: 50%;
+    /* width: 10px;
+	height: 10px; */
+    padding: 3px;
+
+    background: #fff;
+    border: 2px solid #666;
+    color: #666;
+    text-align: center;
+
+	font: 10px Arial, sans-serif;
+}
+
+/* #xpBar{
+	width: 100%;
+	background-color: #f3f3f3;
+	border: 0;
+	height: 18px;
+	border-radius: 9px;
+}
+
+
+#spBar{
+	width: 100%;
+	color: white;
+	background-color: gray;
+} */
+#xpBar{
+	-webkit-appearance: none;
+	appearance: none;
+	margin: 0;
+
+	width: 100%;
+	background-color: lightgray;
+	color: orange;
+	border: 0;
+	height: 22px;
+	border-radius: 6px;
+}
+#xpBar::-webkit-progress-bar {
+	border-radius: 9px;
+	color:white;
+	background-color: lightgray;
+  }
+  #xpBar::-webkit-progress-value {
+	border-radius: 9px;
+	background-color: lightskyblue;
+  }
+  #xpBar::-moz-progress-bar {
+	border-radius: 9px;
+	color:white;
+  }
+  #xpBar::-ms-fill{
+	border-radius: 9px;
+	border: none;
+	color:lightskyblue;
+}
+
+#spBar{
+	-webkit-appearance: none;
+	appearance: none;
+	margin: 0;
+
+	width: 100%;
+	background-color: lightgray;
+	border: 0;
+	height: 22px;
+}
+#spBar::-webkit-progress-bar {
+	border-radius: 9px;
+	color:white;
+	background-color: lightgray;
+  }
+  #spBar::-webkit-progress-value {
+	border-radius: 9px;
+	background-color: #c6538c;
+  }
+  #spBar::-moz-progress-bar {
+	border-radius: 9px;
+	color:white;
+  }
+  #spBar::-ms-fill{
+	border-radius: 9px;
+	border: none;
+	color:#c6538c;
+}
+
+/* width */
+::-webkit-scrollbar {
+	/* //width: 5px; */
+	width: 6%;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+	background: #f1f1f1; 
+  }
+   
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+	background: #888; 
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+	background: #555; 
+  }
+
