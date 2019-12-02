@@ -37,17 +37,13 @@ $defence = $townDetails['defenceSize'];
 ?>
 <html>
     <head>
-        <link rel="stylesheet" type="text/css" href="mainDesignTown.css">
         <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <link rel="stylesheet" type="text/css" href="mainDesignTown.css">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <script src="../js/character.js" type="text/javascript"></script>
     </head>
 
     <body>
-
-        <div class="Container">
-
-<?php include("../universal/header.php"); ?>
 
 
             <!-- PHP draws level requirements, and checks database for current stats of character -->
@@ -71,13 +67,17 @@ $charStats = new CharStats($charId);
     $neededXp = getRequiredXp($currentLevel);
 
     $percentage = ($currentXp / $neededXp) * 100;
-    echo "<div class='centralBox'>" .
+
+    $bonusXp = $charStats->xpToBeEarned();
+    $bonusPercent = min(($bonusXp/$neededXp) * 100, 100 - floor($percentage));
+    echo 
+        "<h3 style='text-align: center;'>" . $charName . "</h3>" .
         "<div style='width: 100%; height: 30px;'><p style='float:left;'><b>Level " . $currentLevel . "</b></p> <p style='float:right;'>Level " . $nextLevel . "</p></div>" .
-        "<div class='w3-light-grey w3-round-large'><div class='w3-container w3-blue w3-round-large w3-center' id='xpBar' style='width:" . $percentage . "%;'>". (round($percentage)) ."%</div></div>" .
-        "<div style='width: 100%; height: 30px;'><p style='float:left;'>" . $currentXp . " exp</p> <p style='float:right;'>" . $neededXp . " exp</p></div>";
+        "<div class='w3-light-grey w3-round-large' id='xpContainer'><div class='w3-container w3-light-blue w3-round-large w3-center' id='xpBar2' style='width:" . (floor($bonusPercent) + (floor($bonusPercent) > 0 ? 0.75 : 0)) . "%; position: relative; left:" . max(0, ($percentage - 0.75)) . "%; overflow-x: visible;'><pre>     + " . (floor($bonusPercent)) . "%</pre></div><div class='w3-container w3-blue w3-round-large w3-center' id='xpBar' style='width:" . $percentage . "%; position: relative; top: -22px;'>&nbsp;". (floor($percentage)) ."%</div></div>" .
+        "<div style='width: 100%; height: 30px;'><p style='float:left;'>" . $currentXp . " xp</p> <p style='float:right;'>" . $neededXp . " xp</p></div>";
     
-    $percentageSkills = ($usedSkillPoints / $currentLevel) * 100;
-    echo "<div class='w3-light-grey w3-round'><div class='w3-container w3-amber w3-round w3-center' id='spBar' style='width:". $percentageSkills ."%'>". round($percentageSkills) ."%</div></div>";
+    $percentageSkills = ($usedSkillPoints / max($currentLevel, 1)) * 100;
+    echo "<div class='w3-light-grey w3-round' id='spContainer'><div class='w3-container w3-amber w3-round w3-center' id='spBar' style='width:". $percentageSkills ."%'>". round($percentageSkills) ."%</div></div>";
     echo "<div style='text-align: center; width: 100%; height: 22px;'><h4><span id='usedSkillPoints'>" . $usedSkillPoints . "</span>/" . $currentLevel . " Points Assigned</h4></div>";
 
 ?>  <div class="skillsBox">
@@ -157,11 +157,6 @@ $charStats = new CharStats($charId);
         </table>
     </div>
     </div>
-        </div>
-        </div>
-            <?php
-            Include ("../universal/hyperlinks.php");
-            ?>
     </body>
 
 </html>

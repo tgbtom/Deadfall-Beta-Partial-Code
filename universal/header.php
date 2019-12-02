@@ -266,14 +266,14 @@ if (isset($dropAll)) {
 	</div>	
 <div class="taskBox">
 	<div>
-		<a href="./?locat=construction"><img src="../images/construction.png" title="Construction"></a>
-		<a href="./?locat=special"><img src="../images/special.png" title="Special Structures"></a>
-		<a href="./?locat=warehouse"><img src="../images/storage.png" title="Warehouse"></a>
+		<a href="./?locat=construction"><img src="../images/construction.png" title="Construction" onmousedown="this.src = '../images/construction_clicked.png';" onmouseover="this.style.opacity=0.8;" onmouseout="this.style.opacity=1.0;"></a>
+		<a href="./?locat=special"><img src="../images/special.png" title="Special Structures" onmousedown="this.src = '../images/special_clicked.png';" onmouseover="this.style.opacity=0.8;" onmouseout="this.style.opacity=1.0;"></a>
+		<a href="./?locat=warehouse"><img src="../images/storage.png" title="Warehouse" onmousedown="this.src = '../images/storage_clicked.png';" onmouseover="this.style.opacity=0.8;" onmouseout="this.style.opacity=1.0;"></a>
 	</div>
 	<div>
-    	<a href="./?locat=citizens"><img src="../images/citizens.png" title="Citizens"></a>
-    	<a href="./?locat=character"><img src="../images/stats.png" title="Character Info"></a>
-    	<a href="./?locat=outside"><img src="../images/outside.png" title="Outside Map"></a>
+    	<a href="./?locat=citizens"><img src="../images/citizens.png" title="Citizens" onmousedown="this.src = '../images/citizens_clicked.png';" onmouseover="this.style.opacity=0.8;" onmouseout="this.style.opacity=1.0;"></a>
+    	<a href="./?locat=character"><img src="../images/stats.png" title="Character Info" onmousedown="this.src = '../images/stats_clicked.png';" onmouseover="this.style.opacity=0.8;" onmouseout="this.style.opacity=1.0;"></a>
+    	<a href="./?locat=outside"><img src="../images/outside.png" title="Outside Map" onmousedown="this.src = '../images/outside_clicked.png';" onmouseover="this.style.opacity=0.8;" onmouseout="this.style.opacity=1.0;"></a>
 	</div>
 </div>
 

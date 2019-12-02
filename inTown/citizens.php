@@ -35,11 +35,6 @@ $charClass = $charObject->class;
 
 ?>
 
-
-
-
-
-	<link rel="stylesheet" type="text/css" href="mainDesignTown.css">
 	<style>
 	table {width:95%; border-collapse: collapse; table-layout:fixed;}
 	table, tr, td {color:#120B06; padding:2px;}
@@ -84,12 +79,12 @@ $charClass = $charObject->class;
 		else
 		{
 			var xmlhttp = new XMLHttpRequest();
-				xmlhttp.onreadystatechange = function() {
-					if (xmlhttp.readyState === 4 && xmlhttp.status === 200) 
-					{
-						//document.getElementById("txtHint").innerHTML = xmlhttp.responseText;
-					}
-				};
+			// xmlhttp.onreadystatechange = function() {
+			// 		if (xmlhttp.readyState === 4 && xmlhttp.status === 200) 
+			// 		{
+			// 			//document.getElementById("txtHint").innerHTML = xmlhttp.responseText;
+			// 		}
+			// 	};
 			xmlhttp.open("GET", "../functions/changeChar.php?change="+newCharId, true);
 			xmlhttp.send();
 			window.location.reload();

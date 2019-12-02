@@ -54,7 +54,7 @@ class Towns {
 
         $query = "SELECT * FROM `towns` WHERE `town_id` = :townId";
         $statement = $dbCon->prepare($query);
-        $statement->bindValue(":townId", $townId);
+        $statement->bindValue(":townId", $town_id);
         $statement->execute();
         $result = $statement->fetch();
         $statement->closeCursor();
@@ -426,6 +426,7 @@ class Character {
         }
         $this->skills = $newSkills;
         self::updateDbStats("skills", $this->skills);
+        return $added;
     }
 
     /** Performs action of removing skill, and returns which slot # the skill was in */
@@ -443,18 +444,14 @@ class Character {
                     }
                 }
                 else{
+                    $newSkills = "0";
                     $slotEmptied = $key;
                 }
             }
             $newSize = count(explode(".", $newSkills));
             
             while($newSize < 5){
-                if($newSize == 0){
-                    $newSkills = "0";
-                }
-                else{
-                    $newSkills .= ".0";
-                }
+                $newSkills .= ".0";
                 $newSize++;
             }
             
@@ -546,7 +543,7 @@ Class CharStats {
         $statementUp->execute();
         $statementUp->closeCursor();
 
-        $query = "INSERT INTO `stats_character_legacy` VALUES (:charId, '0', '0', '0', '0', '0', '0', '0', '0')";
+        $query = "INSERT INTO `stats_character_legacy` VALUES (:charId, '0', '0', '0', '0', '0', '0', '0', '0', '0')";
         $statement = $dbCon->prepare($query);
         $statement->bindValue(":charId", $charId);
         $statement->execute();
@@ -563,6 +560,11 @@ Class CharStats {
 
     public function getBonusXp(){
         return $this->current_xp;
+    }
+
+    public function xpToBeEarned(){
+        $toEarn = $this->bonus_xp + $this->times_looted + $this->zeds_killed + $this->distance_travelled + $this->camps_survived + $this->zeds_killed + $this->structure_contributions;
+        return $toEarn;
     }
 
     private function updateDbStats($columnName, $newValue){

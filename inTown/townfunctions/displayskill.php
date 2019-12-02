@@ -18,15 +18,26 @@ else
 	$charId = $_SESSION['char_id'];
 }
 
+$characterObject = new Character($charId);
+$townId = $characterObject->townId;
+if($townId != null){
+	$townObject = new Towns($townId);
+	$dayNumber = $townObject->dayNumber;
+}
+else{
+	$dayNumber = 0;
+}
 $skillId = filter_input(INPUT_POST, "skillid");
 
 $currentSkill = new Skill($skillId);
-$skillName = "<h4><b>" . $currentSkill->getName() . "</b></h4>";
+$skillName = "<h4><b>" . str_replace("_", " ", $currentSkill->getName()) . "</b></h4>";
 $skillDescription = $currentSkill->getDescription();
 
 $skillArray = array('name' => $skillName,
 'description' => $skillDescription,
-'skillId' => $skillId);
+'skillId' => $skillId,
+'townId' => $townId,
+'day' => $dayNumber);
 
 echo json_encode($skillArray);
 

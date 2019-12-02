@@ -14,22 +14,26 @@ function skillAjax(skillId, clickedElement, direction){
         if(this.readyState == 4 && this.status == 200){
             //PERFORM JS HERE
             skillJson = JSON.parse(this.responseText);
-
+            var townId = skillJson["townId"];
+            var dayNumber = skillJson["day"];
             document.getElementById("skillName").innerHTML = skillJson["name"].replace("_", " ");
             document.getElementById("skillDescription").innerHTML = skillJson["description"].replace("_", " ");
             if(direction == "NA"){
                 document.getElementById("skill_button").style.display = "none";
             }
             else{
-                if(direction == "Remove"){
+                document.getElementById("skill_button").style.display = "block";
+                if(direction == "Remove" && townId == null){
                     document.getElementById("skill_button").className = "skill_button_remove";
                 }
-                else{
+                else if(dayNumber <= 1 && direction != "Remove"){
                     document.getElementById("skill_button").className = "skill_button";
                 }
+                else{
+                    document.getElementById("skill_button").style.display = "none";
+                }
                 document.getElementById("skill_button").innerHTML = direction;
-                document.getElementById("skill_button").style.display = "block";
-            }
+            }    
         }
     };
 
@@ -69,6 +73,7 @@ function modifySkillsAjax(){
                 elementToAdd.firstChild.id = "skill_" + myJson["SkillId"];
     
                 skillAjax(myJson["SkillId"], elementToAdd.firstChild, "Remove");
+                recolourAffordableSkills(myJson["MaxPoints"] - myJson["UsedPoints"]);
             }
             else if(myJson["Direction"] == "Remove"){
                 //Need to move the skill across the other direction, from assigned, to available
@@ -101,11 +106,12 @@ function modifySkillsAjax(){
                 tr.appendChild(td);
 
                 td.innerHTML = "<td>" + myJson["SkillName"] + " <div class='numberCircle'>" + myJson["SkillCost"] + "</div></td>";
-                td.className = "pointer";
+                td.className = "pointer pointerWhite";
                 td.onclick = function(){skillAjax(this.id.split("_")[1], this, "Assign")};
                 td.id = "skill_" + myJson["SkillId"];
     
                 skillAjax(myJson["SkillId"], td, "Assign");
+                recolourAffordableSkills(myJson["MaxPoints"] - myJson["UsedPoints"]);
             }
         }
     };
@@ -113,4 +119,22 @@ function modifySkillsAjax(){
     xmlhttp.open("POST", "../intown/townfunctions/modifyActiveSkills.php", true);
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xmlhttp.send("skillid=" + selectedSkillId);
+}
+
+function recolourAffordableSkills(availableSkillPoints){
+    var allPointers = document.getElementsByClassName("pointer");
+    for(var i = 0; i < allPointers.length; i++){
+        if(allPointers[i].className.match(/(?:^|\s)pointerWhite(?!\S)/)){
+            //was white, check if it should be changed to red
+            if(!(allPointers[i].childNodes[1].innerHTML <= availableSkillPoints)){
+                allPointers[i].className = allPointers[i].className.replace( /(?:^|\s)pointerWhite(?!\S)/g , ' pointerRed');
+            }
+        }
+        else if(allPointers[i].className.match(/(?:^|\s)pointerRed(?!\S)/)){
+            if(allPointers[i].childNodes[1].innerHTML <= availableSkillPoints){
+                //allPointers[i].className += " pointerBlue";
+                allPointers[i].className = allPointers[i].className.replace( /(?:^|\s)pointerRed(?!\S)/g , ' pointerWhite');
+            }
+        }
+    }
 }

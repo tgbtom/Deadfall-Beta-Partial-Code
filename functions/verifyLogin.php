@@ -13,7 +13,7 @@ if (!(isset($_SESSION['login']) && $_SESSION['login'] != ''))
 }
 elseif (!(isset($_SESSION['char'])) || $_SESSION['char'] == '' || $_SESSION['x'] === NULL || $_SESSION['y'] === NULL)
 {
-	if (isset($locat) && $locat != "browseChars" && $locat != "join")
+	if (isset($locat) && $locat != "browseChars" && $locat != "join" && $locat != "character")
 	{		
 		echo '<script>window.location = "' . $root . '/inTown/?locat=browseChars";</script>';
 	}

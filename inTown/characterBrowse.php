@@ -69,7 +69,9 @@ $_SESSION['y'] = '';
 			{
 				document.getElementById("play").disabled = false;
 				document.getElementById("charId").value = arg1;
+				document.getElementById("charIdEdit").value = arg1;
 				document.getElementById("name").value = name;
+				document.getElementById("nameEdit").value = name;
 				document.getElementById("name2").innerHTML = name;
 				document.getElementById("name2").style.textAlign = "center";
 				//replace underscored with spaces for display
@@ -101,11 +103,14 @@ $_SESSION['y'] = '';
 				if (x.innerHTML == '')
 				{
 					document.getElementById("play").value = "Join Town";
+					document.getElementById("edit").style.visibility = "visible";
+					document.getElementById("edit").value = "Modify Skills";
 				}
 				
 				else
 				{
 					document.getElementById("play").value = "Play Town";
+					document.getElementById("edit").style.visibility = "hidden";
 				}
 				
 				//modifies colspan of info display, to fix layout of table when character is selected
@@ -209,17 +214,23 @@ $_SESSION['y'] = '';
 		
 		<div class="infoBlock">
 		
-		<form action="<?php echo "../inTown/?locat=join";?>" method="post" name="joinOrPlay" id="join"><input type="submit" class="login-top" id="play" value="Welcome" onclick="checkTown()" name="tempChar2" disabled="true">
+		<form action="../inTown/?locat=join" method="post" name="joinOrPlay" id="join"><input type="submit" class="login-top" id="play" value="Welcome" onclick="checkTown()" name="tempChar2" disabled="true">
 		<!-- Need to make the input type below so nobody can change it, make it just plain text if possible -->
 		<input id="name" name="tempChar" value="Select a Character" hidden>
 		<input id="charId" name="selectedChar" value=0 hidden>
-		</form>
 		
 		<table width="90%">
 		<tr><td style="border:1px solid black;" colspan="2"><b><p id="name2" style="text-align: left;">Please</p></b></td></tr>
 		<tr><td class="data1" colspan="2"><b><p id="town2">Select</p></td><td class="data2" style="visibility: hidden;"><p id="town">none</p></b></td></tr>
 		<tr><td class="data1" colspan="2"><b><p id="class2">Character</p></td><td class="data2" style="visibility: hidden;"><p id="class"></p></b></td></tr>
 		</table>
+
+		</form>
+		<form action="../inTown/?locat=character" method="post" name="modifyForm" id="modify">
+		<input type="submit" class="login-top" id="edit" value="Modify" style="visibility: hidden">
+		<input id="nameEdit" name="tempChar" value="Select" hidden>
+		<input id="charIdEdit" name="selectedCharEdit" value=0 hidden>
+		</form>
 		</div>
 		
 		

@@ -79,6 +79,7 @@ body
     padding: 4px;
     margin: 25px auto;
 	box-shadow: 7px 7px #333333;
+	box-sizing: initial;
 	
 	display: flex;
     flex-wrap: wrap;
@@ -113,7 +114,7 @@ body
 	border: 2px solid #000000;
 	padding: 15px;
 	margin: 25px auto;
-	margin-left: 5%;
+	margin-left: 1.5%;
 	color: black;
 	box-shadow: 7px 7px #333333;
 }
@@ -171,7 +172,7 @@ body
 .infoSet1
 {
 	margin-left: 0;
-	margin-right: -6;
+	margin-right: -6px;
 	height: 50px;
 	vertical-align: top;
 	padding-left: 10px;
@@ -187,7 +188,7 @@ body
 .infoSet2
 {
 	margin-left: 0;
-	margin-right: -6;
+	margin-right: -6px;
 	height: 50px;
 	vertical-align: top;
 	padding-left: 10px;
@@ -203,7 +204,7 @@ body
 .infoSet3
 {
 	margin-left: 0;
-	margin-right: -6;
+	margin-right: -6px;
 	height: 85px;
 	vertical-align: top;
 	padding-left: 10px;
@@ -532,6 +533,7 @@ blue{
 	appearance: none;
 	margin: 0;
 
+	overflow: visible;
 	width: 100%;
 	background-color: lightgray;
 	color: orange;
@@ -553,6 +555,37 @@ blue{
 	color:white;
   }
   #xpBar::-ms-fill{
+	border-radius: 9px;
+	border: none;
+	color:lightskyblue;
+}
+
+#xpBar2{
+	-webkit-appearance: none;
+	appearance: none;
+	margin: 0;
+
+	width: 100%;
+	background-color: lightgray;
+	color: orange;
+	border: 0;
+	height: 22px;
+	border-radius: 6px;
+}
+#xpBar2::-webkit-progress-bar {
+	border-radius: 9px;
+	color:white;
+	background-color: lightgray;
+  }
+  #xpBar2::-webkit-progress-value {
+	border-radius: 9px;
+	background-color: lightskyblue;
+  }
+  #xpBar2::-moz-progress-bar {
+	border-radius: 9px;
+	color:white;
+  }
+  #xpBar2::-ms-fill{
 	border-radius: 9px;
 	border: none;
 	color:lightskyblue;
@@ -587,10 +620,19 @@ blue{
 	color:#c6538c;
 }
 
+#xpContainer{
+	height: 22px;
+}
+
+.w3-container, .w3-panel {
+    padding: 0px;
+}
+
 /* width */
 ::-webkit-scrollbar {
 	/* //width: 5px; */
 	width: 6%;
+	max-width: 20px;
   }
   
   /* Track */

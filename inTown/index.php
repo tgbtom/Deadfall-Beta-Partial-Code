@@ -31,7 +31,7 @@ switch ($locat)
 	break;	
 	
 	case 'character':
-	include ('character.php');
+	include ('stats.php');
 	break;
 	
 	case 'join':
