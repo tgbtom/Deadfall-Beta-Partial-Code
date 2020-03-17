@@ -11,7 +11,7 @@ if (!(isset($_SESSION['login']) && $_SESSION['login'] != ''))
 {	
 	echo '<script>window.location = "' . $root . '";</script>';
 }
-elseif (!(isset($_SESSION['char'])) || $_SESSION['char'] == '' || $_SESSION['x'] === NULL || $_SESSION['y'] === NULL)
+elseif (!(isset($_SESSION['char_id'])) || $_SESSION['char_id'] == '' || $_SESSION['x'] === NULL || $_SESSION['y'] === NULL)
 {
 	if (isset($locat) && $locat != "browseChars" && $locat != "join" && $locat != "character")
 	{		

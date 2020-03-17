@@ -13,7 +13,11 @@ $statusMaster = array (
 		"Dehydrated",
 /*10*/	"Day Ended",
 		"Not Done",
-		"Dead"
+		"Dead",
+		"Minor Injury",
+		"Moderate Injury",
+/*15*/	"Severe Injury",
+		"Infected"
 	);
 
 ?>
